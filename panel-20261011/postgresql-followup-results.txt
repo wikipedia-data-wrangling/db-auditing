@@ -1,0 +1,63 @@
+Pager usage is off.
+BEGIN
+SET
+SET
+   datname    |    spcname    
+--------------+---------------
+ wiki20260401 | wiki_ts_lacie
+(1 row)
+
+          oid          | reloptions | heap_tablespace  | heap_size |        reltoastrelid         | toast_tablespace | toast_total 
+-----------------------+------------+------------------+-----------+------------------------------+------------------+-------------
+ revision              |            | wiki_ts_lacie10  | 194 GB    | pg_toast.pg_toast_17188      | wiki_ts_lacie10  | 24 kB
+ revision_text_p1      |            | database default | 320 GB    | pg_toast.pg_toast_956891053  | database default | 9360 GB
+ revision_text_p2      |            | wiki_ts          | 94 GB     | pg_toast.pg_toast_956891062  | wiki_ts          | 4231 GB
+ analysis.rfpp_request |            | wiki_ts_lacie10  | 3222 MB   | pg_toast.pg_toast_2197862176 | wiki_ts_lacie10  | 912 kB
+(4 rows)
+
+ logging_rows_with_page_id 
+---------------------------
+                         0
+(1 row)
+
+ schemaname | tablename |   attname   | null_frac | n_distinct 
+------------+-----------+-------------+-----------+------------
+ public     | logging   | log_page    |         1 |          0
+ public     | page      | page_latest |         0 |         -1
+ public     | revision  | rev_page    |         0 |     199418
+(3 rows)
+
+ schemaname |        relname         | n_live_tup | n_dead_tup |         last_analyze          |       last_autoanalyze        |        last_autovacuum        | n_mod_since_analyze 
+------------+------------------------+------------+------------+-------------------------------+-------------------------------+-------------------------------+---------------------
+ analysis   | rfpp_intent_v2_run     |          1 |          7 |                               |                               |                               |                   7
+ analysis   | protect_event          |    1126151 |          2 | 2026-09-30 12:46:15.061357+01 | 2026-09-30 12:59:52.261858+01 | 2026-09-30 13:54:15.769212+01 |                   0
+ analysis   | protect_log_src        |     871698 |          0 | 2026-09-30 12:44:00.444807+01 |                               | 2026-09-30 12:44:52.516077+01 |                   0
+ analysis   | protection_episode     |    1004247 |          0 | 2026-09-30 13:00:04.479924+01 |                               | 2026-09-30 13:00:52.221936+01 |                   0
+ analysis   | sample_request_smoke   |        200 |          0 | 2026-09-30 13:17:07.848614+01 | 2026-09-30 13:17:49.770687+01 |                               |                   0
+ analysis   | page_quality           |      52118 |          0 | 2026-09-30 19:10:42.015144+01 | 2026-09-30 19:11:35.810247+01 | 2026-09-30 19:43:38.55706+01  |                   0
+ analysis   | page_topic             |       8507 |          0 | 2026-10-01 23:06:17.656147+01 | 2026-10-01 23:07:14.807372+01 | 2026-10-01 23:07:14.680653+01 |                   0
+ analysis   | page_wp_class          |       9756 |          0 | 2026-09-30 19:11:44.638799+01 | 2026-09-30 19:12:35.678106+01 | 2026-09-30 19:43:39.495746+01 |                   0
+ analysis   | sample_request_treated |      10000 |          0 | 2026-09-30 13:53:45.067806+01 |                               | 2026-09-30 13:54:21.500074+01 |                   0
+ analysis   | user_registration      |   51598707 |          0 | 2026-09-30 15:02:55.915759+01 |                               | 2026-09-30 15:05:49.954407+01 |                   0
+ analysis   | rights_change          |     151242 |          0 |                               | 2026-09-30 14:56:52.2769+01   | 2026-09-30 14:56:52.10716+01  |                   0
+ analysis   | user_group_interval    |     129906 |          0 | 2026-09-30 14:58:19.52832+01  | 2026-09-30 14:56:52.481162+01 | 2026-09-30 15:00:51.952358+01 |                   0
+ analysis   | block_interval         |   28298311 |          0 | 2026-09-30 15:17:14.372792+01 | 2026-09-30 15:15:13.770343+01 | 2026-09-30 15:22:34.572307+01 |                   0
+ analysis   | editor_history         |   34984561 |          0 | 2026-09-30 15:50:53.812802+01 |                               | 2026-09-30 15:52:06.155446+01 |                   0
+ analysis   | protect_log_api        |     846191 |          0 | 2026-09-30 12:36:42.113044+01 |                               | 2026-09-30 12:36:50.667676+01 |                   0
+(15 rows)
+
+   pid   |          application_name          | state | wait_event_type | wait_event | transaction_age 
+---------+------------------------------------+-------+-----------------+------------+-----------------
+ 2187284 | vscode-pgsql - untitled:Untitled-1 | idle  | Client          | ClientRead | 
+(1 row)
+
+ nspname |      relname       | xid_age  
+---------+--------------------+----------
+ public  | change_tag_def     | 59938357
+ public  | user_former_groups | 59938356
+ public  | user_groups        | 59938355
+ public  | page_restrictions  | 59938354
+ public  | protected_titles   | 59938353
+(5 rows)
+
+COMMIT

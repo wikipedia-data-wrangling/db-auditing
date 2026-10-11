@@ -1,0 +1,27 @@
+{
+  "recorded_at": "2026-10-11T08:41:56.147017+00:00",
+  "operation": "User-authorized issue filing only; fixes deferred",
+  "not_before": "2026-10-13",
+  "timezone": "Europe/London",
+  "verified_issue_count": 15,
+  "prior_issue_1_state": "CLOSED",
+  "files": {
+    "A01.md": "ed1575aeb5f60912d5d1602d8cef85e66f8e4414fe2f5cb0e83dfc309ca07d5d",
+    "A02.md": "ad5efcad0f36b9ccdd36b604801313150268b0c0788d039d9f7953a286829637",
+    "A03.md": "ab24daaf73347bcde0ab4d5d7e48d00ea3540878a9a02ec4bfa780e3dd21ddc8",
+    "A04.md": "d6d98d4863faae5a63ffebf157f5b7152c2e3fc5a26ccea93201fbc05ad85b80",
+    "A05.md": "8a6850e82f5bee69ee9f62a5ce49ab8bf1f45f0b9bc8707ec7167ffabd53057f",
+    "A06.md": "54b7dde9e4919651d2da81408227aa95fe2cb6e533a205e62e1ac6dc610a1c56",
+    "A07.md": "3da6b492ae2181badc1a00bca950f501cf2e21d8ac6ba1c893c148a75c77b32a",
+    "A08.md": "1ed06f66aa422f5017b3754c33a23a27eac89f32ccf69e148d8989aae721610f",
+    "A09.md": "0b7ac01e5f41aa874931cdf2a5e6d9f8e93bf0b1b9ea61a9aa0df59359295aa1",
+    "A10.md": "4917f7ade33565b78d5132ee233a5bcd6159366fca77c92a3d61c32f5d0ded1f",
+    "A11.md": "855aabb58d30f80af4e9dcf354b0e062f21d869d5e9b632a18c2b904e70a698a",
+    "A12.md": "7c154b4498a299d90ede04157f380c3a56f52caad2bd864dd3287c5e1d34cefd",
+    "A13.md": "beae64be76610e6471cf1944d23b2739fd901f70f20f9010561333c0d2a48147",
+    "A14.md": "eb13d259ab4aabf91029ec32e227e228f25fe5e5b9c216758646693c1bd37859",
+    "A15.md": "ccdc00d8751ba0eeba136cd389ae5518c20d1c9e84faf4503e61012d621489ef",
+    "index.org": "0bb57b2746b486c65f3d86e3bc895ff1a496254547e594c9a4dc2eb684e10540",
+    "issues.json": "836b3087cff440c056a2d4a97afa0fc649c00ef9e01b47d5662f6c018c18e6fa"
+  }
+}

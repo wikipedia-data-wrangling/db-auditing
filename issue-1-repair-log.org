@@ -1,0 +1,200 @@
+#+title: Issue #1 — RFPP intent parser root-cause repair
+#+date: 2026-10-10
+
+* Scope and cause
+Target: =wiki20260401=, PostgreSQL 18 on port 5434, =service=wiki=.
+This supersedes the remediation status in =issue-1-audit-log.org=; that log
+and the original report retain their historical evidence unchanged.
+
+SQL04 extracted the first matching tier token, mapped bare “extended” to
+ECP, and defaulted direction using request wording plus administrator response
+codes. This confounded duration with tier, origins with destinations, and
+intent with outcome. Fixing selected rows alone would reproduce the defect
+on the next build.
+
+* Implementation
+The analysis repository now has one shared, versioned request-only parser:
+=../20261001/wpp-analysis/sql/04a_rfpp_intent_parser.sql=.
+Its only input is =reason=; granted and denied requests take the same path.
+ECP requires extended-confirmed wording, ECP, or label-context EC. Bare
+“extended” is never sufficient. Explicit from/to constructions select the
+destination and preserve the stated origin. Only none/semi/ECP/full have an
+ordered transition hierarchy; other transitions retain explicit direction
+or use =change=. Duration extension is a separate flag; =increase= retains
+the legacy coarse meaning for a simple positive request, including renewal.
+
+Alternatives retain a target set and no single tier. Ambiguous and amended
+requests retain uncertainty. Missing evidence no longer defaults to increase.
+Body inference requires request wording, rather than the first historical tier
+mention. A generic heading can precede the actual bold label. Metadata records
+version, rule, evidence, raw/normalised label, origin, target set, action basis,
+and uncertainty. The original =reason= remains unchanged.
+
+SQL04 calls =04b_rfpp_request_intent.sql=, which uses that parser. Shared
+=04c_rfpp_request_match.sql= handles protection-event associations; the scoped
+migration calls it only for changed-action IDs. Unknown direction can retain
+an independent candidate log association but cannot certify =treated_by_log=.
+Applied levels come from event records, never from requested levels.
+
+* Reproducible execution
+Run commands from the parent =wikipediaData= workspace:
+#+begin_src sh
+psql -X service=wiki -f 20261001/wpp-analysis/sql/04a_rfpp_intent_parser.sql
+official-dump/.venv/bin/python db-auditing/test_rfpp_intent_v2.py
+psql -X service=wiki -f db-auditing/stage_rfpp_intent_v2.sql
+# If refining the parser before application, reinstall/test, then restage:
+psql -X service=wiki -f db-auditing/restage_rfpp_intent_v2.sql
+psql -X service=wiki -f db-auditing/apply_rfpp_intent_v2.sql
+psql -X service=wiki -v commit_repair=1 -f db-auditing/apply_rfpp_intent_v2.sql
+official-dump/.venv/bin/python db-auditing/report_rfpp_intent_v2.py
+20261001/wpp-analysis/python/.venv/bin/python db-auditing/refresh_rfpp_intent_cache.py
+#+end_src
+
+These scripts deliberately refuse unsafe repeated application. The staging
+script creates the original snapshot once; restaging updates candidates only
+while the run is staged. The migration defaults to a full rehearsal ending
+in ROLLBACK (the nullable metadata column is added independently). A parser
+signature and hashes of every original row reject changed code/source state.
+The full destructive SQL04 was NOT rerun against the live database.
+
+The initial migration rehearsal completed with preservation checks and
+ROLLBACK; subsequent sample review refined nested labels and alternatives.
+Its counts in =logs/issue-1-rehearsal-20261010.log= are historical candidate
+counts. The final applied report is authoritative for final counts.
+
+* Validation and evidence
+Regression tests cover duration phrases, both directions, alternative tiers,
+negation, amended text, long labels/body text, normalisation, missing evidence,
+body history versus requests, nested headings, and the ten historical fixtures.
+The test runner is read-only and checks semantic outputs, not implementation
+text. Seven unittest methods include multiple subcases.
+
+The full population is evaluated, with confusion tables for actions and tiers,
+changed IDs, status counts, and strata by year/outcome/old/new evidence source.
+A deterministic sample selects up to three rows per status/source/tier/change
+stratum. This is diagnostic review, not a blinded human validation study or
+an estimated error rate. Sample review prompted added regression cases.
+
+The migration transaction asserts preservation of every raw, identity,
+outcome, and unrelated derived field by comparing complete rows minus an
+explicit whitelist. It verifies stage/output agreement and unchanged matching
+fields outside the changed-action scope. All protection events are read-only.
+Stable RFPP identity uniqueness is enforced by primary keys. No raw request,
+response, administrative outcome, or event-level record is corrected by copying
+an inferred intent value into it.
+
+* Reversibility
+=analysis.rfpp_request_pre_intent_v2= retains every original row and field.
+=analysis.rfpp_intent_v2_stage= retains old classifications, complete proposed
+intent, and original row hashes. =analysis.rfpp_intent_v2_changes= records all
+changed legacy records, old/new classifications and links, and after hashes.
+Metadata is attached to the full population, including unchanged records.
+=analysis.rfpp_intent_v2_run= records parser signature and application state.
+
+=rollback_rfpp_intent_v2.sql= is a prepared rollback, defaulting to ROLLBACK.
+It verifies the entire post-repair population and refuses to overwrite later
+changes, restores only the repair's derived fields from the preserved snapshot,
+and asserts exact equality with original rows (apart from the nullable new
+metadata column). It was executed to reverse the encoding-defective first attempt; the final repair remains applied. The preserved
+Parquet must be restored separately if rolling back the database. Parser source
+must also be reverted for future rebuilds; do not delete the audit tables.
+
+* Downstream dependencies and limits
+The direct mainspace granted/denied request cache is refreshed from the repaired
+source, retaining =rfpp_request.pre-intent-v2.parquet= and both hashes. Other
+frozen sample tables and model outputs retain their original versions.
+=analysis.rfpp_intent_v2_invalidations= lists RFPP-ID-bearing analytical tables
+and their direct intersections with changed IDs. This count is not a complete
+impact bound: changed selection or grouped duration medians can affect other
+requests and inherited controls too.
+
+Controlled rebuild order: SQL20 request eligibility and tier/year pseudo-expiry
+medians, sampled page/control frames, their panels/outcome caches, then IV strata
+and estimates/reports (including scripts 30, 40 and 80 where dependent).
+Preserve old samples/results for comparison. The old y3/topic/sample caches
+must not be assumed to share the corrected source population merely because
+the direct request cache is current. This repair does not certify previously
+published estimates; the GitHub issue remains open for downstream rebuilding
+and independent validation.
+
+The parser is deliberately conservative, not a complete language interpreter.
+Unsupported formulations, quoted/contextual language, unrelated strike-through,
+and restriction-type versus tier combinations still require review. In
+particular, move/create/upload requests mix dimensions in the legacy tier
+vocabulary. Chronology cannot be established from final archived text alone.
+No population accuracy percentage is claimed. The separate ECR/pre-existing
+state and log-linkage validity questions remain outside this root-cause fix.
+
+* Encoding correction during end-to-end validation
+The first committed candidate passed classification and raw-field checks, but
+Parquet validation detected invalid UTF-8 in derived normalised labels.
+The new normalizer used =translate= with multibyte punctuation; in this
+SQL_ASCII database that operates on bytes and could remove bytes from unrelated
+Unicode characters. Raw requests and the original Parquet were unaffected.
+
+The guarded rollback was actually executed and its exact original-row equality
+assertion passed. First-application audit tables were archived as
+=rfpp_intent_v2_first_apply_changes=, =rfpp_intent_v2_first_apply_invalidations=,
+and =rfpp_intent_v2_first_run=. Disk artifacts containing
+=-superseded-encoding= describe that reversed attempt, not the final state.
+The temporary failed export was removed; the active cache was never replaced
+by the invalid export.
+
+Normalization now replaces complete Unicode dash sequences before applying
+ASCII-only =translate=. A seventh regression method checks bullets, Unicode
+text, and en/em dashes against the live SQL_ASCII database. Every staged JSON
+record is additionally checked with strict UTF-8 decoding before application.
+=restage_rfpp_after_encoding_fix.sql= records the one-time recovery sequence.
+Final counts and hashes below supersede preliminary figures.
+
+* Final applied result
+Final population: 217,554 requests and unique IDs; all carry =rfpp-intent-v2.0.0= metadata.
+44,075 rows changed one or more legacy derived fields. Action changed for 36,320;
+tier changed for 13,712; matched log ID changed for 269. These overlapping counts
+are classification changes, NOT counts of confirmed semantic errors. Many changes
+remove unsupported defaults or represent alternatives/uncertainty explicitly.
+
+| Parse status | Requests |
+|--------------+----------|
+| explicit | 180833 |
+| unspecified | 36125 |
+| alternative | 347 |
+| ambiguous | 169 |
+| chronology_uncertain | 69 |
+| edit_request | 11 |
+
+All ten historical fixtures pass. The five duration cases now target semi;
+127462 and 144377 are decrease/semi with ECP origin; 154614 is increase/ECP
+with semi origin; 91188 retains alternatives; 192925 retains unknown chronology.
+Using the original 2016–2025 mainspace granted/denied increase/ECP filter,
+candidate counts are now 3,199 granted and 2,201 denied (previously 3,535/2,595).
+This does not establish a validated ECP population or a parser accuracy rate.
+
+All seven regression methods passed after final application. The transaction
+preservation assertions and post-commit population/stage checks passed.
+The refreshed direct Parquet has 178,110 unique requests and zero classification
+mismatches against the final stage. Its original version is preserved.
+New Parquet SHA256: =6ca806a9b24de8bdea86c790206f4e2cc6582a3dfd56b6f39e2cefd792b03aa2=.
+
+21 frozen analytical tables are registered for review/rebuild; views depending
+on those tables inherit that limitation. No downstream model estimates were rerun.
+
+Evidence artifacts:
+- [[file:logs/issue-1-apply-20261010.log][Final migration output]] and [[file:logs/issue-1-post-repair-verification-20261010.log][post-commit checks]].
+- [[file:logs/issue-1-repair-applied-20261010.json][Structured report]], including strata, deterministic sample, invalidations and source hashes.
+- [[file:logs/issue-1-action_confusion-20261010.csv][Action confusion table]] and [[file:logs/issue-1-tier_confusion-20261010.csv][tier confusion table]].
+- [[file:logs/issue-1-changed-records-20261010.csv][Exact changed records with old/new fields]].
+- [[file:logs/issue-1-parser-tests-20261010.log][Regression results]] and [[file:logs/issue-1-encoding-check-20261010.log][full metadata encoding check]].
+- [[file:logs/issue-1-cache-refresh-20261010.json][Cache refresh provenance]].
+- [[file:logs/issue-1-analysis-parser-20261010.patch][Reviewable analysis source patch]]; reverse-apply check passed.
+- [[file:logs/issue-1-encoding-rollback-20261010.log][Executed rollback and original-row restoration checks]].
+
+GitHub update (including full source patch and migration):
+[[https://github.com/wikipedia-data-wrangling/db-auditing/issues/1#issuecomment-6102175403][Root-cause repair and validation record]].
+The issue remains open for downstream rebuilding and independent validation.
+
+* Status clarification — 2026-10-11
+Issue #1 was subsequently closed at the user’s request. Earlier references in
+this execution log to keeping it open describe the status at repair time.
+The dependency rebuilds remain outstanding and are assessed in
+[[file:panel-20261011/panel-audit.org][the four-specialist audit]].

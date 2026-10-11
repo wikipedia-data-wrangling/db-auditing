@@ -1,0 +1,11 @@
+{
+  "apply.sql": "7e58891f754606ed09ee3ff8c4d2cde198751bd5a49b2471ac8c613642b59967",
+  "rollback.sql": "70fa5e7bf770f950a2422a53917ce04e8db71ba0c2e02b281537d8a16d7a0463",
+  "verify.sql": "33a83ed7d3757c8aa5d329b29f33e800688fa89f2fbbf6e1550d1ab43a67b8a0",
+  "parser-source.sql": "877b3854a67a5e305c2bb5fc689f895b7c4af6e87637521b2536cc9f0fb123f1",
+  "test-source.py": "7ead1cbb9c67bdd9b257a3e1b04dc3624a7c4c12c39344869eb5b86280433d27",
+  "refresh-cache.py": "93234bb3cfaad5fcef950b083dcd5b56f9ff5e63892870fadea5f1fb9c40fdc5",
+  "README-after.md": "4587d97407f239cf69847dc3c624fb952ea47418e5057f203b38a56f73079b97",
+  "repair-report.org": "f055bef88eea90fd15facdaa0341a766f7a743b700e83aa83cec327dc01976ce",
+  "deploy.py": "fe93851af8807ed1d892c50d555bf048d3da9efbc8a8f1f17dec1dec1d096822"
+}

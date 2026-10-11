@@ -1,0 +1,479 @@
+{
+  "started_at": "2026-10-11T08:26:50.571217+00:00",
+  "connection": "service=wiki",
+  "scope": "Bounded read-only queries, each with its own snapshot; not a single database-wide snapshot.",
+  "results": {
+    "rfpp_coverage": {
+      "sql": "SELECT count(*) AS requests,min(request_timestamp) AS first_request,max(request_timestamp) AS last_request,min(collected_at) AS first_collection,max(collected_at) AS last_collection,count(*) FILTER(WHERE request_timestamp >= '2026-04-01 00:00:00+00') AS requests_from_nominal_dump_cutoff,count(*) FILTER(WHERE requested_intent->>'status'='chronology_uncertain') AS chronology_uncertain FROM analysis.rfpp_request",
+      "rows": [
+        {
+          "requests": 217554,
+          "first_request": "2005-04-13 17:06:00+00:00",
+          "last_request": "2026-09-30 10:46:00+00:00",
+          "first_collection": "2026-09-30 10:51:10+00:00",
+          "last_collection": "2026-09-30 10:54:19+00:00",
+          "requests_from_nominal_dump_cutoff": 8463,
+          "chronology_uncertain": 69
+        }
+      ],
+      "status": "ok",
+      "elapsed_seconds": 0.952
+    },
+    "event_coverage": {
+      "sql": "SELECT log_type,count(*) AS event_rows,count(DISTINCT log_id) AS log_rows,min(ts) AS first_event,max(ts) AS last_event,count(*) FILTER(WHERE ts>='2026-04-01 00:00:00+00') AS events_from_nominal_cutoff FROM analysis.protect_event GROUP BY 1 ORDER BY 1",
+      "rows": [
+        {
+          "log_type": "protect",
+          "event_rows": 1313678,
+          "log_rows": 842471,
+          "first_event": "2004-12-23 03:29:26+00:00",
+          "last_event": "2026-04-02 17:22:43+00:00",
+          "events_from_nominal_cutoff": 267
+        },
+        {
+          "log_type": "stable",
+          "event_rows": 29227,
+          "log_rows": 29227,
+          "first_event": "2010-06-15 23:25:23+00:00",
+          "last_event": "2026-04-01 23:49:55+00:00",
+          "events_from_nominal_cutoff": 7
+        }
+      ],
+      "status": "ok",
+      "elapsed_seconds": 2.416
+    },
+    "api_coverage": {
+      "sql": "SELECT log_type,count(*) AS api_rows,min(ts) AS first_event,max(ts) AS last_event,min(collected_at) AS first_collection,max(collected_at) AS last_collection,count(*) FILTER(WHERE api_logpage IS DISTINCT FROM api_pageid AND api_logpage IS NOT NULL AND api_pageid IS NOT NULL) AS differing_nonnull_ids,count(*) FILTER(WHERE action_hidden OR user_hidden OR comment_hidden OR suppressed) AS hidden_metadata_rows FROM analysis.protect_log_api GROUP BY 1 ORDER BY 1",
+      "rows": [
+        {
+          "log_type": "protect",
+          "api_rows": 846191,
+          "first_event": "2004-12-23 03:29:26+00:00",
+          "last_event": "2026-05-06 22:27:10+00:00",
+          "first_collection": "2026-05-06 22:12:00+00:00",
+          "last_collection": "2026-05-06 22:12:00+00:00",
+          "differing_nonnull_ids": 63745,
+          "hidden_metadata_rows": 2437
+        }
+      ],
+      "status": "ok",
+      "elapsed_seconds": 1.837
+    },
+    "event_resolution": {
+      "sql": "SELECT resolution_method,count(*) AS event_rows,count(DISTINCT log_id) AS log_rows FROM analysis.protect_event GROUP BY 1 ORDER BY 2 DESC",
+      "rows": [
+        {
+          "resolution_method": "api_logpage",
+          "event_rows": 844185,
+          "log_rows": 526808
+        },
+        {
+          "resolution_method": "api_pageid",
+          "event_rows": 287517,
+          "log_rows": 172033
+        },
+        {
+          "resolution_method": null,
+          "event_rows": 182364,
+          "log_rows": 144032
+        },
+        {
+          "resolution_method": "title",
+          "event_rows": 28839,
+          "log_rows": 28825
+        }
+      ],
+      "status": "ok",
+      "elapsed_seconds": 2.356
+    },
+    "event_uncertainty": {
+      "sql": "SELECT level_source,count(*) AS event_rows,count(DISTINCT log_id) AS log_rows,count(*) FILTER(WHERE is_opening) AS opening_rows,count(*) FILTER(WHERE is_opening AND NOT is_indefinite AND expiry IS NULL) AS unknown_expiry,count(*) FILTER(WHERE is_opening AND page_id IS NULL) AS unresolved_openings FROM analysis.protect_event GROUP BY 1 ORDER BY 2 DESC",
+      "rows": [
+        {
+          "level_source": "details",
+          "event_rows": 507386,
+          "log_rows": 329054,
+          "opening_rows": 507386,
+          "unknown_expiry": 0,
+          "unresolved_openings": 25071
+        },
+        {
+          "level_source": "raw",
+          "event_rows": 432066,
+          "log_rows": 254816,
+          "opening_rows": 432066,
+          "unknown_expiry": 0,
+          "unresolved_openings": 59004
+        },
+        {
+          "level_source": "comment",
+          "event_rows": 244400,
+          "log_rows": 137629,
+          "opening_rows": 244400,
+          "unknown_expiry": 0,
+          "unresolved_openings": 72666
+        },
+        {
+          "level_source": "none",
+          "event_rows": 117635,
+          "log_rows": 117635,
+          "opening_rows": 0,
+          "unknown_expiry": 0,
+          "unresolved_openings": 0
+        },
+        {
+          "level_source": "stable",
+          "event_rows": 23077,
+          "log_rows": 23077,
+          "opening_rows": 23077,
+          "unknown_expiry": 0,
+          "unresolved_openings": 312
+        },
+        {
+          "level_source": "assumed_full",
+          "event_rows": 17708,
+          "log_rows": 8854,
+          "opening_rows": 17708,
+          "unknown_expiry": 0,
+          "unresolved_openings": 6812
+        },
+        {
+          "level_source": "unparsed",
+          "event_rows": 633,
+          "log_rows": 633,
+          "opening_rows": 0,
+          "unknown_expiry": 0,
+          "unresolved_openings": 0
+        }
+      ],
+      "status": "ok",
+      "elapsed_seconds": 2.658
+    },
+    "episode_coverage": {
+      "sql": "SELECT count(*) AS episodes,min(start_ts) AS first_start,max(start_ts) AS last_start,max(actual_end_ts) AS last_observed_end,count(*) FILTER(WHERE start_ts>='2026-04-01 00:00:00+00') AS starts_after_nominal_cutoff,count(*) FILTER(WHERE actual_end_ts>'2026-04-01 00:00:00+00') AS ends_after_nominal_cutoff,count(*) FILTER(WHERE expiry_unknown) AS unknown_expiry,count(*) FILTER(WHERE actual_end_ts<start_ts) AS negative_actual_intervals,count(*) FILTER(WHERE scheduled_expiry<start_ts) AS expiry_before_start FROM analysis.protection_episode",
+      "rows": [
+        {
+          "episodes": 1004247,
+          "first_start": "2004-12-23 03:29:26+00:00",
+          "last_start": "2026-04-02 17:22:43+00:00",
+          "last_observed_end": "2026-04-02 05:55:16+00:00",
+          "starts_after_nominal_cutoff": 203,
+          "ends_after_nominal_cutoff": 37,
+          "unknown_expiry": 0,
+          "negative_actual_intervals": 133,
+          "expiry_before_start": 133
+        }
+      ],
+      "status": "ok",
+      "elapsed_seconds": 0.13
+    },
+    "restriction_snapshot": {
+      "sql": "SELECT pr_type,pr_level,count(*) AS rows,count(*) FILTER(WHERE pr_expiry<'2026-04-01 00:00:00+00') AS expired_before_nominal_cutoff,count(*) FILTER(WHERE pr_cascade) AS cascading FROM public.page_restrictions GROUP BY 1,2 ORDER BY 1,2",
+      "rows": [
+        {
+          "pr_type": "edit",
+          "pr_level": "autoconfirmed",
+          "rows": 67147,
+          "expired_before_nominal_cutoff": 0,
+          "cascading": 0
+        },
+        {
+          "pr_type": "edit",
+          "pr_level": "extendedconfirmed",
+          "rows": 15461,
+          "expired_before_nominal_cutoff": 0,
+          "cascading": 0
+        },
+        {
+          "pr_type": "edit",
+          "pr_level": "sysop",
+          "rows": 9856,
+          "expired_before_nominal_cutoff": 0,
+          "cascading": 38
+        },
+        {
+          "pr_type": "edit",
+          "pr_level": "templateeditor",
+          "rows": 9031,
+          "expired_before_nominal_cutoff": 0,
+          "cascading": 0
+        },
+        {
+          "pr_type": "move",
+          "pr_level": "autoconfirmed",
+          "rows": 39438,
+          "expired_before_nominal_cutoff": 0,
+          "cascading": 0
+        },
+        {
+          "pr_type": "move",
+          "pr_level": "extendedconfirmed",
+          "rows": 13183,
+          "expired_before_nominal_cutoff": 0,
+          "cascading": 0
+        },
+        {
+          "pr_type": "move",
+          "pr_level": "sysop",
+          "rows": 30113,
+          "expired_before_nominal_cutoff": 0,
+          "cascading": 29
+        },
+        {
+          "pr_type": "move",
+          "pr_level": "templateeditor",
+          "rows": 8397,
+          "expired_before_nominal_cutoff": 0,
+          "cascading": 0
+        },
+        {
+          "pr_type": "upload",
+          "pr_level": "autoconfirmed",
+          "rows": 36,
+          "expired_before_nominal_cutoff": 0,
+          "cascading": 0
+        },
+        {
+          "pr_type": "upload",
+          "pr_level": "extendedconfirmed",
+          "rows": 6,
+          "expired_before_nominal_cutoff": 0,
+          "cascading": 0
+        },
+        {
+          "pr_type": "upload",
+          "pr_level": "sysop",
+          "rows": 167,
+          "expired_before_nominal_cutoff": 0,
+          "cascading": 0
+        },
+        {
+          "pr_type": "upload",
+          "pr_level": "templateeditor",
+          "rows": 1,
+          "expired_before_nominal_cutoff": 0,
+          "cascading": 0
+        }
+      ],
+      "status": "ok",
+      "elapsed_seconds": 0.078
+    },
+    "creation_snapshot": {
+      "sql": "SELECT pt_create_perm,count(*) AS titles,min(pt_timestamp) AS first_recorded,max(pt_timestamp) AS last_recorded,count(*) FILTER(WHERE pt_expiry<'2026-04-01 00:00:00+00') AS expired_before_nominal_cutoff FROM public.protected_titles GROUP BY 1 ORDER BY 2 DESC",
+      "rows": [
+        {
+          "pt_create_perm": "sysop",
+          "titles": 52728,
+          "first_recorded": "2007-12-28 01:39:07+00:00",
+          "last_recorded": "2026-04-02 00:11:59+00:00",
+          "expired_before_nominal_cutoff": 0
+        },
+        {
+          "pt_create_perm": "extendedconfirmed",
+          "titles": 3434,
+          "first_recorded": "2016-07-30 22:44:07+00:00",
+          "last_recorded": "2026-04-01 01:53:02+00:00",
+          "expired_before_nominal_cutoff": 0
+        },
+        {
+          "pt_create_perm": "autoconfirmed",
+          "titles": 2636,
+          "first_recorded": "2008-01-21 16:05:31+00:00",
+          "last_recorded": "2026-03-31 22:22:18+00:00",
+          "expired_before_nominal_cutoff": 0
+        },
+        {
+          "pt_create_perm": "templateeditor",
+          "titles": 118,
+          "first_recorded": "2014-11-26 06:29:38+00:00",
+          "last_recorded": "2024-08-11 22:42:33+00:00",
+          "expired_before_nominal_cutoff": 0
+        },
+        {
+          "pt_create_perm": "editprotected",
+          "titles": 3,
+          "first_recorded": "2016-03-22 14:07:14+00:00",
+          "last_recorded": "2017-02-17 16:14:19+00:00",
+          "expired_before_nominal_cutoff": 0
+        },
+        {
+          "pt_create_perm": "editsemiprotected",
+          "titles": 1,
+          "first_recorded": "2017-01-07 21:56:45+00:00",
+          "last_recorded": "2017-01-07 21:56:45+00:00",
+          "expired_before_nominal_cutoff": 0
+        }
+      ],
+      "status": "ok",
+      "elapsed_seconds": 0.094
+    },
+    "event_types": {
+      "sql": "SELECT restriction_type,level,count(*) AS opening_event_rows FROM analysis.protect_event WHERE is_opening GROUP BY 1,2 ORDER BY 3 DESC",
+      "rows": [
+        {
+          "restriction_type": "edit",
+          "level": "autoconfirmed",
+          "opening_event_rows": 459191
+        },
+        {
+          "restriction_type": "move",
+          "level": "autoconfirmed",
+          "opening_event_rows": 269461
+        },
+        {
+          "restriction_type": "move",
+          "level": "sysop",
+          "opening_event_rows": 192992
+        },
+        {
+          "restriction_type": "edit",
+          "level": "sysop",
+          "opening_event_rows": 111500
+        },
+        {
+          "restriction_type": "create",
+          "level": "sysop",
+          "opening_event_rows": 82605
+        },
+        {
+          "restriction_type": "stable",
+          "level": "autoconfirmed",
+          "opening_event_rows": 22759
+        },
+        {
+          "restriction_type": "edit",
+          "level": "extendedconfirmed",
+          "opening_event_rows": 21197
+        },
+        {
+          "restriction_type": "move",
+          "level": "extendedconfirmed",
+          "opening_event_rows": 17477
+        },
+        {
+          "restriction_type": "edit",
+          "level": "templateeditor",
+          "opening_event_rows": 16576
+        },
+        {
+          "restriction_type": "move",
+          "level": "templateeditor",
+          "opening_event_rows": 13263
+        },
+        {
+          "restriction_type": "create",
+          "level": "autoconfirmed",
+          "opening_event_rows": 7656
+        },
+        {
+          "restriction_type": "create",
+          "level": "extendedconfirmed",
+          "opening_event_rows": 5351
+        },
+        {
+          "restriction_type": "upload",
+          "level": "sysop",
+          "opening_event_rows": 3534
+        },
+        {
+          "restriction_type": "create",
+          "level": "templateeditor",
+          "opening_event_rows": 524
+        },
+        {
+          "restriction_type": "stable",
+          "level": "review",
+          "opening_event_rows": 318
+        },
+        {
+          "restriction_type": "upload",
+          "level": "autoconfirmed",
+          "opening_event_rows": 191
+        },
+        {
+          "restriction_type": "upload",
+          "level": "templateeditor",
+          "opening_event_rows": 17
+        },
+        {
+          "restriction_type": "upload",
+          "level": "extendedconfirmed",
+          "opening_event_rows": 14
+        },
+        {
+          "restriction_type": "create",
+          "level": "editprotected",
+          "opening_event_rows": 9
+        },
+        {
+          "restriction_type": "create",
+          "level": "editsemiprotected",
+          "opening_event_rows": 1
+        },
+        {
+          "restriction_type": "create",
+          "level": "steward",
+          "opening_event_rows": 1
+        }
+      ],
+      "status": "ok",
+      "elapsed_seconds": 0.267
+    },
+    "request_type_label_examples": {
+      "sql": "SELECT rfpp_id,request_label,requested_action,requested_level,requested_intent->>'status' AS status FROM analysis.rfpp_request WHERE rfpp_id IN (33645,57453,106324,110347,176990,189060,202386) ORDER BY rfpp_id",
+      "rows": [
+        {
+          "rfpp_id": 33645,
+          "request_label": "create indefinite full protection",
+          "requested_action": "increase",
+          "requested_level": "full",
+          "status": "explicit"
+        },
+        {
+          "rfpp_id": 57453,
+          "request_label": "temporary move full protection",
+          "requested_action": "increase",
+          "requested_level": "full",
+          "status": "explicit"
+        },
+        {
+          "rfpp_id": 106324,
+          "request_label": "removal of [[wp:salt|salting]]",
+          "requested_action": "decrease",
+          "requested_level": "salt",
+          "status": "explicit"
+        },
+        {
+          "rfpp_id": 110347,
+          "request_label": "create indefinite full-protection",
+          "requested_action": "increase",
+          "requested_level": "full",
+          "status": "explicit"
+        },
+        {
+          "rfpp_id": 176990,
+          "request_label": "downgrade edit and move protections from administrator to template-editor access",
+          "requested_action": "decrease",
+          "requested_level": "template",
+          "status": "explicit"
+        },
+        {
+          "rfpp_id": 189060,
+          "request_label": "indefinite extended-protected move protection",
+          "requested_action": "increase",
+          "requested_level": "move",
+          "status": "explicit"
+        },
+        {
+          "rfpp_id": 202386,
+          "request_label": "indefinitely creation extended confirmed protection",
+          "requested_action": "increase",
+          "requested_level": "ecp",
+          "status": "explicit"
+        }
+      ],
+      "status": "ok",
+      "elapsed_seconds": 0.002
+    }
+  }
+}

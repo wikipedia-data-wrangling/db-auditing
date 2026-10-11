@@ -1,0 +1,15 @@
+\set ON_ERROR_STOP on
+\pset pager off
+BEGIN READ ONLY;
+SET LOCAL statement_timeout='30s';
+SET LOCAL TIME ZONE 'UTC';
+SELECT current_database(), current_setting('port'), now() AS audited_at;
+SELECT count(*) AS invalidated_tables, sum(direct_changed_rows) AS nonunique_dependency_row_intersections FROM analysis.rfpp_intent_v2_invalidations WHERE status='review_or_rebuild';
+SELECT s.arm,count(*) AS n,count(*) FILTER(WHERE s.requested_level IS DISTINCT FROM r.requested_level) AS stale_tier,count(*) FILTER(WHERE r.requested_action IS DISTINCT FROM 'increase') AS no_longer_increase FROM analysis.sample_page_full s JOIN analysis.rfpp_request r USING(rfpp_id) GROUP BY 1 ORDER BY 1;
+SELECT s.outcome,count(*) AS n,count(*) FILTER(WHERE s.requested_level IS DISTINCT FROM r.requested_level) AS stale_tier,count(*) FILTER(WHERE r.requested_action IS DISTINCT FROM 'increase') AS no_longer_increase FROM analysis.sample_request_treated s JOIN analysis.rfpp_request r USING(rfpp_id) GROUP BY 1 ORDER BY 1;
+SELECT arm,count(*) AS n,count(DISTINCT page_id) AS unique_pages,count(*) FILTER(WHERE protected_within_30d) AS protected_within_30d,count(*) FILTER(WHERE elig_level_source='default_semi') AS default_semi,count(*) FILTER(WHERE expiry_anchor IS NULL) AS no_expiry,count(*) FILTER(WHERE expiry_anchor+interval '84d' > pull_end) AS post84_not_covered,count(*) FILTER(WHERE bucket_match) AS bucket_match,round(avg(pre_edits_30d),2) AS mean_pre_edits FROM analysis.sample_page_full GROUP BY 1 ORDER BY 1;
+SELECT extract(year FROM decision_ts)::int AS year,count(*) AS n,count(*) FILTER(WHERE requested_action IS NULL) AS unknown_action,count(*) FILTER(WHERE requested_level IS NULL) AS unknown_tier,count(*) FILTER(WHERE requested_intent->>'status'='chronology_uncertain') AS uncertain_chronology FROM analysis.rfpp_request WHERE page_namespace=0 AND outcome IN ('granted','denied') GROUP BY 1 ORDER BY 1;
+SELECT outcome,count(*) AS n,count(*) FILTER(WHERE treated_by_log) AS log_treated,count(*) FILTER(WHERE treated_by_log IS NULL) AS log_treatment_unknown,count(*) FILTER(WHERE denied_but_protected_30d) AS protected_30d FROM analysis.rfpp_request WHERE page_namespace=0 AND decision_ts >= '2016-01-01' AND decision_ts < '2025-01-01' AND requested_action='increase' AND outcome IN ('granted','denied') GROUP BY 1 ORDER BY 1;
+SELECT count(*) AS n,count(*) FILTER(WHERE decision_ts>='2026-04-01') AS after_dump,count(*) FILTER(WHERE page_id_match IS NULL) AS no_page,count(*) FILTER(WHERE substitute_remedy IS NOT NULL) AS substitute_remedy FROM analysis.rfpp_request WHERE page_namespace=0 AND outcome IN ('granted','denied') AND requested_action='increase' AND NOT coalesce(self_decided,false) AND admin_actor_id IS NOT NULL AND admin_timestamp IS NOT NULL;
+SELECT column_name FROM information_schema.columns WHERE table_schema='analysis' AND table_name='rfpp_request' AND column_name IN ('pre_edits_7d','pre_reverts_7d','pre_ip_share_7d','page_age_days','prior_protections','requester_tenure_days');
+COMMIT;

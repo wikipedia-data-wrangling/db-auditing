@@ -1,0 +1,20 @@
+{
+  "started_at": "2026-10-11T08:30:18.341275+00:00",
+  "connection": "service=wiki",
+  "scope": "Bounded read-only queries, each with its own snapshot; not a single database-wide snapshot.",
+  "results": {
+    "rfpp_after_observed_events": {
+      "sql": "WITH coverage AS (SELECT max(ts) AS last_event FROM analysis.protect_event) SELECT last_event,count(*) FILTER(WHERE request_timestamp>last_event) AS requests_strictly_after_last_event,count(*) FILTER(WHERE request_timestamp<=last_event AND request_timestamp+interval '48 hours'>last_event) AS requests_with_request_plus_48h_beyond_coverage,count(*) FILTER(WHERE decision_ts<=last_event AND decision_ts+interval '48 hours'>last_event) AS decisions_with_matching_window_beyond_coverage FROM analysis.rfpp_request CROSS JOIN coverage GROUP BY last_event",
+      "rows": [
+        {
+          "last_event": "2026-04-02 17:22:43+00:00",
+          "requests_strictly_after_last_event": 8380,
+          "requests_with_request_plus_48h_beyond_coverage": 97,
+          "decisions_with_matching_window_beyond_coverage": 100
+        }
+      ],
+      "status": "ok",
+      "elapsed_seconds": 0.689
+    }
+  }
+}

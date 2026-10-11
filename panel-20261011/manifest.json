@@ -1,0 +1,323 @@
+{
+  "audit_date": "2026-10-11",
+  "generated_at": "2026-10-11T08:33:07.708956+00:00",
+  "database": {
+    "current_database": "wiki20260401",
+    "current_user": "simone",
+    "version": "PostgreSQL 18.4 (Ubuntu 18.4-1.pgdg22.04+1) on x86_64-pc-linux-gnu, compiled by gcc (Ubuntu 11.4.0-1ubuntu1~22.04.3) 11.4.0, 64-bit",
+    "port": "5434",
+    "encoding": "SQL_ASCII",
+    "read_only": "on",
+    "database_size": "14 TB"
+  },
+  "scope": "Four AI specialist reviews; read-only bounded database checks and current-source review. No database-wide transaction snapshot, raw-data recount, restore drill, or causal re-estimation.",
+  "query_policy": {
+    "read_only": true,
+    "statement_timeout_seconds": 30,
+    "lock_timeout_seconds": 2,
+    "base_billion_row_scans": false
+  },
+  "repositories": {
+    "official-dump": {
+      "head": {
+        "exit_code": 0,
+        "output": "79dbf4887251351e6642c5167777684eed420677",
+        "stderr": ""
+      },
+      "status": {
+        "exit_code": 0,
+        "output": "M .gitignore\n M README.md\n M schema/indexes.sql\n?? docs/TABLE_RELATIONSHIPS.md\n?? runbooks/audit_index_connect.py\n?? runbooks/index_connect.py\n?? schema/relationships.sql",
+        "stderr": ""
+      }
+    },
+    "fetch-protection-events": {
+      "head": {
+        "exit_code": 0,
+        "output": "b0eda3ca3375ca68b69798cb10a09838c5e23452",
+        "stderr": ""
+      },
+      "status": {
+        "exit_code": 0,
+        "output": "",
+        "stderr": ""
+      }
+    },
+    "20261001/wpp-analysis": {
+      "head": {
+        "exit_code": 0,
+        "output": "f3ec1d40ccdbad1d404213370fc78a1df1f35e33",
+        "stderr": ""
+      },
+      "status": {
+        "exit_code": 0,
+        "output": "M CLAUDE.md\n M Manifest.toml\n M deps/DrSnow\n M deps/Networks.jl\n M python/load_protect_log_api.py\n M scripts/30_leniency_iv.jl\n M scripts/40_quality_y3.jl\n M scripts/52_rfpp_topics_tables.jl\n M scripts/80_heterogeneity.jl\n M scripts/run_b1.sh\n M scripts/run_full.sh\n M scripts/run_neighbours_full.sh\n M sql/04_rfpp_request_extend.sql\n M sql/README.md\n M src/WPP.jl\n M src/io.jl\n M textAnalysis/exploratoryAnalysis/README.md\n?? results/tables/requests_exposure_by_year.csv\n?? scripts/95_snapshots.jl\n?? sql/04a_rfpp_intent_parser.sql\n?? sql/04b_rfpp_request_intent.sql\n?? sql/04c_rfpp_request_match.sql\n?? sql/90_requests_exposure_by_year.sql",
+        "stderr": ""
+      }
+    },
+    "db-auditing": {
+      "head": {
+        "exit_code": 0,
+        "output": "69e755c66d685abbb2ce3ac05b2954d3e145157f",
+        "stderr": ""
+      },
+      "status": {
+        "exit_code": 0,
+        "output": "M README.md\n?? apply_rfpp_intent_v2.sql\n?? audit_issue_1.py\n?? check_rfpp_intent_encoding.py\n?? ecp-label-diagnostics.sql\n?? ecp-label-issue-report.org\n?? issue-1-audit-log.org\n?? issue-1-repair-log.org\n?? logs/\n?? panel-20261011/\n?? refresh_rfpp_intent_cache.py\n?? report_rfpp_intent_v2.py\n?? restage_rfpp_after_encoding_fix.sql\n?? restage_rfpp_intent_v2.sql\n?? rollback_rfpp_intent_v2.sql\n?? stage_rfpp_intent_v2.sql\n?? test_rfpp_intent_v2.py\n?? verify_rfpp_intent_v2.sql",
+        "stderr": ""
+      }
+    }
+  },
+  "source_sha256": {
+    "20261001/wpp-analysis/python/articlequality_offline.py": "834910c78770859d9cefda3f454dd0ec174367ca6006272c346073ba743561a7",
+    "20261001/wpp-analysis/python/build_editor_history.py": "ba63301d002f557fb93ba3a0f5ceb2ce69473c4db362cd4557e0fdcc5797907b",
+    "20261001/wpp-analysis/python/build_links.py": "8dfd307962acea822d886dbc28cd540b343de5df4e61ad35b8c0ef07e1b67b59",
+    "20261001/wpp-analysis/python/build_page_quality.py": "0eda012bf75cb861c6ae281829ab3062fc73105e16a3d70ed53b99067be1d36d",
+    "20261001/wpp-analysis/python/export_arrow.py": "58f38dbcbcb4768096987716ddf4f0694b678fc0c2a7655ddf838e0fe8215930",
+    "20261001/wpp-analysis/python/export_neighbours.py": "ca25a1391092c5f94956f4171e9f208e9be06fe973257da052f5ef97bb745eb4",
+    "20261001/wpp-analysis/python/export_page_parquet.py": "958bbd8c8e15d4dacdee5f1a25a4ec358bd1467f90651da2de2657f522210955",
+    "20261001/wpp-analysis/python/export_revision_parquet.py": "a2b115db345df76b1dc89175fbc9ddf8645b2a75cf3bd1d77ae0ba49a937852e",
+    "20261001/wpp-analysis/python/liftwing.py": "7d93242b0003354b3783c7a14afd7802fc60cdf4e932d45a7253d919cec862d1",
+    "20261001/wpp-analysis/python/liftwing_score.py": "0455b8db9ac3c4cd3a7a3dfca0b92d10196a6ce53c0e4a2ad53c1f06f9478e22",
+    "20261001/wpp-analysis/python/liftwing_topic.py": "ced630dac099b31ee6d52cab9ceb84b25be9b45408e872d6eb9d1a7386175838",
+    "20261001/wpp-analysis/python/load_protect_log_api.py": "1f9c82c57760b525528c9739f62e6e4f49f906c3e6ee896ad90653db9dc85caf",
+    "20261001/wpp-analysis/python/nullrev_sensitivity.py": "650775976853b5a7dae12317071e967cf3c27b2953e3afa46caf559b4bc56cab",
+    "20261001/wpp-analysis/python/pgduck.py": "74734783b8603a8d06cde82087a9a1757c6b2008de9cde0da458a5d7329213c1",
+    "20261001/wpp-analysis/python/sqldump_to_parquet.py": "6ef2ff989da88e73f95b368e823af2f35ff1e5e0dcc7d04f1fd542ac4d211693",
+    "20261001/wpp-analysis/python/talk_replies.py": "9ab1603c195b843004464ef9df3875fe9e6bd51e82f00ade730a9f64c09b1e38",
+    "20261001/wpp-analysis/python/wikiproject_class.py": "c2414c510ee0f7a3bfb6972029fa3b8d726b8e206d7cead585052cebadf11888",
+    "20261001/wpp-analysis/python/wikiproject_topic.py": "794e75d24f2c10ca31fd99142574c163389d45160ea61dfac4b2a1af4f5d7d2c",
+    "20261001/wpp-analysis/scripts/10_rem_edit.jl": "6773718678ff037a5cbc8bdf20beeee2ce787af2022d4e72e70a6ab9a4daeb5b",
+    "20261001/wpp-analysis/scripts/20_rem_talk.jl": "45de77d4fe5fa7fd3d409151c07ff0d3ffd2f346815a9feeba7f422d4116fde4",
+    "20261001/wpp-analysis/scripts/30_leniency_iv.jl": "09fe8a0835534bb07dd2d88e1505ec8a01029c3c0230cdeebcf8e56ed793bfd5",
+    "20261001/wpp-analysis/scripts/40_quality_y3.jl": "66892f308203acd06196ae5134e9cff5a7c2f210a5e4e7a77cfd5857a1ead0a6",
+    "20261001/wpp-analysis/scripts/50_panel_causal.jl": "fa6e62ef8be34d1a29ea0cef5157606576171f4d381a2413a285c1060bb9a323",
+    "20261001/wpp-analysis/scripts/50_rfpp_topics.jl": "7d28b797f838af4343c1bbe3e30b32001d84d9090da722a87fcb6dc626d8812f",
+    "20261001/wpp-analysis/scripts/51_rfpp_topics_figure.jl": "aa74d79a8788f94df5a62b47ff90a9c6f47bbcee876ac9df237c82b0c98f8034",
+    "20261001/wpp-analysis/scripts/52_rfpp_topics_tables.jl": "af60677f8820efd45f51af5c0def3dabc908f70c038de0733222ec676cfa6321",
+    "20261001/wpp-analysis/scripts/55_register_remaining.jl": "b119f61325b809f5439a242015c804d4b2fa7237ef4ee2aa9542afccb4638137",
+    "20261001/wpp-analysis/scripts/60_event_study.jl": "347bdb5eb48a1ad329333e18c5a92d5dbf36a74489f77996e041b90eb92b5e94",
+    "20261001/wpp-analysis/scripts/61_expiry_rd.jl": "fbb16480a5b9ee3b88e647f7a174bb62aef4700bd2cabf3e139579f10cf3f17d",
+    "20261001/wpp-analysis/scripts/70_spillover.jl": "dd389a803f0f85808727abdf95cfe0937fb18e1b39385bac8290b1b4f875866c",
+    "20261001/wpp-analysis/scripts/80_heterogeneity.jl": "6d8f7714372d02db68fbe7f37b8d458fc76fd395952fbe03c4c8cabcefaf5de9",
+    "20261001/wpp-analysis/scripts/90_tables.jl": "632284537ae9323282e5894618eb54349fa667e18bfb69d43d869eca4a31955b",
+    "20261001/wpp-analysis/scripts/95_snapshots.jl": "7e10b6ed8eb69e004e845899393cab7a2584abd6bee75fdbb460c269c99387d8",
+    "20261001/wpp-analysis/sql/01_protect_log_api.sql": "7ad66f8ee5c7d47b936aaf80acec56681d04c9e654b2a08fb62f42f514a9b6a6",
+    "20261001/wpp-analysis/sql/02_protect_event.sql": "db6c5f936a66f0cd837023ae5883cbbc0d2e541ffeae3ffa4e38dad06a7d9912",
+    "20261001/wpp-analysis/sql/03_protection_episode.sql": "e9aae8f415764e07be50fad52a5b035a5d6dca9e9209495e4567cd3cd37afc92",
+    "20261001/wpp-analysis/sql/04_rfpp_request_extend.sql": "284c3fe4d1fd7d7226a8fac81a78abb04b16e1a9edc7ddbff8776dbb5f74bf77",
+    "20261001/wpp-analysis/sql/04a_rfpp_intent_parser.sql": "35a4e0a7257473724265322ee313b43eefca33c11aa597ffda805941312d1944",
+    "20261001/wpp-analysis/sql/04b_rfpp_request_intent.sql": "a26e52a1024c7ee733678039f6405c29427c31bfc1babdf4d2de4e04be59a020",
+    "20261001/wpp-analysis/sql/04c_rfpp_request_match.sql": "ee385e1d2f0f52f9fe1d6a9a05baa5472717c699c9fd2a45c2a5572132875970",
+    "20261001/wpp-analysis/sql/10_user_status_sources.sql": "7e8925944ce70b5d3a4d30ae9bddf92c519e2936f6dfaff0772e966a129c4f44",
+    "20261001/wpp-analysis/sql/11_editor_history.sql": "db98b3368469ae584fe7a8175d3913a3058cc0f6432f00dff1de69042d218acb",
+    "20261001/wpp-analysis/sql/12_editor_state.sql": "d343c1336e4022f34b8eb3ec326154d96ce8d446e7cee0193ad07e517dc31a03",
+    "20261001/wpp-analysis/sql/13_block_interval.sql": "596f5c246cf9f9618913e5237400c454225f0bbadc5043159fdef4c933ba7b04",
+    "20261001/wpp-analysis/sql/20_sample_page.sql": "2c21527b3ac7521cd75e2a50ed19d45f7e522fb7427b84716827c986aea46e84",
+    "20261001/wpp-analysis/sql/20a_cand_probe.sql": "aff9c9a1206f0d3d33a31b64635a03455297ab17394171ec84c3c9bca846153c",
+    "20261001/wpp-analysis/sql/21_edit_event.sql": "644acf9b5bf3d49d388e0808c9236d7f61f4de0dd85556bfc78138c6870eb9c9",
+    "20261001/wpp-analysis/sql/22_revert_tags.sql": "f77403ef081091366e13a12ff183259f21c6ea2ef90506692f4f9ba7a86dac33",
+    "20261001/wpp-analysis/sql/23_neighbour_page.sql": "620113f6513b57a8e1f9ba418bc39bc4d4a688630d0e5a0ba29281fe6fdff185",
+    "20261001/wpp-analysis/sql/24_neighbour_event.sql": "806d031896f6fe3d920aa2a9ec13d1964ee125a4836332bb15d40d8884c5df9d",
+    "20261001/wpp-analysis/sql/40_sample_request_smoke.sql": "7064248afdd129ed007212133607682597b6110d956812011ea1949c48f93425",
+    "20261001/wpp-analysis/sql/41_quality_cutoff.sql": "29ca3dbdfc61a241212597efbfe6536219f6a82d4dbd29f6c3956577ce60f081",
+    "20261001/wpp-analysis/sql/42_sample_request_treated.sql": "cc9b005f850b0ba78256be33314f094302d03582aacb2c882b56eec0fc4b250f",
+    "20261001/wpp-analysis/sql/90_requests_exposure_by_year.sql": "4ebb82d9bd00ada23ef0d12f92b3d59fd1fae227a4bcf1661852db69de7581c7",
+    "20261001/wpp-analysis/src/WPP.jl": "a7987f9cad107071b4ccb8b564965bd80bc8db69d9fb712fa1129fcd52f9c733",
+    "20261001/wpp-analysis/src/causal.jl": "eb0d3e0e07cc178f2bfc618825fff4d1c191fe2f4588d99c7aa9d7fa358d2e14",
+    "20261001/wpp-analysis/src/cells.jl": "a14da65857423fc3b2a6ad9c152976a809e3359149d9457635cf07a3334f7b8e",
+    "20261001/wpp-analysis/src/ids.jl": "f9a46899dcccf06713432d9bece704e07b8fa4afb1db2b8930cf0dcea09a8385",
+    "20261001/wpp-analysis/src/io.jl": "ee3d27d5adcbd0460b4d8d1a005a153334bcfe1caee7a6f5232d538c3f8e2bcd",
+    "20261001/wpp-analysis/src/rem.jl": "3e049d90896c0eb7c6e23ac6842a61c1d5f6e49b93181361164ab0e2d26370e4",
+    "20261001/wpp-analysis/src/stats.jl": "514210c3b21f4531cef98841d6f584ddc843d1c3c1db99f3cf6c087ed2e25303",
+    "20261001/wpp-analysis/src/tables.jl": "fb1cf3790c40832744aaa815ee83ad6dbe814e12ae2170947ba1506ec5d6c7a3",
+    "db-auditing/apply_rfpp_intent_v2.sql": "d88a13bf2a1a034a4e6e5c6ccc9bd740381526a9cf62264fde429ef6ddbb8344",
+    "db-auditing/check_rfpp_intent_encoding.py": "42fda62f5813322a311227db722b66888ab14f94ba202777ed88269389ffca7b",
+    "db-auditing/refresh_rfpp_intent_cache.py": "cd79edb5074233c57fcb3ef04389de3b471b5b1991e62182f97eda7a4cd1d4b3",
+    "db-auditing/report_rfpp_intent_v2.py": "d74c7284eda60a2e56fa99097850eccada9cc92c4583f46d8d8849c6dccbc110",
+    "db-auditing/restage_rfpp_intent_v2.sql": "09dbd0affe76e2f15b31a168117a0bd57981c23accd8c6a6c91c4809a5210098",
+    "db-auditing/rollback_rfpp_intent_v2.sql": "1456b699e0cae49e4c2f0835d0dfb86a10bc8fce7a174cfcfda11eed7c8fe4ff",
+    "db-auditing/stage_rfpp_intent_v2.sql": "fe751098eb915ba689d4bfc388507ed944ea94b61bba1bec16a95ad3e995c65e",
+    "db-auditing/test_rfpp_intent_v2.py": "0b8963e23a20701521d4c242b33861418d4a219e46c9b948f8b32c4f76bbb6f0",
+    "db-auditing/verify_rfpp_intent_v2.sql": "aac809ade311dd7103cefb4c64555180b4aa8acb5e4c46b513709a42e684a1de",
+    "fetch-protection-events/fetch_protection_log.py": "9af81f1b8c3627963167f0e2306958426bb014fa3ceef9e43d8b48c407cdd09b",
+    "fetch-protection-events/fetch_rfpp.py": "595196ba0aef4817a7db878663ebb005d7ea8cda445f245596c0155d5c117ddc",
+    "fetch-protection-events/load_rfpp_postgres.py": "0b15c4acdb08063f38f7d2db82916d1a89f7a1d89ba3946adf4c23303488d2d1",
+    "official-dump/download_dumps.py": "8aadd4f1190585e56034f6cc409fb170d7870142cf6d90e0743c8f85860e077a",
+    "official-dump/freeze_phase2.sh": "53d7bdd664aa62c6584f20107ad006f366921f2ba5f473a453641afddef03d51",
+    "official-dump/freeze_phase3.sh": "bc6072803df23b9534d90f24e683243590cfe140aff3960e15f3825b6e32e4b8",
+    "official-dump/load_logging_xml.py": "9e429b87adcb4346441b83111ccf7cba244c74f6a2259c1a4579f66b514fc840",
+    "official-dump/load_pages_meta_history_xml.py": "0b06e36774400a3bfb3fc9c58a87fa4fe3a4d200119f2e87a63d90bb7d335e58",
+    "official-dump/load_sql_dumps.py": "d606f8e50fff1c9c9b0c15742e4c6269b8a8f3281664ffe2f444e13e74d35660",
+    "official-dump/load_stub_history_xml.py": "ba9080f12f94fe659a42b0dedf757dbe94060d6b67ccee60bb83ceadf81d167c",
+    "official-dump/phase3_sampler.sh": "7531a2213bc5c8513e81cd0d17fb1ca0adf0e8cc9053890efe5f502d30848b02",
+    "official-dump/relocate_mariadb_datadir.sh": "0aaaecde3376d6d7873b5dd7113291d16a102c98063320fbf1676c5fbf90d64b",
+    "official-dump/run_pipeline.sh": "b4adf0e60aa7c001ce5e8389f3450694f90fbe46d5e712080b1dfca3f8d33278",
+    "official-dump/runbooks/audit_index_connect.py": "6b8578621307913cf64ac2167116b2eab459a6c88f545803b4712a5ce2de3b8b",
+    "official-dump/runbooks/index_connect.py": "8fb7c0643e7b02bcc0a78087556de13936f8cc15cfc56ae87f5da08d593a2c02",
+    "official-dump/schema/00_apply.sql": "176d7b6b9c3e2a0b935144fd41c865108c163cfbe3a519eb0467c7a3de067c2c",
+    "official-dump/schema/actor.sql": "075eab74e2e8e17f469f3810ccff8fff4c6f1cfc00cea8be341cd1aeb270299a",
+    "official-dump/schema/change_tag.sql": "13d10dee455e92c303b8aa9e427e39bc39a31dad682fc7ee683f584cedfa293f",
+    "official-dump/schema/change_tag_def.sql": "31c96761f200d69866ec2d1e2966b9e6e1c529d7ac47fab510a4189fa91fcb97",
+    "official-dump/schema/indexes.sql": "0a227e0a98e0253761c5bb8dd7e7d6add62413ac8f7d8231fe7505296229a2a0",
+    "official-dump/schema/logging.sql": "10a4a0612405485b675b2e6b87a86d3b1a57de324cedc1d71a6765988308cf5b",
+    "official-dump/schema/page.sql": "63d8acd5ce82ce36822dc93dd2cbd6800fa1cbf1f10e9ec09bd242d13d674aa6",
+    "official-dump/schema/page_restrictions.sql": "2c236997eeff103b2059004a39236adb0b1ce4b42d56cd0402365ba36411848f",
+    "official-dump/schema/protected_titles.sql": "f4e92a8a97e4683e9c712033c033f3df6243425d7461f1e1ef2a56aa602100ee",
+    "official-dump/schema/relationships.sql": "ee243a14b0083c7a6c052eefd35cc7263241f067916c73cc2fe8b93c2534d2bd",
+    "official-dump/schema/revision.sql": "2a28a9578816c2b52cde1f9b2cccdc6494fb47f310c22ff038d7e8f702ccaf39",
+    "official-dump/schema/revision_text.sql": "6ad90ec9651347d58a61566c68a9cb2eeefdd0995d4587973b8a7e62523a3894",
+    "official-dump/schema/user_former_groups.sql": "6bc551c304e8c89d3895ba40b3ac6e274b1b7cfb5c81f4749fa1a5b6980d6e46",
+    "official-dump/schema/user_groups.sql": "79a8b682c8320292da62785b4d7ddbf374b344ce9abb8de6e0c73e1985e4bdd8",
+    "official-dump/setup_postgres18.sh": "7c9e89113f26a29bc2328c27102bab18bc5fb3025975279cdafed95a0f8e63bb",
+    "official-dump/test_load_pages_meta_history_xml.py": "845d2e7704148dc6c38c2bfdaefb824168520d498b896c433158de2b4d33655a"
+  },
+  "artifacts": {
+    "computational-social-science.md": {
+      "sha256": "74aac4d37c054e2a0463654d414fa9a5a30e7e6ce74d9f97f23eda488ff9a736",
+      "bytes": 17090
+    },
+    "findings.csv": {
+      "sha256": "5ecb82d4b382307efacbb8b9eff411703af3f782a01c836530d2d394b220549a",
+      "bytes": 4037
+    },
+    "inventory-queries.json": {
+      "sha256": "20e8f63b3514754eada7a36051df2ad7e6e655be97ba3ebc4c1e8c40708dc4d5",
+      "bytes": 1526
+    },
+    "inventory-results.json": {
+      "sha256": "87b80deede6ca7c590bfbbcf9fbcfee267b3a72bf2b989d4f34869cfd25c466e",
+      "bytes": 71531
+    },
+    "panel-audit.org": {
+      "sha256": "a4d415ead7459fee1c921d3b8b98719a0570d76b82c94b1e9306d782cf938882",
+      "bytes": 14007
+    },
+    "postgresql-filesystems.txt": {
+      "sha256": "46e024946cd143158cca4f9d375135061083f592cd03d37ecec950a968c6173d",
+      "bytes": 322
+    },
+    "postgresql-followup-results.txt": {
+      "sha256": "c0a81586362a3d3110f3e05d2419e4dbc3cef427eafd6c801501f6728a19dfae",
+      "bytes": 5034
+    },
+    "postgresql-followup.sql": {
+      "sha256": "1a2da214f66dbca816c2a097e43faff3d50b01ec4b8f697850b444956cae693d",
+      "bytes": 1800
+    },
+    "postgresql-queries.sql": {
+      "sha256": "a5ef9193c8e4766d3723866b9be7232db42d3404d0134da4835b2dfe81967585",
+      "bytes": 3088
+    },
+    "postgresql-query-results.txt": {
+      "sha256": "f19d0f91c0e68c2d1bfd4562e18680bce9506df92d6a407eaee5cba9c6229bcd",
+      "bytes": 80216
+    },
+    "postgresql.md": {
+      "sha256": "0dee02189f8026d21c6792aa51184ad6114164d55ea0da2985abf47afa3cd2ff",
+      "bytes": 11108
+    },
+    "run_readonly.py": {
+      "sha256": "bba9fd8cef57d661d09dbdf5e5bde356d9fa8fa9a9b69a22b70b04d6237bb512",
+      "bytes": 1981
+    },
+    "social-science-dependence-results.txt": {
+      "sha256": "b906023397c20ab8d0f1d3bf33d3bf1b4d85c154402bcc03b3ffb018cc15dc83",
+      "bytes": 511
+    },
+    "social-science-dependence.sql": {
+      "sha256": "b78c3f62164d956927e812e63a8447304683a6d65fec42724fcba1230a754cda",
+      "bytes": 690
+    },
+    "social-science-followup-results.txt": {
+      "sha256": "ff69a52549312090a8cf42341f3da6627e7bf2316470932a8f45ab3a1e7b181f",
+      "bytes": 1461
+    },
+    "social-science-followup.sql": {
+      "sha256": "77a631e6eff2b8450c61546d1c1abbd1a41f80653378ba2a557d38e9b37adf3c",
+      "bytes": 1280
+    },
+    "social-science-queries.sql": {
+      "sha256": "ac5d821fadf2057206af883a445aa394675d9b2715dfc7468e1610fb9dcc97c6",
+      "bytes": 3008
+    },
+    "social-science-query-results.txt": {
+      "sha256": "a7b8602ad290dfdbae5c4ea4af744f801e611faa22f6e557f200810ddf9a2401",
+      "bytes": 3240
+    },
+    "software-engineering-db-evidence.txt": {
+      "sha256": "badbccdb5d9051a84694f8221f48e21063a7ad72ff5bf08079d5946a91694f9d",
+      "bytes": 2795
+    },
+    "software-engineering-newline-reproduction.txt": {
+      "sha256": "6cec4686c9527b431209339273063a69b810253948f3e957b6695d9037afe612",
+      "bytes": 126
+    },
+    "software-engineering-parser-tests.txt": {
+      "sha256": "9e2cb25a68e3bbca08959562c5c5a717998c5f600390d26b21a8c31b153c9f37",
+      "bytes": 516
+    },
+    "software-engineering-queries.sql": {
+      "sha256": "73ec27b877acb50bed94ce4880d642eb860e512425c3e0f663d5a867a5fc7f32",
+      "bytes": 796
+    },
+    "software-engineering.md": {
+      "sha256": "bcdb879820cb540e7bcdb07d2ba2713f18adc6f716cdfc1fe4a7a5b4056bbb1b",
+      "bytes": 11236
+    },
+    "wikipedia-coverage-queries.json": {
+      "sha256": "1af2c1c052f5f7fac827e2c0e7683b34ed040c9a117c283471f34852ad45c4ad",
+      "bytes": 589
+    },
+    "wikipedia-coverage-results.json": {
+      "sha256": "4b30eb79cddab788b323e3a6cb37821e8ce67be32ffbfc97aefc13e47c6b2ec9",
+      "bytes": 1155
+    },
+    "wikipedia-domain.md": {
+      "sha256": "2f49f8cff5f0bfedaf8ee807a49d0d990812b5dd0dc4d703605396096f17d982",
+      "bytes": 11985
+    },
+    "wikipedia-extra-queries.json": {
+      "sha256": "816f956cfb852f53b02ae57a607d1765b039571c78a3c78e2803ab778d129ec1",
+      "bytes": 515
+    },
+    "wikipedia-extra-results.json": {
+      "sha256": "b6f2d393e747c9d6361a9160986b2aa4860051d1f1eda6684715a25b0a2d2a03",
+      "bytes": 4225
+    },
+    "wikipedia-queries.json": {
+      "sha256": "5912f3b9c07088f1b0c90ab58f76388a90862218740449c66628e711b1444c34",
+      "bytes": 3251
+    },
+    "wikipedia-results.json": {
+      "sha256": "0762d1aa7192c4c52c269282d75476158c4c223c75cda53369f9f1a066d9b0e9",
+      "bytes": 16318
+    }
+  },
+  "official_documentation_consulted": [
+    {
+      "url": "https://www.mediawiki.org/wiki/Manual:Page_restrictions_table",
+      "accessed": "2026-10-11",
+      "use": "Conceptual semantics; historical applicability requires dated policy versions."
+    },
+    {
+      "url": "https://www.mediawiki.org/wiki/Manual:Protected_titles_table",
+      "accessed": "2026-10-11",
+      "use": "Conceptual semantics; historical applicability requires dated policy versions."
+    },
+    {
+      "url": "https://www.mediawiki.org/wiki/API:Logevents",
+      "accessed": "2026-10-11",
+      "use": "Conceptual semantics; historical applicability requires dated policy versions."
+    },
+    {
+      "url": "https://en.wikipedia.org/wiki/Wikipedia:Protection_policy",
+      "accessed": "2026-10-11",
+      "use": "Conceptual semantics; historical applicability requires dated policy versions."
+    },
+    {
+      "url": "https://en.wikipedia.org/wiki/Wikipedia:Arbitration_Committee/Procedures#Extended_confirmed_restriction",
+      "accessed": "2026-10-11",
+      "use": "Conceptual semantics; historical applicability requires dated policy versions."
+    }
+  ]
+}

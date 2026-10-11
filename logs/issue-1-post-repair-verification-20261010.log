@@ -1,0 +1,65 @@
+BEGIN
+SET
+SET
+ current_database | port |                                                               version                                                               
+------------------+------+-------------------------------------------------------------------------------------------------------------------------------------
+ wiki20260401     | 5434 | PostgreSQL 18.4 (Ubuntu 18.4-1.pgdg22.04+1) on x86_64-pc-linux-gnu, compiled by gcc (Ubuntu 11.4.0-1ubuntu1~22.04.3) 11.4.0, 64-bit
+(1 row)
+
+ id |         parser_signature         | status  |           staged_at           |          applied_at           
+----+----------------------------------+---------+-------------------------------+-------------------------------
+  1 | 20650d4ec484afa2739613b3155b45aa | applied | 2026-10-10 21:02:39.315102+00 | 2026-10-10 21:04:16.173196+00
+(1 row)
+
+  rows  | unique_ids | versioned 
+--------+------------+-----------
+ 217554 |     217554 |    217554
+(1 row)
+
+DO
+ rfpp_id | requested_action | requested_level |        status        | origin |     targets     | outcome | granted_level 
+---------+------------------+-----------------+----------------------+--------+-----------------+---------+---------------
+     737 | increase         | semi            | explicit             |        | ["semi"]        | granted | semi
+    4219 | increase         | semi            | explicit             |        | ["semi"]        | granted | semi
+    5302 | increase         | semi            | explicit             |        | ["semi"]        | granted | pc
+   12914 | increase         | semi            | explicit             |        | ["semi"]        | granted | semi
+   30062 | increase         | semi            | explicit             |        | ["semi"]        | granted | semi
+   91188 | increase         |                 | alternative          |        | ["semi", "ecp"] | granted | semi
+  127462 | decrease         | semi            | explicit             | ecp    | ["semi"]        | denied  | 
+  144377 | decrease         | semi            | explicit             | ecp    | ["semi"]        | denied  | 
+  154614 | increase         | ecp             | explicit             | semi   | ["ecp"]         | denied  | 
+  192925 |                  |                 | chronology_uncertain |        | ["semi", "ecp"] | denied  | 
+(10 rows)
+
+ outcome | candidates 
+---------+------------
+ denied  |       2201
+ granted |       3199
+(2 rows)
+
+           object_name            | direct_changed_rows |      status       
+----------------------------------+---------------------+-------------------
+ analysis.quality_cutoff          |                9029 | review_or_rebuild
+ analysis.sample_cand_full        |               81120 | review_or_rebuild
+ analysis.sample_cand_pre_full    |               81120 | review_or_rebuild
+ analysis.sample_cand_pre_full_0  |               14400 | review_or_rebuild
+ analysis.sample_cand_pre_full_1  |               14220 | review_or_rebuild
+ analysis.sample_cand_pre_full_2  |               14220 | review_or_rebuild
+ analysis.sample_cand_pre_full_3  |               12840 | review_or_rebuild
+ analysis.sample_cand_pre_full_4  |               11760 | review_or_rebuild
+ analysis.sample_cand_pre_full_5  |               13680 | review_or_rebuild
+ analysis.sample_cand_pre_smoke   |               17200 | review_or_rebuild
+ analysis.sample_cand_pre_smoke_0 |                9600 | review_or_rebuild
+ analysis.sample_cand_pre_smoke_1 |                7600 | review_or_rebuild
+ analysis.sample_cand_smoke       |               17200 | review_or_rebuild
+ analysis.sample_cand_top_full    |                6760 | review_or_rebuild
+ analysis.sample_cand_top_smoke   |                 430 | review_or_rebuild
+ analysis.sample_page_full        |                1352 | review_or_rebuild
+ analysis.sample_page_smoke       |                  86 | review_or_rebuild
+ analysis.sample_request_smoke    |                  83 | review_or_rebuild
+ analysis.sample_request_treated  |                1751 | review_or_rebuild
+ analysis.sample_treated_full     |                1352 | review_or_rebuild
+ analysis.sample_treated_smoke    |                  86 | review_or_rebuild
+(21 rows)
+
+ROLLBACK

@@ -1,0 +1,12 @@
+{
+  "recorded_at": "2026-10-10T21:05:13.719867+00:00",
+  "query": "SELECT * EXCLUDE(matched_offset) FROM pg.analysis.rfpp_request WHERE page_namespace=0 AND outcome IN ('granted','denied')",
+  "rows": 178110,
+  "unique_ids": 178110,
+  "parser_version": "rfpp-intent-v2.0.0",
+  "backup": "/home/simone/githubRepos/wikipediaData/20261001/wpp-analysis/data/interim/rfpp_request.pre-intent-v2.parquet",
+  "old_sha256": "c516207250f292445087d78d5926395a7385290725219cf3c943fc3d4aa41e35",
+  "new_sha256": "6ca806a9b24de8bdea86c790206f4e2cc6582a3dfd56b6f39e2cefd792b03aa2",
+  "classification_mismatches": 0,
+  "downstream_status": "Frozen samples, other caches and model outputs require review/rebuild; see database invalidation registry."
+}

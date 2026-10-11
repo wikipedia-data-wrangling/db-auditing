@@ -1,0 +1,326 @@
+#+title: RFPP requested-protection classification — PostgreSQL agent handoff
+#+date: 2026-10-10
+#+author: Codex, manuscript/panel review
+#+options: toc:2
+
+* Executive summary and requested action
+
+The request parser in =sql/04_rfpp_request_extend.sql= can classify a request for
+longer semi-protection as extended confirmed protection (ECP). Its label regex
+extracts the first keyword in textual order, including the unqualified word
+"extended"; the mapping then assigns that token to =ecp=. In "extended
+semi-protection", "extended" describes duration, not the credential tier.
+
+This defect is demonstrated by five specific exported records below. A closer
+inspection also found two explicit ECP-to-semi downgrade requests classified as
+=requested_action='increase', requested_level='ecp'=. Alternative-tier requests
+and crossed-out text expose further representational/chronology issues.
+
+Please investigate and repair *requested action and tier classification*, preserving
+raw text and an auditable old/new mapping. Do not overwrite request intent with the
+applied protection tier. Validate on the full live request population, then identify
+and refresh affected downstream products in a controlled order.
+
+This handoff contains evidence and suggested diagnostics, not a production patch.
+No live PostgreSQL queries, parser changes, data updates, effect fits or manuscript
+changes were performed. The companion [[file:ecp-label-diagnostics.sql][read-only PostgreSQL diagnostic script]] has
+not been executed against PostgreSQL; review it against the live schema first.
+
+* Scope: requests, not native protection-event levels
+
+The inspected database object is =analysis.rfpp_request=, via the existing file:
+
+#+begin_example
+/home/simone/githubRepos/wikipediaData/20261001/wpp-analysis/data/interim/rfpp_request.parquet
+#+end_example
+
+Relevant fields:
+
+- =reason=: archived request text used by the parser.
+- =request_label=: extracted, lowercased and terminal-punctuation-trimmed first
+  bold label. Despite the source comment "as written", this is not verbatim text.
+- =requested_action=: parsed increase/decrease/edit classification.
+- =requested_level= and =requested_level_source=: inferred tier and label/body provenance.
+- =outcome= and =response_code=: separate administrative-response classification.
+- =matched_log_id=, =granted_type=, =granted_level_raw=, =granted_level=:
+  matched log information. Names containing "granted" do not certify that a matched
+  action implements the request or that the row's outcome is granted.
+
+The separate =analysis.protect_event= table stores =restriction_type=, =level= and
+=level_source= reconstructed from protection logs. SQL02 normalises event levels;
+SQL04 maps a matched =edit/extendedconfirmed= to =granted_level='ecp'= and
+=edit/autoconfirmed= to =semi=. The demonstrated label bug is in SQL04's *request*
+parser, not evidence that the event-level normaliser has this same bug. Nor does
+this investigation validate every event-level reconstruction.
+
+* Provenance and reproducibility
+
+All analysis-relative paths in this report refer to:
+
+#+begin_example
+/home/simone/githubRepos/wikipediaData/20261001/wpp-analysis/
+#+end_example
+
+Snapshot SHA256, rechecked on 2026-10-10:
+=c516207250f292445087d78d5926395a7385290725219cf3c943fc3d4aa41e35=.
+
+Inspected SQL04 SHA256:
+=b6f4a1d99b4ef514bfed2917a1948e92d5bc43b69a6b9c9117803a57c3aeb914=.
+
+=scripts/30_leniency_iv.jl:24–27= defines this export query:
+
+#+begin_src sql
+SELECT * EXCLUDE (matched_offset) FROM pg.analysis.rfpp_request
+WHERE page_namespace = 0 AND outcome IN ('granted', 'denied');
+#+end_src
+
+That is the DuckDB-facing export query, not literal native PostgreSQL syntax.
+=scripts/95_snapshots.jl= refreshes it through the imported request-query definition.
+The file has 178,110 records, with request timestamps from 2012-10-29 06:54 UTC
+through 2026-09-30 07:11 UTC. It omits other namespaces and response categories.
+Its age relative to the current live table has not been established. Record IDs
+are snapshot keys: verify source identity if the live table has been reloaded.
+
+Bounded in-memory DuckDB queries read only this approximately 27 MB file. Exact
+aggregate reproduction is in [[file:ecp-data-audit.org][the earlier data audit]]. This report adds row-level
+examples and source inspection; it does not extrapolate to the full database.
+
+* Root cause in the inspected source
+
+Source: [[file:/home/simone/githubRepos/wikipediaData/20261001/wpp-analysis/sql/04_rfpp_request_extend.sql][sql/04_rfpp_request_extend.sql]],
+request decomposition at approximately lines 72–141.
+
+** Generic "extended" token maps to ECP
+
+The label branch, lines 114–117, uses:
+
+#+begin_src sql
+substring(request_label FROM
+ '(semi|extended|\mecp\M|\mec\M|full|fully|pending|\mpc\M|flagged|template|creat|salt|\mmove)')
+#+end_src
+
+Then lines 98–108 map =extended=, =ecp= or =ec= to =ecp=.
+The match is determined by its location in the input. Putting =semi= first in
+the alternatives does not prioritise a later occurrence over an earlier =extended=.
+Changing the alternation order therefore does not repair the semantic problem.
+PostgreSQL documents these matching rules in
+[[https://www.postgresql.org/docs/18/functions-matching.html#POSIX-MATCHING-RULES][Pattern Matching, POSIX matching rules]].
+
+The body branch is different: it searches the first 400 characters after removing
+one matching pagelinks template and recognises =extended.confirmed= rather than
+bare =extended=. Its single-period regex is a wildcard, not a general whitespace
+normaliser. A subsequent update promotes some body-derived =other= rows to =ecp=
+if the full reason contains that phrase. Do not assume a label-branch correction
+also validates body-derived classifications.
+
+** Direction defaults to increase
+
+Lines 88–94 recognise a short list of decrease words in the label or response codes;
+otherwise the action becomes =increase=. An explicit "from ECP to semi" construction
+need not contain those words. Moreover, action parsing partly uses response codes:
+it is not strictly a pre-decision measure of requested intent. That distinction
+matters for sampling requests before their administrative disposition.
+
+** Extraction and semantic issues needing tests
+
+These are source-based risks, not quantified error rates:
+
+- First-bold extraction is limited to 1–80 non-apostrophe characters. Other bold
+  text, embedded formatting, long headings or edited requests may alter extraction.
+- A generic label containing "protect" produces =lbl_k='other'=; =COALESCE= then
+  takes that value instead of a potentially informative body token.
+- First body mention can describe current protection, a rejected alternative,
+  quoted policy or a negation rather than the requested destination.
+- First-keyword classification cannot represent explicit alternative requests,
+  origin/destination tiers, or crossed-out requested tiers.
+- Lowercasing and trimming do not reconstruct the original request's temporal state.
+  Final archived text can contain amendments made after submission or decision.
+
+* Confirmed exported examples
+
+All five rows below are =requested_level_source='label'= and stored as =ecp=.
+The requested tier indicated by these extracted labels is semi. This inference
+comes from the request wording, not from the matched action.
+
+| rfpp_id | Request timestamp UTC | Extracted request label                    | Matched type/tier | Matched log ID |
+|---------+-----------------------+--------------------------------------------+-------------------+----------------|
+|     737 | 2012-11-22 02:20      | extended semi-protection                    | edit / semi       |       45951392 |
+|    4219 | 2013-03-20 17:26      | extended semi protection                    | edit / semi       |       48009641 |
+|    5302 | 2013-04-24 14:25      | extended temporary semi-protection          | stable / pc       |       48549551 |
+|   12914 | 2014-02-08 07:59      | extended semi-protection                    | edit / semi       |       54715194 |
+|   30062 | 2015-08-20 21:45      | extended semi-protection                    | edit / semi       |       68520631 |
+
+Archive paths are =Wikipedia:Requests for page protection/Archive/YYYY/MM= for
+the corresponding request month. Their =outcome= is granted. Row 4219's body
+explicitly discusses a short semi spell ending and asks for longer protection;
+row 5302 describes disruption returning after semi expired. The latter's matched
+pending-changes action particularly illustrates why applied tier is not ground
+truth for requested tier. Full request text is obtainable with the companion query.
+
+** Additional concrete cases found for this handoff
+
+- =rfpp_id=127462=, 2021-06-25 00:16 UTC, archive =2021/06=:
+  label "from extended confirmed protection to semi-protection";
+  stored action/tier =increase/ecp=, outcome =denied=, response =Not done=.
+  The request body explicitly asks for protection to be lowered. The wording
+  indicates a decrease to semi, subject to verification of contemporaneous text.
+- =rfpp_id=144377=, 2022-05-27 21:45 UTC, archive =2022/05=:
+  label "change from extended-confirmed-protection to semi-protection";
+  stored =increase/ecp=, outcome =denied=, response =Declined=.
+  This is a second explicit origin/destination failure.
+- =rfpp_id=91188=, 2019-05-31 21:06 UTC, archive =2019/06=:
+  "temporary extended confirmed or semi-protection" is stored as =ecp=.
+  The text explicitly permits alternatives; a single ECP-only demand label is
+  unsupported without an agreed coding convention. Archive month and request
+  month differ: use actual timestamps, not the archive suffix, for year filters.
+- =rfpp_id=192925=, 2025-05-26 00:49 UTC, archive =2025/05=:
+  "temporary <s>extended confirmed protection</s> semi-protection" is stored as
+  =ecp=. Final visible text points to semi, but when the strike-through was added
+  is unknown. Do not automatically label original request-time intent semi or
+  ECP without inspecting the edit history or recording chronology uncertainty.
+
+* Observed extent and important limits
+
+For snapshot rows with =requested_action='increase'=, =requested_level='ecp'=,
+and =2016-01-01 <= request_timestamp < 2026-01-01=:
+
+| Classification                       | Granted | Denied |
+|--------------------------------------+---------+--------|
+| Parsed candidate requests            |    3535 |   2595 |
+| Matched edit action at ECP            |     809 |     94 |
+| Matched edit action at semi           |    2324 |    120 |
+| Label contains extended and semi     |      57 |     12 |
+
+The last three rows are overlapping subsets, not an additive partition.
+The 69 dual-word labels include ordinary duration extensions, genuine ECP/semi
+alternatives, the two downgrades and the strike-through case. They are an audit
+queue, NOT 69 established errors of one kind. They also are not the complete
+error set: missing labels, body cases and false negatives require separate review.
+The two downgrade rows are inside the 2,595 putative denied-increase records.
+
+Do not attribute all 2,324 ECP-request/semi-action mismatches to this bug. Some
+administrators may genuinely apply a different tier, some requests offer alternatives,
+and the log linkage may be wrong. Conversely, a request and action both labelled ECP
+does not prove the request label was correct.
+
+In 2025, 4,399 of 13,669 mainspace increase requests in this snapshot have NULL
+requested tier. Earlier reports also document increased missingness after 2020.
+Missingness is distinct from misclassification; neither can be fixed by importing
+the action's tier into the request field. Prior-source broader totals such as
+11,429 ECP labels use different filters and must not be compared as if identical.
+
+* Downstream consequences to audit
+
+1. Requested-ECP sample selection and granted/refused comparisons: false-positive
+   increases contaminate the intended decision population, including control cases.
+2. =scripts/30_leniency_iv.jl=: requested tier enters strata and subgroup definitions.
+   Correcting labels can change these calculations even without changing log levels.
+3. =sql/20_sample_page.sql:379–409=: requested tier enters pseudo-expiry duration
+   groups for denied/control records. It also helps define their eligibility level;
+   granted rows instead use applied tier. Audit all affected derived fields and
+   inherited matched-control records, not just the request table.
+4. Cached Parquet/Arrow exports, sampled frames, eligibility summaries and downstream
+   reports may retain old values after the database is corrected. Inspect their
+   provenance and rebuild dependencies selectively. Do not claim all prior estimates
+   are affected, or unaffected, without tracing which frames actually included these rows.
+5. The old =ct_regime= field uses post-decision log comments and cannot establish
+   pre-existing ECR. This is a separate design/data issue, not repaired by this parser fix.
+
+Do not alter =analysis.protect_event.level= or =granted_level= simply to make them
+agree with requested tier. A requested/applied mismatch can be genuine information.
+
+* Repair specification for the database agent
+
+** Preserve distinct information and uncertainty
+
+Recommended logical outputs, with schema/name choices left to the implementer:
+
+- Raw source, extracted label, normalised text, source revision/time if available.
+- Requested action, origin tier when explicit, target tier or target-tier set.
+- Parse status such as explicit single target / alternative targets / ambiguous /
+  unspecified / chronology uncertain; source label/body and matched text span.
+- Parser version/rule identifier and old/new values keyed by stable request identity.
+- Independent response and applied-action fields, unchanged by intent inference.
+
+Recognise ECP from explicit extended-confirmed terminology or contextually validated
+abbreviations. Bare "extended" must not suffice. Parse duration words separately
+from tier words. Preserve well-supported semi labels even if "extended" occurs first.
+Do not adopt the opposite blanket rule "any occurrence of semi means semi": that
+would break requests to escalate from semi to ECP and explicit alternatives.
+
+Parse direction and destination jointly for "from ... to ..." constructions.
+Do not infer historical page state from a stated origin alone; the protection-state
+ledger must independently establish the actual state. Expansion of duration at the
+same tier may deserve an extension/renewal flag rather than a tier-increase label;
+document how that relates to the existing coarse action vocabulary.
+
+Use exactly the same intent-classification procedure for grants and denials. Response
+text may aid separate adjudication of what the administrator did; it must not silently
+determine requested demand. Blind human validation to effects and, where feasible,
+administrative disposition. Preserve ambiguous cases rather than forcing a tier.
+
+** Minimum regression corpus (proposed expected semantics)
+
+#+begin_example
+Input                                               Expected interpretation
+extended semi-protection                            target semi; duration extension language
+extended temporary semi-protection                  target semi
+temporary extended confirmed protection             target ECP
+extended-confirmed protection                       target ECP
+semi-protection                                     target semi
+from semi-protection to extended confirmed           increase, semi -> ECP
+from extended confirmed protection to semi           decrease, ECP -> semi
+change from extended-confirmed-protection to semi    decrease, ECP -> semi
+extended confirmed or semi-protection                alternative target set {ECP, semi}
+temporary <s>extended confirmed</s> semi              chronology-aware; not bare first token
+extended protection                                 unspecified tier, not automatic ECP
+Reason: extend current protection                    unspecified absent other clear evidence
+Reason: semi failed; please apply extended confirmed target ECP, not first mention semi
+Reason: not ECP; temporary semi is enough             target semi; test negation
+generic Protection label + explicit body ECP request body may resolve; avoid 'other' masking
+missing reason                                      unresolved; no imputation from grant
+#+end_example
+
+Include capitalisation, hyphens/whitespace, HTML/wiki links, >80-character labels,
+quoted text, more than 400 characters before the request, and valid abbreviations.
+These are acceptance examples, not an implemented parser or verified new SQL rule.
+Human-confirmed historical fixtures should include the IDs above and a stratified
+sample of apparent non-ECP and missing-tier requests to assess false negatives.
+
+* Safe operational sequence and acceptance criteria
+
+1. Inspect the live schema/source version and compare snapshot IDs/text before
+   assuming that current data still contain the same classifications. Run the
+   companion read-only queries with bounded timeouts and record filters/version.
+2. Inventory affected counts across all namespaces/outcomes/eras. Separate semantic
+   intent errors, missingness, temporal uncertainty and action-linkage disagreements.
+3. Implement and test a candidate parser in a versioned, reversible staging workflow
+   approved for that database. Preserve raw input and an old/new audit, not just totals.
+4. Validate requested action and requested tier separately and jointly. Report
+   performance by era, source, outcome and missingness, with uncertainty. No target
+   error percentage is asserted by this report; choose a defensible criterion before
+   looking at substantive effects. Report unresolved and alternative-target counts.
+5. Verify row counts, stable identities and uniqueness; ensure raw fields, outcomes
+   and event-level data have not been changed incidentally. Review every altered
+   known fixture and a stratified sample of new changes and unchanged cases.
+6. Publish old-to-new action/tier confusion tables, exact changed IDs, parse-version
+   provenance and downstream dependency impact. Only then migrate derived fields
+   and refresh approved downstream products, retaining old versions for comparison.
+7. Return a concise finding to the manuscript agent: root cause, change made, full
+   and snapshot-equivalent counts, validation results, unresolved categories, and
+   which caches/analyses were invalidated or refreshed. ECP feasibility still needs
+   preceding-state, ECR and comparison-support audits after this repair.
+
+*Critical operational warning:* SQL04 begins by dropping and re-adding many derived
+columns, then rebuilds page identity, log linkage and other fields. Do NOT rerun the
+entire script as a casual label-only fix. Evaluate locks, dependencies, backups,
+rollback and refresh scope with the database-owning agent. This report authorises
+no such live mutation.
+
+* Validation status of this handoff
+
+Confirmed by local source and bounded snapshot reads: five duration/tier failures;
+two explicit downgrade failures; exact ambiguous/alternative/strike-through examples;
+snapshot filters, hashes and aggregate counts. PostgreSQL matching semantics were
+checked against official documentation. The companion SQL was reviewed statically
+but not executed on PostgreSQL; no replacement parser has been tested or deployed.

@@ -1,0 +1,19 @@
+Pager usage is off.
+BEGIN
+SET
+ window_neighbour_rows | distinct_neighbours 
+-----------------------+---------------------
+                 62565 |               56599
+(1 row)
+
+ neighbours_in_multiple_windows | maximum_windows 
+--------------------------------+-----------------
+                           4431 |              11
+(1 row)
+
+ quality_cutoffs | cutoffs_with_identity_difference 
+-----------------+----------------------------------
+           56333 |                                0
+(1 row)
+
+COMMIT

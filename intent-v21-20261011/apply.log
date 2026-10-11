@@ -1,0 +1,43 @@
+SET
+SET
+SET
+SET
+DO
+psql:/home/simone/githubRepos/wikipediaData/20261007/drafts/v1/review/rfpp-intent-repair-20261011/apply.sql:19: NOTICE:  column "requested_intent" of relation "rfpp_request" already exists, skipping
+ALTER TABLE
+BEGIN
+LOCK TABLE
+DO
+SELECT 565
+CREATE INDEX
+UPDATE 217554
+SELECT 693999
+CREATE INDEX
+ANALYZE
+SELECT 297
+UPDATE 565
+UPDATE 297
+UPDATE 0
+SELECT 1561
+ALTER TABLE
+DO
+CREATE TABLE
+DO
+ALTER TABLE
+UPDATE 217554
+UPDATE 1
+UPDATE 1
+COMMENT
+CREATE FUNCTION
+ANALYZE
+ population 
+------------
+     217554
+(1 row)
+
+ changed_records | action_changes | tier_changes | matched_log_changes 
+-----------------+----------------+--------------+---------------------
+            1561 |            565 |          818 |                   8
+(1 row)
+
+COMMIT

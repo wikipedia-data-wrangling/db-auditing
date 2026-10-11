@@ -1,0 +1,24 @@
+#+title: Deferred implementation issues
+#+date: 2026-10-11
+
+All fixes are postponed until Tuesday, 13 October 2026 (Europe/London),
+at the user’s request. This is an earliest start date, not an automatic job.
+No fixes were implemented while filing these issues. Issue #1 remains closed.
+
+| Audit ID | GitHub issue | Finding |
+|----------+--------------+---------|
+| A01 | [[https://github.com/wikipedia-data-wrangling/db-auditing/issues/2][#2]] | Production-writing integration test |
+| A02 | [[https://github.com/wikipedia-data-wrangling/db-auditing/issues/3][#3]] | Mixed source and analytical generations |
+| A03 | [[https://github.com/wikipedia-data-wrangling/db-auditing/issues/4][#4]] | Negative protection episodes and unenforced cutoff |
+| A04 | [[https://github.com/wikipedia-data-wrangling/db-auditing/issues/5][#5]] | Residual NOT VALID revision-page foreign key |
+| A05 | [[https://github.com/wikipedia-data-wrangling/db-auditing/issues/6][#6]] | Historical identity and rights inconsistent across paths |
+| A06 | [[https://github.com/wikipedia-data-wrangling/db-auditing/issues/7][#7]] | Outcome horizons and eligibility differ across arms |
+| A07 | [[https://github.com/wikipedia-data-wrangling/db-auditing/issues/8][#8]] | Default volume capacity constrains rewrites |
+| A08 | [[https://github.com/wikipedia-data-wrangling/db-auditing/issues/9][#9]] | Destructive non-atomic standard SQL04 rebuild |
+| A09 | [[https://github.com/wikipedia-data-wrangling/db-auditing/issues/10][#10]] | Request inclusion and chronology not independently validated |
+| A10 | [[https://github.com/wikipedia-data-wrangling/db-auditing/issues/11][#11]] | IV assignment checks missing; decision differs from exposure |
+| A11 | [[https://github.com/wikipedia-data-wrangling/db-auditing/issues/12][#12]] | Requested type and tier conflated |
+| A12 | [[https://github.com/wikipedia-data-wrangling/db-auditing/issues/13][#13]] | Future-informed controls and shared-neighbour dependence |
+| A13 | [[https://github.com/wikipedia-data-wrangling/db-auditing/issues/14][#14]] | Freeze, duplicate-ingestion and executed-source provenance gaps |
+| A14 | [[https://github.com/wikipedia-data-wrangling/db-auditing/issues/15][#15]] | Missing page linkage and byte-encoding contract |
+| A15 | [[https://github.com/wikipedia-data-wrangling/db-auditing/issues/16][#16]] | Technical enforcement does not exhaust policy exposure |

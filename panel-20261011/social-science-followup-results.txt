@@ -1,0 +1,41 @@
+Pager usage is off.
+BEGIN
+SET
+SET
+ quality_sample | identity_differs_from_match | source_id_is_redirect 
+----------------+-----------------------------+-----------------------
+          10000 |                         742 |                  1468
+(1 row)
+
+   arm   | median_during_days |    min_during_days     |   max_during_days    
+---------+--------------------+------------------------+----------------------
+ control |               7.00 | 0.08263888888888888889 | 174.0000000000000000
+ denied  |               7.00 |     3.0000000000000000 |  14.0000000000000000
+ granted |               7.00 | 0.08263888888888888889 | 174.0000000000000000
+(3 rows)
+
+     table_name      |    column_name    
+---------------------+-------------------
+ neighbour_page_full | window_id
+ neighbour_page_full | page_id
+ neighbour_page_full | neighbour_page_id
+ neighbour_page_full | direction
+ neighbour_page_full | rank
+ neighbour_page_full | mutual
+ neighbour_page_full | n_out
+ neighbour_page_full | n_in
+ neighbour_page_full | prior_year_edits
+ neighbour_page_full | k_used
+ neighbour_page_full | pull_start
+ neighbour_page_full | pull_end
+ neighbour_page_full | pull_id
+(13 rows)
+
+        grp        | user_ids_with_multiple_intervals 
+-------------------+----------------------------------
+ bot               |                               44
+ extendedconfirmed |                              196
+ sysop             |                              178
+(3 rows)
+
+COMMIT

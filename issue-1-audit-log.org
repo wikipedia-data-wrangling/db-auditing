@@ -1,0 +1,180 @@
+#+title: Issue 1 — live PostgreSQL audit log
+#+date: 2026-10-10
+#+options: toc:2
+
+* Scope and disposition
+
+Issue: [[https://github.com/wikipedia-data-wrangling/db-auditing/issues/1][RFPP requested-protection classification]].
+
+This entry records a completed investigation of the live database and the
+classification design. The original handoff has now been reproduced on
+PostgreSQL. The classification defects remain present: this investigation has
+not deployed a replacement parser, changed database rows, refreshed analysis
+caches, or rerun effect estimates. Keep the issue open for remediation.
+
+The README now states the workspace's purpose: assess the April 2026 dump
+database and the choices made in collection, ingestion, schema, linkage,
+classification, and downstream analysis.
+
+* Execution and reproducibility
+
+Target verified: =wiki20260401=, PostgreSQL =18.4=, port =5434=, role =simone=,
+connection =service=wiki=. Both diagnostic executions used read-only,
+repeatable-read transactions, UTC, a 60-second per-statement timeout, a
+2-second lock timeout, and =ROLLBACK=.
+
+Executed from the =db-auditing= repository:
+
+#+begin_src sh
+psql -X service=wiki -v ON_ERROR_STOP=1 -f ecp-label-diagnostics.sql \
+  > logs/issue-1-live-diagnostics-20261010.log 2>&1
+../official-dump/.venv/bin/python audit_issue_1.py \
+  > logs/issue-1-audit-run-20261010.log 2>&1
+#+end_src
+
+Artifacts:
+
+- [[file:logs/issue-1-live-diagnostics-20261010.log][Full output of the original diagnostic script]], including source-text fixtures.
+- [[file:logs/issue-1-live-audit-20261010.json][Structured live audit]]: exact queries, result rows, UTC execution timestamps,
+  source hashes, fixture text hashes, bounded destination-label review, and checks.
+- [[file:logs/issue-1-audit-run-20261010.log][Audit runner output]].
+- [[file:audit_issue_1.py][Reproducible audit runner]]; requires the existing =psycopg= environment.
+
+The original handoff files are retained unchanged. Their statements that live
+diagnostics had not yet been executed describe the earlier handoff, superseded
+by this log. Original SQL04 and the Parquet export hashes match the report:
+
+| Artifact | SHA256 |
+|----------+--------|
+| =sql/04_rfpp_request_extend.sql= | =b6f4a1d99b4ef514bfed2917a1948e92d5bc43b69a6b9c9117803a57c3aeb914= |
+| =data/interim/rfpp_request.parquet= | =c516207250f292445087d78d5926395a7385290725219cf3c943fc3d4aa41e35= |
+| =ecp-label-diagnostics.sql= | =2beb0ad0abd3d095f1eed3709cbdd13e22ca0db48b6a9416e6b849da106a0ca0= |
+| =ecp-label-issue-report.org= | =2903339a8032d3d14d3ad2ced56926c6888a299a382fe041e8cf5bbd2fec13c6= |
+
+An initial supplemental in-memory query attempt failed on an unaliased =year=
+identifier. It was read-only and produced no persisted results. The saved
+runner uses =AS request_year= and was subsequently executed successfully.
+
+* Live frame and snapshot-equivalent reproduction
+
+Full live =analysis.rfpp_request=: *217,554 rows*, covering all loaded namespaces
+and outcome categories. The matching historical export filter is
+=page_namespace=0 AND outcome IN ('granted','denied')=: *178,110 rows*, from
+=2012-10-29 06:54 UTC= through =2026-09-30 07:11 UTC=.
+
+Matching totals and nine fixture identities do not establish row-for-row
+equivalence of every export field; the live audit and export remain distinct
+evidence sources with their recorded provenance.
+
+For mainspace granted/denied rows with =requested_action='increase'=,
+=requested_level='ecp'=, and
+=2016-01-01 00:00 UTC <= request_timestamp < 2026-01-01 00:00 UTC=:
+
+| Measurement | Granted | Denied |
+|-------------+---------+--------|
+| Parsed ECP candidates | 3535 | 2595 |
+| Distinct resolved pages | 3268 | 2287 |
+| Matched edit action at ECP | 809 | 94 |
+| Matched edit action at semi | 2324 | 120 |
+| Labels containing both extended and semi | 57 | 12 |
+
+These reproduce the handoff counts. The matched-action and dual-word subsets
+overlap; they are not additive. No requested/applied mismatch is automatically
+counted as a classification error.
+
+The full-population extended/semi label queue has *115 rows*. A separate queue
+has *736 label-derived ECP classifications without explicit extended-confirmed,
+ECP, or EC wording under the recorded detector*. These populations differ from
+the 69 filtered dual-word candidates. Neither queue is a validated error count:
+they include abbreviations, misspellings, alternatives, and uncertain language.
+
+For mainspace granted/denied increase requests in 2025, *4,399 of 13,669* have
+a NULL requested tier. Missingness is a separate measurement problem.
+
+* Confirmed reproduction and additional findings
+
+The deterministic PostgreSQL reproducer returns =ecp= rather than =semi= for
+each of =extended semi-protection=, =extended semi protection=, and
+=extended temporary semi-protection=. Three control labels return their
+expected tiers. Assertions in the audit runner verify this exact mismatch set
+and the presence of all nine historical fixtures.
+
+The live rows preserve the reported five duration/tier examples:
+=737, 4219, 5302, 12914, 30062=. The two explicit ECP-to-semi downgrades,
+=127462= and =144377=, still store =increase/ecp=.
+
+The alternative-target row =91188= and strike-through row =192925= also match
+the report. The latter's original request-time intent cannot be determined
+from final archived wording alone; this audit did not fetch historical edits.
+
+The expanded direction queue contains *18* labels with an explicit =from ... to ...=
+construction mentioning semi or extended. In a bounded review of their stated
+destinations, *17* store a tier different from that destination:
+
+| rfpp_id | Stored tier | Destination written in label |
+|---------+-------------+------------------------------|
+| 18057 | full | semi |
+| 21322 | full | semi |
+| 30905 | full | semi |
+| 44440 | semi | full |
+| 59459 | pc | semi |
+| 66970 | pc | semi |
+| 87454 | ecp | semi |
+| 88812 | pc | semi |
+| 89831 | pc | semi |
+| 95610 | pc | ecp |
+| 105148 | pc | semi |
+| 117901 | ecp | full |
+| 121254 | semi | pc |
+| 121914 | pc | semi |
+| 127462 | ecp | semi |
+| 144377 | ecp | semi |
+| 154614 | semi | ecp |
+
+Row =170749= already stores semi, matching its stated destination. This review
+is deliberately limited to explicit label destinations; it is not a replacement
+parser, an estimate of population-wide error, or a reconstruction of historical
+page state or request amendments. In particular, =154614= demonstrates the
+opposite-direction tier failure: a semi-to-ECP request stores the origin semi.
+
+* Design choices and dependency impact
+
+SQL04 uses a first-keyword tier rule and defaults action to increase, partly
+consulting response codes. The former confuses duration with tier and origin
+with destination; the latter can introduce post-decision information into
+requested intent. Neither regex alternation reordering nor a blanket
+"semi appears, therefore semi" rule is an adequate repair.
+
+The source inspection confirms requested tier enters IV strata/subgroups
+(=scripts/30_leniency_iv.jl=), denied/control eligibility, and pseudo-expiry
+duration groups (=sql/20_sample_page.sql:379-409=). Live schema inspection also
+finds requested-tier copies in treated/sample tables. A repaired source table
+would leave these products and cached exports stale until explicitly refreshed.
+
+The dependency inventory in the JSON records existing columns, not proof that
+every historical estimate is affected. Whether each fitted model included
+changed records remains to be traced. Protection-event levels, matched applied
+levels, and request outcomes must remain independent of requested intent.
+
+* Remediation still required
+
+1. Implement a versioned intent parser separating duration, origin, destination,
+   alternatives, negation, source provenance, and chronology uncertainty.
+2. Preserve raw input and old/new values by stable source identity. Apply the
+   same requested-intent procedure to all outcome categories.
+3. Validate on the full live population and the historical comparison filter,
+   including false negatives, body-derived cases, missing tiers, and unchanged
+   records. Expand fixtures to the opposite-direction cases above.
+4. Produce staged confusion tables and changed IDs before a scoped migration.
+   Do not rerun all of SQL04 as a label-only patch; it rebuilds unrelated fields.
+5. Trace and refresh affected derived tables and caches in dependency order;
+   document which analyses require re-estimation. Preserve prior artifacts.
+
+Disposition: *audit reproduced and logged; parser repair remains open*.
+
+* Subsequent repair
+This log records the pre-repair audit. The subsequent parser implementation,
+scoped migration, regression tests, encoding correction and recovery, final
+counts, and downstream rebuild obligations are recorded in
+[[file:issue-1-repair-log.org][Issue #1 root-cause repair log]]. Do not interpret the earlier
+“not repaired” status as the current database state.

@@ -1,0 +1,6 @@
+Filesystem      Size  Used Avail Use% Mounted on
+/dev/sdd1       9.1T  4.4T  4.3T  51% /media/simone/lacie10
+/dev/sde1        11T  9.8T  521G  96% /media/simone/lacie14
+/dev/nvme0n1p3  930G  648G  235G  74% /
+/dev/sdb        7.3T  2.5T  4.5T  36% /media/simone/ssd
+/dev/sdc        7.3T  5.9T  1.1T  86% /media/simone/ssd1

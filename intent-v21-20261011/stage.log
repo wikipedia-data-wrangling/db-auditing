@@ -1,0 +1,33 @@
+SET
+SET
+BEGIN
+DO
+SELECT 217554
+ALTER TABLE
+SELECT 217554
+ALTER TABLE
+CREATE TABLE
+INSERT 0 1
+COMMIT
+ population | action_changes | tier_changes | metadata_changes 
+------------+----------------+--------------+------------------
+     217554 |            597 |          629 |             1461
+(1 row)
+
+        status        |           rule           |   n    
+----------------------+--------------------------+--------
+ alternative          | multiple_targets         |    340
+ alternative          | mixed_action_alternative |     66
+ ambiguous            | multiple_targets         |    156
+ ambiguous            | negated_label            |      4
+ ambiguous            | unsupported_alternative  |      2
+ chronology_uncertain | amended_body             |     39
+ chronology_uncertain | amended_label            |     30
+ edit_request         | edit_request             |     20
+ explicit             | label_single_target      | 179695
+ explicit             | body_explicit_request    |   1300
+ explicit             | explicit_transition      |     91
+ explicit             | explicit_removal         |     88
+ unspecified          | no_supported_target      |  35723
+(13 rows)
+

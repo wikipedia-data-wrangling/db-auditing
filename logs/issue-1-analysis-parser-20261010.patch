@@ -1,0 +1,478 @@
+diff --git a/sql/04_rfpp_request_extend.sql b/sql/04_rfpp_request_extend.sql
+index 1ba46ec..bd29b6d 100644
+--- a/sql/04_rfpp_request_extend.sql
++++ b/sql/04_rfpp_request_extend.sql
+@@ -5,11 +5,9 @@
+ -- Requires analysis.protect_event (sql/02).
+ -- Run: psql service=wiki -v ON_ERROR_STOP=1 -f sql/04_rfpp_request_extend.sql  (~2 min)
+ --
+--- requested_level is parsed from the FIRST bold label in `reason` (the RFPP template
+--- puts "'''Temporary semi-protection:'''" after the {{pagelinks}} line). Since 2021 a
+--- growing share of requests (~30 %) use a form that writes only "'''Reason:'''" — for
+--- those the level is inferred from the first level keyword in the reason body
+--- (requested_level_source = 'body') or left NULL.
++-- Request intent is parsed by the shared versioned parser in 04a/04b.
++-- Explicit tiers, destination transitions, alternatives, and uncertainty are
++-- preserved without using administrative outcomes or applied-action fields.
+ SET work_mem = '1GB';
+ SET default_tablespace = wiki_ts_lacie10;
+ SET TIME ZONE 'UTC';
+@@ -41,10 +39,10 @@ ALTER TABLE analysis.rfpp_request
+     DROP COLUMN IF EXISTS board;
+ 
+ ALTER TABLE analysis.rfpp_request
+-    ADD COLUMN requested_action         text,        -- increase | decrease | edit | NULL (unparsed)
+-    ADD COLUMN requested_level          text,        -- semi | ecp | full | pc | move | salt | template | other | NULL
++    ADD COLUMN requested_action         text,        -- increase | decrease | edit | change | NULL (unresolved)
++    ADD COLUMN requested_level          text,        -- semi | ecp | full | pc | move | salt | template | upload | none | NULL
+     ADD COLUMN requested_level_source   text,        -- label | body | NULL
+-    ADD COLUMN request_label            text,        -- the bold label as written (audit)
++    ADD COLUMN request_label            text,        -- lowercased/trimmed label; verbatim text is in requested_intent
+     ADD COLUMN substitute_remedy        text,        -- bloc | already protected | noun | NULL
+     ADD COLUMN self_decided             boolean,     -- admin = requester
+     ADD COLUMN decision_ts              timestamptz, -- COALESCE(admin_timestamp, request_timestamp)
+@@ -64,13 +62,12 @@ ALTER TABLE analysis.rfpp_request
+     ADD COLUMN year_month               text,
+     ADD COLUMN utc_hour_block           smallint,    -- 0..3 = six-hour UTC blocks of request_timestamp
+     ADD COLUMN weekday                  smallint,    -- ISO 1 = Monday .. 7 = Sunday
+-    ADD COLUMN board                    text;        -- increase | decrease | edit (from the archive path when present, else requested_action)
++    ADD COLUMN board                    text;        -- archive section when explicit, otherwise requested_action (including change/NULL)
+ 
+ ------------------------------------------------------------------------------
+ -- 1. Request decomposition
+ ------------------------------------------------------------------------------
+ UPDATE analysis.rfpp_request r SET
+-    request_label = x.lbl,
+     decision_ts   = COALESCE(r.admin_timestamp, r.request_timestamp),
+     self_decided  = (r.admin_actor_id IS NOT NULL AND r.admin_actor_id = r.requester_actor_id),
+     substitute_remedy = CASE lower(r.response_code)
+@@ -79,66 +76,9 @@ UPDATE analysis.rfpp_request r SET
+                           WHEN 'noun' THEN 'noun' END,
+     year_month     = to_char(r.request_timestamp AT TIME ZONE 'UTC', 'YYYY-MM'),
+     utc_hour_block = (extract(hour FROM r.request_timestamp AT TIME ZONE 'UTC')::int / 6)::smallint,
+-    weekday        = extract(isodow FROM r.request_timestamp AT TIME ZONE 'UTC')::smallint
+-FROM (SELECT rfpp_id,
+-             lower(btrim(regexp_replace(substring(reason FROM '''''''([^'']{1,80})'''''''), '[:.\s]+$', ''))) AS lbl
+-        FROM analysis.rfpp_request) x
+-WHERE x.rfpp_id = r.rfpp_id;
++    weekday        = extract(isodow FROM r.request_timestamp AT TIME ZONE 'UTC')::smallint;
+ 
+-UPDATE analysis.rfpp_request r SET
+-    requested_action = CASE
+-        WHEN r.outcome = 'unparsed' AND r.reason IS NULL THEN NULL
+-        WHEN r.response_code = 'edre' OR r.request_label ~ 'edit request' THEN 'edit'
+-        WHEN r.request_label ~ '(unprotect|reduc|downgrad|lower|remov|lift|decrease)'
+-          OR lower(r.response_code) IN ('unprotected','noun','isun','unpr') THEN 'decrease'
+-        ELSE 'increase' END;
+-
+--- level: first keyword in the bold label (POSIX leftmost match), else in the reason body
+-UPDATE analysis.rfpp_request r SET
+-    requested_level = CASE
+-        WHEN x.k IS NULL THEN NULL
+-        WHEN x.k IN ('semi','semi-protect','semiprotect')             THEN 'semi'
+-        WHEN x.k IN ('extended','ecp','ec')                            THEN 'ecp'
+-        WHEN x.k IN ('full','fully')                                   THEN 'full'
+-        WHEN x.k IN ('pending','pc','flagged')                         THEN 'pc'
+-        WHEN x.k IN ('template')                                       THEN 'template'
+-        WHEN x.k IN ('create','creation','salt')                       THEN 'salt'
+-        WHEN x.k IN ('move')                                           THEN 'move'
+-        ELSE 'other' END,
+-    requested_level_source = x.src
+-FROM (
+-    SELECT rfpp_id,
+-           COALESCE(lbl_k, body_k) AS k,
+-           CASE WHEN lbl_k IS NOT NULL THEN 'label' WHEN body_k IS NOT NULL THEN 'body' END AS src
+-      FROM (
+-        SELECT rfpp_id,
+-               CASE WHEN request_label IS NOT NULL AND request_label !~ '^reason' THEN
+-                    COALESCE(substring(request_label FROM '(semi|extended|\mecp\M|\mec\M|full|fully|pending|\mpc\M|flagged|template|creat|salt|\mmove)'),
+-                             CASE WHEN request_label ~ 'protect' THEN 'other' END) END AS lbl_k,
+-               substring(lower(left(regexp_replace(reason, '\{\{pagelinks[^}]*\}\}', '', 'g'), 400))
+-                         FROM '(semi|extended.confirmed|\mecp\M|full.protect|pending|\mpc\M|template.protect|creat(e|ion).protect|salt|move.protect)') AS body_k
+-          FROM analysis.rfpp_request) y
+-) x
+-WHERE x.rfpp_id = r.rfpp_id;
+--- normalise the multi-word body keys
+-UPDATE analysis.rfpp_request SET requested_level = 'ecp'      WHERE requested_level = 'other' AND requested_level_source='body' AND reason ~* 'extended.confirmed';
+-UPDATE analysis.rfpp_request SET requested_level = CASE
+-        WHEN requested_level_source = 'body' AND requested_level IS NULL THEN NULL ELSE requested_level END;
+-
+--- second pass for body-derived keys that the CASE above could not map (multi-word tokens)
+-UPDATE analysis.rfpp_request r SET requested_level = m.lvl
+-FROM (
+-    SELECT rfpp_id,
+-           CASE k WHEN 'full.protect' THEN 'full' WHEN 'template.protect' THEN 'template'
+-                  WHEN 'move.protect' THEN 'move' ELSE NULL END AS lvl
+-      FROM (SELECT rfpp_id, regexp_replace(
+-                 substring(lower(left(regexp_replace(reason, '\{\{pagelinks[^}]*\}\}', '', 'g'), 400))
+-                           FROM '(full.protect|template.protect|move.protect)'), '[ -]', '.') AS k
+-              FROM analysis.rfpp_request WHERE requested_level_source = 'body' AND requested_level = 'other') z
+-     WHERE k IS NOT NULL) m
+-WHERE m.rfpp_id = r.rfpp_id AND m.lvl IS NOT NULL;
+-UPDATE analysis.rfpp_request SET requested_level = 'salt'
+- WHERE requested_level_source = 'body' AND requested_level = 'other' AND reason ~* 'creat(e|ion).protect';
++\ir 04b_rfpp_request_intent.sql
+ 
+ ------------------------------------------------------------------------------
+ -- 1b. Page identity repair. rfpp_request.page_id is the page that carries the
+@@ -184,61 +124,9 @@ UPDATE analysis.rfpp_request SET page_id_match = COALESCE(page_id_log, page_id);
+ ------------------------------------------------------------------------------
+ -- 2. Match to the protection log (on page_id_match)
+ ------------------------------------------------------------------------------
+--- one candidate row per protect/stable LOG row (a log row spans several restriction types)
+-CREATE TEMP TABLE ev_row AS
+-SELECT log_id, page_id, ts, log_type, log_action, admin_actor_id,
+-       bool_or(is_opening) AS is_opening, bool_or(is_closing) AS is_closing,
+-       -- primary restriction: edit > stable > create > move > upload
+-       (array_agg(restriction_type ORDER BY CASE restriction_type WHEN 'edit' THEN 1 WHEN 'stable' THEN 2 WHEN 'create' THEN 3 WHEN 'move' THEN 4 ELSE 5 END)
+-          FILTER (WHERE is_opening))[1] AS prim_type,
+-       (array_agg(level ORDER BY CASE restriction_type WHEN 'edit' THEN 1 WHEN 'stable' THEN 2 WHEN 'create' THEN 3 WHEN 'move' THEN 4 ELSE 5 END)
+-          FILTER (WHERE is_opening))[1] AS prim_level,
+-       (array_agg(expiry ORDER BY CASE restriction_type WHEN 'edit' THEN 1 WHEN 'stable' THEN 2 WHEN 'create' THEN 3 WHEN 'move' THEN 4 ELSE 5 END)
+-          FILTER (WHERE is_opening))[1] AS prim_expiry
+-  FROM analysis.protect_event
+- WHERE page_id IS NOT NULL AND (is_opening OR is_closing)
+- GROUP BY 1,2,3,4,5,6;
+-CREATE INDEX ON ev_row (page_id, ts);
+-ANALYZE ev_row;
+-
+-CREATE TEMP TABLE matched AS
+-SELECT r.rfpp_id, m.log_id, m.ts - r.decision_ts AS off, m.log_action, m.is_opening, m.is_closing,
+-       (m.admin_actor_id = r.admin_actor_id) AS same_admin,
+-       m.prim_type, m.prim_level, m.prim_expiry
+-  FROM analysis.rfpp_request r
+-  JOIN LATERAL (
+-        SELECT e.* FROM ev_row e
+-         WHERE e.page_id = r.page_id_match
+-           AND e.ts >= r.request_timestamp - interval '1 hour'
+-           AND e.ts <= r.decision_ts + interval '48 hours'
+-           -- only rows that go in the requested direction (an unprotect by the same admin must not shadow a protect)
+-           AND (e.is_opening OR r.requested_action = 'decrease')
+-         ORDER BY (e.admin_actor_id = r.admin_actor_id) DESC NULLS LAST,
+-                  abs(extract(epoch FROM e.ts - r.decision_ts))
+-         LIMIT 1) m ON true
+- WHERE r.page_id_match IS NOT NULL AND r.request_timestamp IS NOT NULL;
+-
+-UPDATE analysis.rfpp_request r SET
+-    matched_log_id     = m.log_id,
+-    matched_offset     = m.off,
+-    matched_action     = m.log_action,
+-    matched_same_admin = m.same_admin,
+-    granted_type       = m.prim_type,
+-    granted_level_raw  = m.prim_level,
+-    granted_level      = CASE
+-        WHEN m.is_closing AND NOT m.is_opening THEN 'none'
+-        WHEN m.prim_type = 'edit' THEN CASE m.prim_level WHEN 'autoconfirmed' THEN 'semi' WHEN 'extendedconfirmed' THEN 'ecp'
+-                                                         WHEN 'sysop' THEN 'full' WHEN 'templateeditor' THEN 'template' ELSE m.prim_level END
+-        WHEN m.prim_type = 'stable' THEN 'pc'
+-        WHEN m.prim_type = 'create' THEN 'salt'
+-        WHEN m.prim_type = 'move'   THEN 'move'
+-        WHEN m.prim_type = 'upload' THEN 'upload' END,
+-    scheduled_expiry   = m.prim_expiry,
+-    treated_by_log     = CASE
+-        WHEN r.requested_action = 'decrease' THEN (m.is_closing OR m.is_opening)   -- unprotect or downgrade (modify)
+-        ELSE m.is_opening END
+-FROM matched m WHERE m.rfpp_id = r.rfpp_id;
+-UPDATE analysis.rfpp_request SET treated_by_log = false WHERE treated_by_log IS NULL;
++CREATE TEMP TABLE rfpp_match_ids AS SELECT rfpp_id FROM analysis.rfpp_request;
++CREATE UNIQUE INDEX ON rfpp_match_ids (rfpp_id);
++\ir 04c_rfpp_request_match.sql
+ 
+ -- denied requests whose page nevertheless received an opening event within 30 days of the decision
+ UPDATE analysis.rfpp_request r SET denied_but_protected_30d = EXISTS (
+diff --git a/sql/04a_rfpp_intent_parser.sql b/sql/04a_rfpp_intent_parser.sql
+new file mode 100644
+--- /dev/null
++++ b/sql/04a_rfpp_intent_parser.sql
+@@ -0,0 +1,195 @@
++-- Versioned RFPP intent parser. No response, outcome, or applied-tier inputs.
++-- Install independently; this file does not update request rows.
++\set ON_ERROR_STOP on
++
++CREATE OR REPLACE FUNCTION analysis.rfpp_intent_normalize_v2(raw text)
++RETURNS text LANGUAGE plpgsql IMMUTABLE PARALLEL SAFE AS $fn$
++DECLARE t text := coalesce(raw, '');
++BEGIN
++    t := regexp_replace(t, '\[\[[^]|]+\|([^]]+)\]\]', '\1', 'g');
++    t := regexp_replace(t, '\[\[([^]]+)\]\]', '\1', 'g');
++    t := regexp_replace(t, '<!--.*?-->|<[^>]*>', ' ', 'g');
++    t := regexp_replace(t, '&nbsp;|&#160;|&ndash;|&mdash;|&#8211;|&#8212;', ' ', 'gi');
++    -- SQL_ASCII treats translate() characters as bytes: multibyte punctuation
++    -- would remove bytes from unrelated Unicode text. Replace whole sequences.
++    t := replace(replace(t, '–', ' '), '—', ' ');
++    t := translate(t, '-_', '  ');
++    RETURN lower(btrim(regexp_replace(t, '[[:space:]]+', ' ', 'g')));
++END $fn$;
++
++CREATE OR REPLACE FUNCTION analysis.rfpp_intent_levels_v2(t text, label_mode boolean)
++RETURNS text[] LANGUAGE sql IMMUTABLE PARALLEL SAFE AS $fn$
++SELECT coalesce(array_agg(tier ORDER BY ord), ARRAY[]::text[])
++FROM (VALUES
++ (1,'none',t ~ '\m(unprotection|unprotect)\M|\m(no protection|not protected|open editing)\M'),
++ (2,'semi',t ~ '\m(semi|semiprotection|autoconfirmed)\M|\mauto confirmed\M'),
++ (3,'ecp',t ~ '\mextended confirmed\M|\mecp\M' OR
++          (t ~ '\mec\M' AND (label_mode OR t ~ '\mec protection\M'))),
++ (4,'full',t ~ '\m(full|fully) protection\M' OR (label_mode AND t ~ '\mfull\M')),
++ (5,'template',t ~ '\mtemplate (protection|editor)\M|\mtemplateeditor\M'),
++ (6,'pc',t ~ '\mpending changes?\M|\mpc protection\M' OR (label_mode AND t ~ '\m(pc|pending)\M')),
++ (7,'salt',t ~ '\m(creat(e|ion) protection|salt(ing)?)\M'),
++ (8,'move',t ~ '\mmove protection\M'),
++ (9,'upload',t ~ '\mupload protection\M')
++) AS levels(ord,tier,matched) WHERE matched
++$fn$;
++
++CREATE OR REPLACE FUNCTION analysis.rfpp_parse_intent_v2(reason text)
++RETURNS jsonb LANGUAGE plpgsql IMMUTABLE PARALLEL SAFE AS $fn$
++DECLARE
++    raw_label text;
++    leading_label text;
++    unresolved_alternative boolean := false;
++    label text;
++    evidence text;
++    body text;
++    part text;
++    body_match text[];
++    source text := 'label';
++    status text := 'explicit';
++    rule text := 'label_single_target';
++    action text := 'increase';
++    action_basis text := 'request_default';
++    tier text;
++    origin text;
++    targets text[] := ARRAY[]::text[];
++    found text[];
++    transition text[];
++    origins text[];
++    origin_rank integer;
++    target_rank integer;
++    declared_action text;
++    label_action text;
++    extension boolean := false;
++BEGIN
++    IF reason IS NULL OR btrim(reason) = '' THEN
++        RETURN jsonb_build_object('version','rfpp-intent-v2.0.0','status','unspecified',
++            'rule','missing_reason','action',NULL,'tier',NULL,'targets',targets,
++            'origin',NULL,'source',NULL,'action_basis','unknown','label_raw',NULL);
++    END IF;
++    -- No 80-character limit: retain the original extracted label as evidence.
++    raw_label := (regexp_match(reason, $re$'''(.*?)'''$re$))[1];
++    -- Generic form headings can precede the actual bold request label.
++    IF analysis.rfpp_intent_normalize_v2(raw_label) ~ '^(reason|protection|request)[:. ]*$' THEN
++        leading_label := (regexp_match(reason,
++            $re$'''(?:Reason|Protection|Request)[:.[:space:]]*'''[[:space:]]*'''(.*?)'''$re$, 'i'))[1];
++        IF leading_label IS NOT NULL THEN raw_label := leading_label; END IF;
++    END IF;
++    label := analysis.rfpp_intent_normalize_v2(raw_label);
++    label := regexp_replace(label, '[:.[:space:]]+$', '');
++    evidence := label;
++    IF label ~ '\m(unprotect|unprotection|reduc(e|tion)|downgrad(e|ing)|lower|remov(e|al|ing)|lift|decrease)\M' THEN
++        label_action := 'decrease';
++    ELSIF label ~ '\m(increase|upgrade|escalate)\M' THEN label_action := 'increase'; END IF;
++    IF raw_label ~* '<(s|del|strike)([[:space:]>])' THEN
++        status := 'chronology_uncertain'; rule := 'amended_label';
++        action := NULL; action_basis := 'unknown';
++        targets := analysis.rfpp_intent_levels_v2(label, true);
++    ELSE
++        targets := analysis.rfpp_intent_levels_v2(label, true);
++        IF label = '' OR label ~ '^(reason|protection|request|protect)$' OR
++           (cardinality(targets)=0 AND label !~ '\m(edit request|unprotect|unprotection)\M') THEN
++            source := 'body'; rule := 'body_explicit_request'; evidence := NULL;
++            body := regexp_replace(reason, '\{\{[^{}]*\}\}', ' ', 'g');
++            -- Avoid signatures and subsequent discussion when available.
++            body := regexp_replace(body, '\[\[(User|User talk|Special:Contributions):.*$', '', 'i');
++            IF body ~* '<(s|del|strike)([[:space:]>])' THEN
++                status := 'chronology_uncertain'; rule := 'amended_body';
++                action := NULL; action_basis := 'unknown';
++            ELSE
++                body := analysis.rfpp_intent_normalize_v2(body);
++                body := replace(body, $q$'''$q$, '');
++                body := regexp_replace(body, '^reason[[:space:]]*:', '');
++                -- Search request clauses rather than the first tier mentioned.
++                -- Multiple supported clauses remain ambiguous; no 400-char cap.
++                FOR part IN SELECT unnest(regexp_split_to_array(body, '[;.!?]|\mbut\M')) LOOP
++                    IF part ~ '\m(not|never|do not|don''t)\M' THEN CONTINUE; END IF;
++                    -- A target must be the object of a request phrase. A later
++                    -- mention of disruptive autoconfirmed users is not a target.
++                    body_match := regexp_match(part,
++                        '\m(request(ing)?|apply|ask(ing)? for|would like|want|need|upgrade (it )?to|downgrade (it )?to)[[:space:]]+(((temporary|indefinite|permanent|long term|short term|a|an|the|some|at least)[[:space:]]+)*(semi|semiprotection|extended confirmed|ecp|full protection|pending changes|template protection|creation protection|create protection|move protection|upload protection|unprotection)\M.*)');
++                    IF body_match IS NOT NULL THEN
++                        IF part ~ '\mor\M.*\mextended protection\M' THEN
++                            unresolved_alternative := true;
++                        END IF;
++                        IF part ~ '\munprotect(ion|ing)?\M.*\mor\M' THEN
++                            IF evidence IS NULL THEN evidence := 'unprotection or';
++                            ELSE evidence := evidence || '; unprotection or'; END IF;
++                        END IF;
++                        part := body_match[1] || ' ' || body_match[6];
++                        part := regexp_replace(part, '\m(because|since|due to|as)\M.*$', '');
++                    ELSIF part ~ '\m(please|request(ing)?|could you|can you|would you)\M.*\munprotect\M' THEN
++                        part := 'unprotection';
++                    ELSIF part !~ '^[[:space:]]*(temporary[[:space:]]+)?semi([[:space:]]+protection)?[[:space:]]+is enough' THEN
++                        CONTINUE;
++                    END IF;
++                    IF part IS NOT NULL THEN
++                        found := analysis.rfpp_intent_levels_v2(part, false);
++                        IF cardinality(found)>0 THEN
++                            IF evidence IS NULL THEN evidence := part;
++                            ELSE evidence := evidence || '; ' || part; END IF;
++                        END IF;
++                    END IF;
++                END LOOP;
++                targets := analysis.rfpp_intent_levels_v2(coalesce(evidence,''), false);
++                IF evidence IS NULL AND label_action IS NOT NULL THEN evidence := label; END IF;
++                IF evidence IS NULL THEN action := NULL; action_basis := 'unknown'; END IF;
++            END IF;
++        END IF;
++        IF status <> 'chronology_uncertain' THEN
++            IF evidence ~ '\medit request\M' THEN
++                action := 'edit'; action_basis := 'explicit_request';
++                targets := ARRAY[]::text[]; status := 'edit_request'; rule := 'edit_request';
++            ELSE
++                declared_action := label_action;
++                IF evidence ~ '\m(unprotect|unprotection|reduc(e|tion)|downgrad(e|ing)|lower|remov(e|al|ing)|lift|decrease)\M' THEN
++                    declared_action := 'decrease';
++                ELSIF evidence ~ '\m(increase|upgrade|escalate)\M' THEN declared_action := 'increase'; END IF;
++                IF declared_action IS NOT NULL THEN action := declared_action; action_basis := 'explicit_request'; END IF;
++                IF action IS NULL AND cardinality(targets)>0 THEN action := 'increase'; action_basis := 'explicit_target'; END IF;
++                transition := regexp_match(evidence, '\mfrom[[:space:]]+(.*?)[[:space:]]+to[[:space:]]+(.*)');
++                IF transition IS NOT NULL THEN
++                    origins := analysis.rfpp_intent_levels_v2(transition[1], true);
++                    targets := analysis.rfpp_intent_levels_v2(transition[2], true);
++                    IF cardinality(origins)=1 THEN origin := origins[1]; END IF;
++                    rule := 'explicit_transition';
++                    -- Only compare edit tiers with an established ordering here.
++                    origin_rank := array_position(ARRAY['none','semi','ecp','full'], origin);
++                    target_rank := array_position(ARRAY['none','semi','ecp','full'], targets[1]);
++                    IF cardinality(targets)=1 AND origin_rank IS NOT NULL AND target_rank IS NOT NULL THEN
++                        action := CASE WHEN target_rank>origin_rank THEN 'increase'
++                                       WHEN target_rank<origin_rank THEN 'decrease' ELSE 'change' END;
++                        action_basis := 'explicit_transition';
++                        IF declared_action IS NOT NULL AND declared_action<>action THEN
++                            action := NULL; status := 'ambiguous'; rule := 'conflicting_direction';
++                        END IF;
++                    ELSIF declared_action IS NULL THEN
++                        action := 'change'; action_basis := 'unordered_transition';
++                    END IF;
++                END IF;
++                extension := coalesce(coalesce(evidence,label) ~ '\m(extend|extending|renew(al)?|longer)\M|\mextended\M(?![[:space:]]+confirmed)', false);
++                IF cardinality(targets)=1 AND status<>'ambiguous' THEN
++                    tier := targets[1];
++                    IF tier='none' THEN action := 'decrease'; action_basis := 'explicit_request'; END IF;
++                    -- Negated or quoted labels are not single-target evidence.
++                    IF evidence ~ '\m(not|never|rather than|instead of)\M' THEN
++                        tier := NULL; status := 'ambiguous'; rule := 'negated_label';
++                    END IF;
++                ELSIF cardinality(targets)>1 THEN
++                    status := CASE WHEN evidence ~ '\mor\M|/' THEN 'alternative' ELSE 'ambiguous' END;
++                    rule := 'multiple_targets';
++                    IF 'none'=ANY(targets) THEN action := NULL; action_basis := 'unknown'; END IF;
++                ELSIF cardinality(targets)=0 AND status<>'edit_request' THEN
++                    status := 'unspecified'; rule := 'no_supported_target'; source := NULL;
++                END IF;
++            END IF;
++        END IF;
++    END IF;
++    IF unresolved_alternative THEN
++        tier := NULL; status := 'ambiguous'; rule := 'unsupported_alternative';
++    END IF;
++    RETURN jsonb_build_object('version','rfpp-intent-v2.0.0','status',status,'rule',rule,
++        'action',action,'tier',tier,'targets',targets,'origin',origin,'source',source,
++        'action_basis',action_basis,'duration_extension',extension,'label_raw',raw_label,
++        'label',label,'evidence',evidence);
++END $fn$;
+diff --git a/sql/04b_rfpp_request_intent.sql b/sql/04b_rfpp_request_intent.sql
+new file mode 100644
+--- /dev/null
++++ b/sql/04b_rfpp_request_intent.sql
+@@ -0,0 +1,13 @@
++-- Shared intent decomposition for fresh SQL04 builds.
++-- Existing databases should use the audited staged migration in db-auditing.
++\set ON_ERROR_STOP on
++\ir 04a_rfpp_intent_parser.sql
++ALTER TABLE analysis.rfpp_request ADD COLUMN IF NOT EXISTS requested_intent jsonb;
++UPDATE analysis.rfpp_request SET requested_intent=analysis.rfpp_parse_intent_v2(reason);
++UPDATE analysis.rfpp_request
++SET requested_action=requested_intent->>'action',
++    requested_level=requested_intent->>'tier',
++    requested_level_source=requested_intent->>'source',
++    request_label=lower(btrim(regexp_replace(requested_intent->>'label_raw', '[:.\s]+$', '')));
++COMMENT ON COLUMN analysis.rfpp_request.requested_intent IS
++'Versioned request-only intent evidence: origin, target set, parse status, rule, raw label, evidence, direction basis, and duration-extension language. No outcome/applied-tier inputs. NULL tier/action means unresolved where indicated; archived amendments remain chronology_uncertain.';
+diff --git a/sql/04c_rfpp_request_match.sql b/sql/04c_rfpp_request_match.sql
+new file mode 100644
+--- /dev/null
++++ b/sql/04c_rfpp_request_match.sql
+@@ -0,0 +1,73 @@
++-- Shared protection-log matching. The caller creates temp rfpp_match_ids(rfpp_id).
++-- Full SQL04 builds supply all requests; the intent migration supplies only
++-- rows whose requested action changed. Protection-event records are read-only.
++\set ON_ERROR_STOP on
++-- one candidate row per protect/stable LOG row (a log row spans several restriction types)
++CREATE TEMP TABLE ev_row AS
++SELECT log_id, page_id, ts, log_type, log_action, admin_actor_id,
++       bool_or(is_opening) AS is_opening, bool_or(is_closing) AS is_closing,
++       -- primary restriction: edit > stable > create > move > upload
++       (array_agg(restriction_type ORDER BY CASE restriction_type WHEN 'edit' THEN 1 WHEN 'stable' THEN 2 WHEN 'create' THEN 3 WHEN 'move' THEN 4 ELSE 5 END)
++          FILTER (WHERE is_opening))[1] AS prim_type,
++       (array_agg(level ORDER BY CASE restriction_type WHEN 'edit' THEN 1 WHEN 'stable' THEN 2 WHEN 'create' THEN 3 WHEN 'move' THEN 4 ELSE 5 END)
++          FILTER (WHERE is_opening))[1] AS prim_level,
++       (array_agg(expiry ORDER BY CASE restriction_type WHEN 'edit' THEN 1 WHEN 'stable' THEN 2 WHEN 'create' THEN 3 WHEN 'move' THEN 4 ELSE 5 END)
++          FILTER (WHERE is_opening))[1] AS prim_expiry
++  FROM analysis.protect_event
++ WHERE page_id IS NOT NULL AND (is_opening OR is_closing)
++ GROUP BY 1,2,3,4,5,6;
++CREATE INDEX ON ev_row (page_id, ts);
++ANALYZE ev_row;
++
++CREATE TEMP TABLE matched AS
++SELECT r.rfpp_id, m.log_id, m.ts - r.decision_ts AS off, m.log_action, m.is_opening, m.is_closing,
++       (m.admin_actor_id = r.admin_actor_id) AS same_admin,
++       m.prim_type, m.prim_level, m.prim_expiry
++  FROM analysis.rfpp_request r
++  JOIN rfpp_match_ids scope ON scope.rfpp_id=r.rfpp_id
++  JOIN LATERAL (
++        SELECT e.* FROM ev_row e
++         WHERE e.page_id = r.page_id_match
++           AND e.ts >= r.request_timestamp - interval '1 hour'
++           AND e.ts <= r.decision_ts + interval '48 hours'
++           -- only rows that go in the requested direction (an unprotect by the same admin must not shadow a protect)
++           AND (e.is_opening OR r.requested_action IN ('decrease','change') OR r.requested_action IS NULL)
++         ORDER BY (e.admin_actor_id = r.admin_actor_id) DESC NULLS LAST,
++                  abs(extract(epoch FROM e.ts - r.decision_ts)), e.log_id
++         LIMIT 1) m ON true
++ WHERE r.page_id_match IS NOT NULL AND r.request_timestamp IS NOT NULL
++   AND r.requested_action IS DISTINCT FROM 'edit';
++
++-- Clear prior associations only for the caller's explicit scope.
++UPDATE analysis.rfpp_request r SET
++    matched_log_id=NULL, matched_offset=NULL, matched_action=NULL,
++    matched_same_admin=NULL, granted_type=NULL, granted_level=NULL,
++    granted_level_raw=NULL, scheduled_expiry=NULL,
++    treated_by_log=CASE WHEN r.requested_action IS NULL THEN NULL ELSE false END
++FROM rfpp_match_ids scope WHERE scope.rfpp_id=r.rfpp_id;
++
++UPDATE analysis.rfpp_request r SET
++    matched_log_id     = m.log_id,
++    matched_offset     = m.off,
++    matched_action     = m.log_action,
++    matched_same_admin = m.same_admin,
++    granted_type       = m.prim_type,
++    granted_level_raw  = m.prim_level,
++    granted_level      = CASE
++        WHEN m.is_closing AND NOT m.is_opening THEN 'none'
++        WHEN m.prim_type = 'edit' THEN CASE m.prim_level WHEN 'autoconfirmed' THEN 'semi' WHEN 'extendedconfirmed' THEN 'ecp'
++                                                         WHEN 'sysop' THEN 'full' WHEN 'templateeditor' THEN 'template' ELSE m.prim_level END
++        WHEN m.prim_type = 'stable' THEN 'pc'
++        WHEN m.prim_type = 'create' THEN 'salt'
++        WHEN m.prim_type = 'move'   THEN 'move'
++        WHEN m.prim_type = 'upload' THEN 'upload' END,
++    scheduled_expiry   = m.prim_expiry,
++    treated_by_log     = CASE
++        WHEN r.requested_action IS NULL THEN NULL -- unknown intent cannot establish treatment direction
++        WHEN r.requested_action IN ('decrease','change') THEN (m.is_closing OR m.is_opening)
++        ELSE m.is_opening END
++FROM matched m WHERE m.rfpp_id = r.rfpp_id;
++UPDATE analysis.rfpp_request r SET treated_by_log=false
++FROM rfpp_match_ids scope WHERE scope.rfpp_id=r.rfpp_id AND r.treated_by_log IS NULL
++  AND r.requested_action IS NOT NULL;
++

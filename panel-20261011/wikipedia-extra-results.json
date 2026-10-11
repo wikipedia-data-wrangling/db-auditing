@@ -1,0 +1,117 @@
+{
+  "started_at": "2026-10-11T08:27:50.554588+00:00",
+  "connection": "service=wiki",
+  "scope": "Bounded read-only queries, each with its own snapshot; not a single database-wide snapshot.",
+  "results": {
+    "negative_episode_examples": {
+      "sql": "SELECT episode_id,page_id,restriction_type,level,start_ts,scheduled_expiry,actual_end_ts,close_reason,opening_log_id FROM analysis.protection_episode WHERE actual_end_ts<start_ts ORDER BY episode_id LIMIT 8",
+      "rows": [
+        {
+          "episode_id": 1752,
+          "page_id": 1273,
+          "restriction_type": "move",
+          "level": "sysop",
+          "start_ts": "2008-12-04 04:45:12+00:00",
+          "scheduled_expiry": "2008-12-04 04:45:00+00:00",
+          "actual_end_ts": "2008-12-04 04:45:00+00:00",
+          "close_reason": "expired",
+          "opening_log_id": 18648821
+        },
+        {
+          "episode_id": 27360,
+          "page_id": 19499,
+          "restriction_type": "edit",
+          "level": "autoconfirmed",
+          "start_ts": "2007-02-10 16:54:24+00:00",
+          "scheduled_expiry": "2006-02-12 00:00:00+00:00",
+          "actual_end_ts": "2006-02-12 00:00:00+00:00",
+          "close_reason": "expired",
+          "opening_log_id": 6986170
+        },
+        {
+          "episode_id": 27376,
+          "page_id": 19499,
+          "restriction_type": "move",
+          "level": "autoconfirmed",
+          "start_ts": "2007-02-10 16:54:24+00:00",
+          "scheduled_expiry": "2006-02-12 00:00:00+00:00",
+          "actual_end_ts": "2006-02-12 00:00:00+00:00",
+          "close_reason": "expired",
+          "opening_log_id": 6986170
+        },
+        {
+          "episode_id": 36305,
+          "page_id": 25734,
+          "restriction_type": "edit",
+          "level": "autoconfirmed",
+          "start_ts": "2008-02-25 07:29:48+00:00",
+          "scheduled_expiry": "2008-02-25 07:29:00+00:00",
+          "actual_end_ts": "2008-02-25 07:29:00+00:00",
+          "close_reason": "expired",
+          "opening_log_id": 13902739
+        },
+        {
+          "episode_id": 36342,
+          "page_id": 25734,
+          "restriction_type": "move",
+          "level": "autoconfirmed",
+          "start_ts": "2008-02-25 07:29:48+00:00",
+          "scheduled_expiry": "2008-02-25 07:29:00+00:00",
+          "actual_end_ts": "2008-02-25 07:29:00+00:00",
+          "close_reason": "expired",
+          "opening_log_id": 13902739
+        },
+        {
+          "episode_id": 37481,
+          "page_id": 26667,
+          "restriction_type": "edit",
+          "level": "autoconfirmed",
+          "start_ts": "2007-01-28 08:44:06+00:00",
+          "scheduled_expiry": "2007-01-28 08:44:00+00:00",
+          "actual_end_ts": "2007-01-28 08:44:00+00:00",
+          "close_reason": "expired",
+          "opening_log_id": 6696771
+        },
+        {
+          "episode_id": 37503,
+          "page_id": 26667,
+          "restriction_type": "move",
+          "level": "autoconfirmed",
+          "start_ts": "2007-01-28 08:44:06+00:00",
+          "scheduled_expiry": "2007-01-28 08:44:00+00:00",
+          "actual_end_ts": "2007-01-28 08:44:00+00:00",
+          "close_reason": "expired",
+          "opening_log_id": 6696771
+        },
+        {
+          "episode_id": 57686,
+          "page_id": 47717,
+          "restriction_type": "edit",
+          "level": "autoconfirmed",
+          "start_ts": "2007-01-30 07:52:52+00:00",
+          "scheduled_expiry": "2007-01-30 00:00:00+00:00",
+          "actual_end_ts": "2007-01-30 00:00:00+00:00",
+          "close_reason": "expired",
+          "opening_log_id": 6740395
+        }
+      ],
+      "status": "ok",
+      "elapsed_seconds": 0.068
+    },
+    "negative_expiry_sources": {
+      "sql": "SELECT e.level_source,count(*) AS episodes FROM analysis.protection_episode p JOIN analysis.protect_event e ON e.log_id=p.opening_log_id AND e.restriction_type=p.restriction_type WHERE p.actual_end_ts<p.start_ts GROUP BY 1 ORDER BY 2 DESC",
+      "rows": [
+        {
+          "level_source": "raw",
+          "episodes": 90
+        },
+        {
+          "level_source": "comment",
+          "episodes": 43
+        }
+      ],
+      "status": "ok",
+      "elapsed_seconds": 0.454
+    }
+  }
+}

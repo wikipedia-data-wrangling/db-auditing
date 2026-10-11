@@ -1,0 +1,40 @@
+    def test_repair_cases_and_guards(self):
+        cases = [
+            ("'''Removal of PC'''", {'action':'decrease'}),
+            ("'''Request removal of semi-protection'''", {'tier':'none','action':'decrease'}),
+            ("'''Remove: Extended Confirmed protection:'''", {'tier':'none','action':'decrease'}),
+            ("* [[User:Example]]\n'''Semi-protection''' Please protect.", {'tier':'semi'}),
+            ("'''Reason:''' Requesting edit protection.", {'tier':None,'action':None}),
+            ("'''Reason:''' Months have passed since his funeral, so request unprotection.", {'tier':'none','action':'decrease'}),
+            ("'''Reason:''' Requesting semi protection because edits are unsourced or edit wars occur.", {'tier':'semi','action':'increase'}),
+            ("'''Reason:''' '''Unprotect''' - or at least '''Semi-protect'''", {'tier':None,'status':'alternative'}),
+            ("'''Reason:''' '''Permanently full-protect''' or '''permanently extended confirmed protect'''", {'tier':None,'status':'alternative'}),
+            ("'''Semi-protection or lower'''", {'tier':None,'status':'ambiguous'}),
+            ("'''Reason:''' Requesting semi protection to reduce disruption.", {'tier':'semi','action':'increase'}),
+            ("'''Reason:''' Requesting semi protection to prevent removal of sourced material.", {'tier':'semi','action':'increase'}),
+            ("'''Reason:''' Please remove semi-protection.", {'tier':'none','origin':'semi','action':'decrease'}),
+            ("'''Reason:''' Remove protection.", {'tier':'none','action':'decrease'}),
+            ("'''Reason:''' Reduce protection to semi.", {'tier':'semi','action':'decrease'}),
+            ("'''Remove semi-protection'''", {'tier':'none','origin':'semi','action':'decrease'}),
+            ("'''Removal of extended confirmed protection'''", {'tier':'none','origin':'ecp','action':'decrease'}),
+            ("'''Remove full protection'''", {'tier':'none','origin':'full','action':'decrease'}),
+            ("'''Remove semi-protection and retain pending changes'''", {'tier':None,'status':'ambiguous'}),
+            ("'''Reduce to semi-protection'''", {'tier':'semi','action':'decrease'}),
+            ("'''Reason:''' Request full protection or edit the article to remove disputed information.", {'tier':None,'action':None,'rule':'mixed_action_alternative'}),
+            ("'''Reason:''' Request semi protection because the old full protection was removed.", {'tier':'semi','action':'increase'}),
+            ("'''Reason:''' Request indefinite move protection: disruption by autoconfirmed users.", {'tier':'move','targets':['move']}),
+            ("'''Reason:''' '''Temporary semi-protection''' A rationale '''with bold words'''", {'label_raw':'Temporary semi-protection','tier':'semi'}),
+            ("'''Reason:''' Unprotection [[Special:Contributions/1.2.3.4|1.2.3.4]]", {'tier':'none','action':'decrease'}),
+            ("'''Long-term (not necessarily indefinite) full protection'''", {'tier':'full'}),
+            ("'''Salting if not already done'''", {'tier':'salt'}),
+            ("'''Do not renew semi-protection'''", {'tier':None,'status':'ambiguous'}),
+            ("'''Reason:''' Persistent vandalism. [[User:Requester|R]]\n'''Full protection'''", {'tier':None}),
+            ("'''Reason:''' Persistent vandalism. [[User_talk:Requester|R]]\n'''Full protection'''", {'tier':None}),
+            ("Persistent vandalism.\n:[[File:Pictogram voting support.svg|20px]] '''Full protection'''", {'tier':None}),
+        ]
+        for reason,expected in cases:
+            with self.subTest(reason=reason):
+                actual=self.parse(reason)
+                for key,value in expected.items():
+                    self.assertEqual(actual.get(key),value,(key,actual))
+

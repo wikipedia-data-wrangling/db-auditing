@@ -1,0 +1,2185 @@
+{
+  "started_at": "2026-10-11T08:25:26.418146+00:00",
+  "connection": "service=wiki",
+  "scope": "Bounded read-only queries, each with its own snapshot; not a single database-wide snapshot.",
+  "results": {
+    "identity": {
+      "sql": "SELECT current_database(),current_user,version(),current_setting('port') AS port,current_setting('server_encoding') AS encoding,current_setting('transaction_read_only') AS read_only,pg_size_pretty(pg_database_size(current_database())) AS database_size",
+      "rows": [
+        {
+          "current_database": "wiki20260401",
+          "current_user": "simone",
+          "version": "PostgreSQL 18.4 (Ubuntu 18.4-1.pgdg22.04+1) on x86_64-pc-linux-gnu, compiled by gcc (Ubuntu 11.4.0-1ubuntu1~22.04.3) 11.4.0, 64-bit",
+          "port": "5434",
+          "encoding": "SQL_ASCII",
+          "read_only": "on",
+          "database_size": "14 TB"
+        }
+      ],
+      "status": "ok",
+      "elapsed_seconds": 0.067
+    },
+    "relations": {
+      "sql": "SELECT n.nspname AS schema,c.relname,c.relkind,c.reltuples::bigint AS estimated_rows,pg_total_relation_size(c.oid) AS total_bytes,obj_description(c.oid) AS description FROM pg_class c JOIN pg_namespace n ON n.oid=c.relnamespace WHERE n.nspname IN ('public','analysis','wiki_relations') AND c.relkind IN ('r','p','m','v') ORDER BY n.nspname, c.relname",
+      "rows": [
+        {
+          "schema": "analysis",
+          "relname": "block_interval",
+          "relkind": "r",
+          "estimated_rows": 28298312,
+          "total_bytes": 6103867392,
+          "description": "Block intervals replayed from logging log_type=block. [start_ts, end_ts): end = min(scheduled expiry, next reblock, unblock). expiry_ts=infinity for indefinite blocks; NULL expiry only for pre-2005 rows without params. sitewide=false rows are partial (page/namespace-scoped) blocks: do not remove those editors from the global risk set. Range blocks (is_range) and autoblock ids (#nnn) have no actor."
+        },
+        {
+          "schema": "analysis",
+          "relname": "edit_actor_full",
+          "relkind": "r",
+          "estimated_rows": 443486,
+          "total_bytes": 38862848,
+          "description": null
+        },
+        {
+          "schema": "analysis",
+          "relname": "edit_actor_smoke",
+          "relkind": "r",
+          "estimated_rows": 13056,
+          "total_bytes": 1220608,
+          "description": null
+        },
+        {
+          "schema": "analysis",
+          "relname": "edit_event_full",
+          "relkind": "r",
+          "estimated_rows": 2338602,
+          "total_bytes": 932691968,
+          "description": "Revisions of the sampled page-windows (sql/21_edit_event.sql): article (ns 0) and talk (ns 1) rows over [pull_start, pull_end) of sample_page_<mode>, plus one seed row per page before pull_start (in_range = false). section = /* Section */ autocomment, talk rows only. Revert flags: sql/22_revert_tags.sql."
+        },
+        {
+          "schema": "analysis",
+          "relname": "edit_event_smoke",
+          "relkind": "r",
+          "estimated_rows": 57977,
+          "total_bytes": 28393472,
+          "description": "Revisions of the sampled page-windows (sql/21_edit_event.sql): article (ns 0) and talk (ns 1) rows over [pull_start, pull_end) of sample_page_<mode>, plus one seed row per page before pull_start (in_range = false). section = /* Section */ autocomment, talk rows only. Revert flags: sql/22_revert_tags.sql."
+        },
+        {
+          "schema": "analysis",
+          "relname": "edit_tag_full",
+          "relkind": "r",
+          "estimated_rows": 279444,
+          "total_bytes": 18800640,
+          "description": null
+        },
+        {
+          "schema": "analysis",
+          "relname": "edit_tag_smoke",
+          "relkind": "r",
+          "estimated_rows": 14808,
+          "total_bytes": 1040384,
+          "description": null
+        },
+        {
+          "schema": "analysis",
+          "relname": "editor_history",
+          "relkind": "r",
+          "estimated_rows": 34984560,
+          "total_bytes": 4362534912,
+          "description": "Global per-actor edit history from the 2026-04-01 revision dump (DuckDB over data/raw/revision Parquet). Timestamps UTC. ts_Nth_edit = timestamp of the actor's N-th surviving edit, all namespaces. Only actors with n_edits_total >= min_edits (see analysis.editor_history_meta) are loaded."
+        },
+        {
+          "schema": "analysis",
+          "relname": "editor_history_meta",
+          "relkind": "r",
+          "estimated_rows": -1,
+          "total_bytes": 8192,
+          "description": null
+        },
+        {
+          "schema": "analysis",
+          "relname": "editor_state",
+          "relkind": "r",
+          "estimated_rows": 34984560,
+          "total_bytes": 5538832384,
+          "description": "Per-actor status timeline; one row per actor with >= min_edits surviving edits (analysis.editor_history_meta). Timestamps UTC. registration_ts from the newusers log, else first edit (registration_source). autoconfirmed_ts = max(reg+4d, 10th surviving edit), NULL if never reached (dump lacks deleted edits: fuzzy for 8-12-edit accounts); autoconfirmed_pre2008_ts = reg+4d under the pre-May-2008 rule. extendedconfirmed_ts = first EC grant in the rights log (exact; sysops are implicitly EC: use sysop_from_ts); ec_rule_ts = rule-based 30d+500 edits for cross-checks, NULL below 500 edits. NULL start with *_unlogged = true means held before the log; sysop_end_unlogged = removal not logged on enwiki."
+        },
+        {
+          "schema": "analysis",
+          "relname": "neighbour_actor_full",
+          "relkind": "r",
+          "estimated_rows": 657545,
+          "total_bytes": 57311232,
+          "description": null
+        },
+        {
+          "schema": "analysis",
+          "relname": "neighbour_actor_smoke",
+          "relkind": "r",
+          "estimated_rows": 60374,
+          "total_bytes": 5603328,
+          "description": null
+        },
+        {
+          "schema": "analysis",
+          "relname": "neighbour_cand_full",
+          "relkind": "r",
+          "estimated_rows": 1119368,
+          "total_bytes": 157949952,
+          "description": "Neighbour candidates of sample_page_full (python/export_neighbours.py select: seed 20260930, k_cand 40, hub cap n_in <= 20000); sql/23_neighbour_page.sql picks K per (window, direction)."
+        },
+        {
+          "schema": "analysis",
+          "relname": "neighbour_cand_smoke",
+          "relkind": "r",
+          "estimated_rows": 27699,
+          "total_bytes": 3964928,
+          "description": "Neighbour candidates of sample_page_smoke (python/export_neighbours.py select: seed 20260930, k_cand 40, hub cap n_in <= 20000); sql/23_neighbour_page.sql picks K per (window, direction)."
+        },
+        {
+          "schema": "analysis",
+          "relname": "neighbour_event_full",
+          "relkind": "r",
+          "estimated_rows": 3201572,
+          "total_bytes": 681009152,
+          "description": "Article revisions of the neighbour pages (sql/24_neighbour_event.sql): [pull_start, pull_end) of each segment of neighbour_pull_<mode> plus one seed row per segment before pull_start (in_range = false). Revert flags from the sha1 rule only (no change_tag pass): is_revert = is_revert_sha1, was_reverted = was_reverted_sha1."
+        },
+        {
+          "schema": "analysis",
+          "relname": "neighbour_event_smoke",
+          "relkind": "r",
+          "estimated_rows": 277682,
+          "total_bytes": 59080704,
+          "description": "Article revisions of the neighbour pages (sql/24_neighbour_event.sql): [pull_start, pull_end) of each segment of neighbour_pull_<mode> plus one seed row per segment before pull_start (in_range = false). Revert flags from the sha1 rule only (no change_tag pass): is_revert = is_revert_sha1, was_reverted = was_reverted_sha1."
+        },
+        {
+          "schema": "analysis",
+          "relname": "neighbour_page_full",
+          "relkind": "r",
+          "estimated_rows": 62565,
+          "total_bytes": 23019520,
+          "description": "Neighbour pages of sample_page_<mode> (sql/23_neighbour_page.sql): up to k_used out-link and k_used in-link neighbours per window from the current link graph (article_neighbours.parquet), seeded-hash order, excluding sampled pages, redirects, hubs (> 20k in-links) and pages with < min_edits revisions in the year before pull_start. direction = out: the focal page links to the neighbour; in: the neighbour links to the focal page. pull_id -> neighbour_pull_<mode>, the merged revision-pull segment of the neighbour page."
+        },
+        {
+          "schema": "analysis",
+          "relname": "neighbour_page_smoke",
+          "relkind": "r",
+          "estimated_rows": 6001,
+          "total_bytes": 2523136,
+          "description": "Neighbour pages of sample_page_<mode> (sql/23_neighbour_page.sql): up to k_used out-link and k_used in-link neighbours per window from the current link graph (article_neighbours.parquet), seeded-hash order, excluding sampled pages, redirects, hubs (> 20k in-links) and pages with < min_edits revisions in the year before pull_start. direction = out: the focal page links to the neighbour; in: the neighbour links to the focal page. pull_id -> neighbour_pull_<mode>, the merged revision-pull segment of the neighbour page."
+        },
+        {
+          "schema": "analysis",
+          "relname": "neighbour_pull_full",
+          "relkind": "r",
+          "estimated_rows": 61450,
+          "total_bytes": 7512064,
+          "description": "Merged [pull_start, pull_end) segments per distinct neighbour page of neighbour_page_<mode> (sql/23): one LATERAL revision pull each in sql/24_neighbour_event.sql. n_windows = windows sharing the segment."
+        },
+        {
+          "schema": "analysis",
+          "relname": "neighbour_pull_smoke",
+          "relkind": "r",
+          "estimated_rows": 5959,
+          "total_bytes": 868352,
+          "description": "Merged [pull_start, pull_end) segments per distinct neighbour page of neighbour_page_<mode> (sql/23): one LATERAL revision pull each in sql/24_neighbour_event.sql. n_windows = windows sharing the segment."
+        },
+        {
+          "schema": "analysis",
+          "relname": "page_quality",
+          "relkind": "r",
+          "estimated_rows": 52118,
+          "total_bytes": 105857024,
+          "description": null
+        },
+        {
+          "schema": "analysis",
+          "relname": "page_topic",
+          "relkind": "r",
+          "estimated_rows": 8507,
+          "total_bytes": 22495232,
+          "description": null
+        },
+        {
+          "schema": "analysis",
+          "relname": "page_topic_wp",
+          "relkind": "r",
+          "estimated_rows": 15908,
+          "total_bytes": 2957312,
+          "description": "WikiProject-banner topic proxy (python/wikiproject_topic.py; halfak 2019 drafttopic taxonomy). One row per sample_page_full window."
+        },
+        {
+          "schema": "analysis",
+          "relname": "page_wp_class",
+          "relkind": "r",
+          "estimated_rows": 9756,
+          "total_bytes": 3579904,
+          "description": null
+        },
+        {
+          "schema": "analysis",
+          "relname": "protect_event",
+          "relkind": "r",
+          "estimated_rows": 1126151,
+          "total_bytes": 757989376,
+          "description": "One row per (logging row, restriction type) for log_type protect/stable. is_opening rows set (restriction_type, level, expiry); is_closing rows (unprotect/reset) clear the page. page_id via api_logpage > api_pageid > associated_rev_id > title (resolution_method). params_era documents which parser produced the row; expiry NULL with is_indefinite=false means the expiry token could not be parsed (see expiry_raw)."
+        },
+        {
+          "schema": "analysis",
+          "relname": "protect_log_api",
+          "relkind": "r",
+          "estimated_rows": 846191,
+          "total_bytes": 380256256,
+          "description": "enwiki protection log as returned by the MediaWiki API (fetch-protection-events/fetch_protection_log.py, pulled 2026-05-06). Joined to logging on log_id to recover page ids (logging.log_page is NULL). api_logpage/api_pageid NULL where the API returned 0."
+        },
+        {
+          "schema": "analysis",
+          "relname": "protect_log_src",
+          "relkind": "r",
+          "estimated_rows": 871698,
+          "total_bytes": 320667648,
+          "description": "Verbatim copy of logging rows with log_type IN (protect, stable), so later scripts never touch logging again."
+        },
+        {
+          "schema": "analysis",
+          "relname": "protection_episode",
+          "relkind": "r",
+          "estimated_rows": 1004247,
+          "total_bytes": 254869504,
+          "description": "Protection spells per (page_id, restriction_type) replayed from analysis.protect_event. scheduled_expiry is the admin-chosen expiry (RD clock); actual_end_ts = min(next boundary, expiry), NULL while open at 2026-04-01. close_reason: modified (same type re-set), dropped (type absent from the next protect/modify row), unprotected, expired, open. Page moves not stitched (page_id already survives moves for api_logpage-resolved rows)."
+        },
+        {
+          "schema": "analysis",
+          "relname": "quality_cutoff",
+          "relkind": "r",
+          "estimated_rows": 56333,
+          "total_bytes": 14614528,
+          "description": null
+        },
+        {
+          "schema": "analysis",
+          "relname": "rfpp_intent_v2_changes",
+          "relkind": "r",
+          "estimated_rows": 44075,
+          "total_bytes": 23085056,
+          "description": null
+        },
+        {
+          "schema": "analysis",
+          "relname": "rfpp_intent_v2_first_apply_changes",
+          "relkind": "r",
+          "estimated_rows": 44075,
+          "total_bytes": 23085056,
+          "description": null
+        },
+        {
+          "schema": "analysis",
+          "relname": "rfpp_intent_v2_first_apply_invalidations",
+          "relkind": "r",
+          "estimated_rows": -1,
+          "total_bytes": 32768,
+          "description": null
+        },
+        {
+          "schema": "analysis",
+          "relname": "rfpp_intent_v2_first_run",
+          "relkind": "r",
+          "estimated_rows": -1,
+          "total_bytes": 16384,
+          "description": null
+        },
+        {
+          "schema": "analysis",
+          "relname": "rfpp_intent_v2_invalidations",
+          "relkind": "r",
+          "estimated_rows": -1,
+          "total_bytes": 32768,
+          "description": null
+        },
+        {
+          "schema": "analysis",
+          "relname": "rfpp_intent_v2_run",
+          "relkind": "r",
+          "estimated_rows": -1,
+          "total_bytes": 32768,
+          "description": null
+        },
+        {
+          "schema": "analysis",
+          "relname": "rfpp_intent_v2_stage",
+          "relkind": "r",
+          "estimated_rows": 217554,
+          "total_bytes": 214269952,
+          "description": "Full-population staged RFPP intent-v2 candidates for db-auditing issue #1. Proposed values and explicit uncertainty, not applied automatically by this script."
+        },
+        {
+          "schema": "analysis",
+          "relname": "rfpp_request",
+          "relkind": "r",
+          "estimated_rows": 214488,
+          "total_bytes": 3612164096,
+          "description": "Requests for Page Protection parsed from Wikipedia:Requests for page protection archives (fetch-protection-events/fetch_rfpp.py); rebuilt by load_rfpp_postgres.py. outcome=granted|denied|other|unparsed; page_id/actor ids resolved against the 2026-04-01 dump."
+        },
+        {
+          "schema": "analysis",
+          "relname": "rfpp_request_pre_intent_v2",
+          "relkind": "r",
+          "estimated_rows": 217554,
+          "total_bytes": 180477952,
+          "description": "Immutable full RFPP snapshot before issue #1 intent-v2 repair, 2026-10-10. Includes raw fields and original classifications/linkage. Retain for rollback and historical analyses."
+        },
+        {
+          "schema": "analysis",
+          "relname": "rights_change",
+          "relkind": "r",
+          "estimated_rows": 151242,
+          "total_bytes": 22822912,
+          "description": null
+        },
+        {
+          "schema": "analysis",
+          "relname": "sample_cand_full",
+          "relkind": "r",
+          "estimated_rows": 480000,
+          "total_bytes": 65224704,
+          "description": null
+        },
+        {
+          "schema": "analysis",
+          "relname": "sample_cand_pre_full",
+          "relkind": "r",
+          "estimated_rows": 480000,
+          "total_bytes": 76767232,
+          "description": null
+        },
+        {
+          "schema": "analysis",
+          "relname": "sample_cand_pre_full_0",
+          "relkind": "r",
+          "estimated_rows": 81360,
+          "total_bytes": 12623872,
+          "description": null
+        },
+        {
+          "schema": "analysis",
+          "relname": "sample_cand_pre_full_1",
+          "relkind": "r",
+          "estimated_rows": 78480,
+          "total_bytes": 12099584,
+          "description": null
+        },
+        {
+          "schema": "analysis",
+          "relname": "sample_cand_pre_full_2",
+          "relkind": "r",
+          "estimated_rows": 82260,
+          "total_bytes": 12623872,
+          "description": null
+        },
+        {
+          "schema": "analysis",
+          "relname": "sample_cand_pre_full_3",
+          "relkind": "r",
+          "estimated_rows": 81720,
+          "total_bytes": 12623872,
+          "description": null
+        },
+        {
+          "schema": "analysis",
+          "relname": "sample_cand_pre_full_4",
+          "relkind": "r",
+          "estimated_rows": 81240,
+          "total_bytes": 12623872,
+          "description": null
+        },
+        {
+          "schema": "analysis",
+          "relname": "sample_cand_pre_full_5",
+          "relkind": "r",
+          "estimated_rows": 74940,
+          "total_bytes": 11575296,
+          "description": null
+        },
+        {
+          "schema": "analysis",
+          "relname": "sample_cand_pre_smoke",
+          "relkind": "r",
+          "estimated_rows": 40000,
+          "total_bytes": 6627328,
+          "description": null
+        },
+        {
+          "schema": "analysis",
+          "relname": "sample_cand_pre_smoke_0",
+          "relkind": "r",
+          "estimated_rows": 21200,
+          "total_bytes": 3293184,
+          "description": null
+        },
+        {
+          "schema": "analysis",
+          "relname": "sample_cand_pre_smoke_1",
+          "relkind": "r",
+          "estimated_rows": 18800,
+          "total_bytes": 2940928,
+          "description": null
+        },
+        {
+          "schema": "analysis",
+          "relname": "sample_cand_smoke",
+          "relkind": "r",
+          "estimated_rows": 40000,
+          "total_bytes": 5578752,
+          "description": null
+        },
+        {
+          "schema": "analysis",
+          "relname": "sample_cand_top_full",
+          "relkind": "r",
+          "estimated_rows": 40000,
+          "total_bytes": 7380992,
+          "description": null
+        },
+        {
+          "schema": "analysis",
+          "relname": "sample_cand_top_smoke",
+          "relkind": "r",
+          "estimated_rows": 1000,
+          "total_bytes": 270336,
+          "description": null
+        },
+        {
+          "schema": "analysis",
+          "relname": "sample_page_full",
+          "relkind": "r",
+          "estimated_rows": 15908,
+          "total_bytes": 11329536,
+          "description": "Page-window sample (sql/20_sample_page.sql, mode = see column). One row per page-window; arms granted / denied / control. admin_ts = RFPP decision (controls: the matched request's decision, pseudo-anchor); window = admin_ts +- 90 d; pull = [window_start - 30 d, window_end + 84 d]. expiry_anchor = scheduled expiry (granted) or a pseudo-expiry (median granted duration by requested level x year) for denied / control (expiry_is_pseudo). elig_level_code: 0 none 1 autoconfirmed 2 extendedconfirmed 3 templateeditor 4 sysop (LEVEL_CODE of src/stats.jl)."
+        },
+        {
+          "schema": "analysis",
+          "relname": "sample_page_smoke",
+          "relkind": "r",
+          "estimated_rows": 398,
+          "total_bytes": 393216,
+          "description": "Page-window sample (sql/20_sample_page.sql, mode = see column). One row per page-window; arms granted / denied / control. admin_ts = RFPP decision (controls: the matched request's decision, pseudo-anchor); window = admin_ts +- 90 d; pull = [window_start - 30 d, window_end + 84 d]. expiry_anchor = scheduled expiry (granted) or a pseudo-expiry (median granted duration by requested level x year) for denied / control (expiry_is_pseudo). elig_level_code: 0 none 1 autoconfirmed 2 extendedconfirmed 3 templateeditor 4 sysop (LEVEL_CODE of src/stats.jl)."
+        },
+        {
+          "schema": "analysis",
+          "relname": "sample_request_full",
+          "relkind": "v",
+          "estimated_rows": -1,
+          "total_bytes": 0,
+          "description": null
+        },
+        {
+          "schema": "analysis",
+          "relname": "sample_request_smoke",
+          "relkind": "r",
+          "estimated_rows": 200,
+          "total_bytes": 73728,
+          "description": null
+        },
+        {
+          "schema": "analysis",
+          "relname": "sample_request_treated",
+          "relkind": "r",
+          "estimated_rows": 10000,
+          "total_bytes": 2105344,
+          "description": null
+        },
+        {
+          "schema": "analysis",
+          "relname": "sample_treated_full",
+          "relkind": "r",
+          "estimated_rows": 8000,
+          "total_bytes": 2334720,
+          "description": null
+        },
+        {
+          "schema": "analysis",
+          "relname": "sample_treated_smoke",
+          "relkind": "r",
+          "estimated_rows": 200,
+          "total_bytes": 90112,
+          "description": null
+        },
+        {
+          "schema": "analysis",
+          "relname": "user_group_interval",
+          "relkind": "r",
+          "estimated_rows": 129906,
+          "total_bytes": 41222144,
+          "description": null
+        },
+        {
+          "schema": "analysis",
+          "relname": "user_registration",
+          "relkind": "r",
+          "estimated_rows": 51598708,
+          "total_bytes": 4829847552,
+          "description": null
+        },
+        {
+          "schema": "public",
+          "relname": "actor",
+          "relkind": "r",
+          "estimated_rows": 110916064,
+          "total_bytes": 20791484416,
+          "description": null
+        },
+        {
+          "schema": "public",
+          "relname": "change_tag",
+          "relkind": "r",
+          "estimated_rows": 545880896,
+          "total_bytes": 70455263232,
+          "description": null
+        },
+        {
+          "schema": "public",
+          "relname": "change_tag_def",
+          "relkind": "r",
+          "estimated_rows": 335,
+          "total_bytes": 90112,
+          "description": null
+        },
+        {
+          "schema": "public",
+          "relname": "logging",
+          "relkind": "r",
+          "estimated_rows": 158079680,
+          "total_bytes": 57707479040,
+          "description": null
+        },
+        {
+          "schema": "public",
+          "relname": "page",
+          "relkind": "r",
+          "estimated_rows": 65414500,
+          "total_bytes": 13671596032,
+          "description": null
+        },
+        {
+          "schema": "public",
+          "relname": "page_restrictions",
+          "relkind": "r",
+          "estimated_rows": 192836,
+          "total_bytes": 22888448,
+          "description": null
+        },
+        {
+          "schema": "public",
+          "relname": "protected_titles",
+          "relkind": "r",
+          "estimated_rows": 58920,
+          "total_bytes": 9027584,
+          "description": null
+        },
+        {
+          "schema": "public",
+          "relname": "revision",
+          "relkind": "r",
+          "estimated_rows": 1249572224,
+          "total_bytes": 360683225088,
+          "description": null
+        },
+        {
+          "schema": "public",
+          "relname": "revision_text",
+          "relkind": "p",
+          "estimated_rows": 1254580608,
+          "total_bytes": 0,
+          "description": null
+        },
+        {
+          "schema": "public",
+          "relname": "revision_text_p1",
+          "relkind": "r",
+          "estimated_rows": 914149056,
+          "total_bytes": 10420643258368,
+          "description": null
+        },
+        {
+          "schema": "public",
+          "relname": "revision_text_p2",
+          "relkind": "r",
+          "estimated_rows": 333731104,
+          "total_bytes": 4653445701632,
+          "description": null
+        },
+        {
+          "schema": "public",
+          "relname": "user_former_groups",
+          "relkind": "r",
+          "estimated_rows": 22004,
+          "total_bytes": 2285568,
+          "description": null
+        },
+        {
+          "schema": "public",
+          "relname": "user_groups",
+          "relkind": "r",
+          "estimated_rows": 103060,
+          "total_bytes": 11943936,
+          "description": null
+        },
+        {
+          "schema": "wiki_relations",
+          "relname": "change_tag",
+          "relkind": "v",
+          "estimated_rows": -1,
+          "total_bytes": 0,
+          "description": null
+        },
+        {
+          "schema": "wiki_relations",
+          "relname": "logging",
+          "relkind": "v",
+          "estimated_rows": -1,
+          "total_bytes": 0,
+          "description": null
+        },
+        {
+          "schema": "wiki_relations",
+          "relname": "page_restrictions",
+          "relkind": "v",
+          "estimated_rows": -1,
+          "total_bytes": 0,
+          "description": null
+        },
+        {
+          "schema": "wiki_relations",
+          "relname": "protected_titles",
+          "relkind": "v",
+          "estimated_rows": -1,
+          "total_bytes": 0,
+          "description": null
+        },
+        {
+          "schema": "wiki_relations",
+          "relname": "revision",
+          "relkind": "v",
+          "estimated_rows": -1,
+          "total_bytes": 0,
+          "description": null
+        },
+        {
+          "schema": "wiki_relations",
+          "relname": "user_former_groups",
+          "relkind": "v",
+          "estimated_rows": -1,
+          "total_bytes": 0,
+          "description": null
+        },
+        {
+          "schema": "wiki_relations",
+          "relname": "user_groups",
+          "relkind": "v",
+          "estimated_rows": -1,
+          "total_bytes": 0,
+          "description": null
+        }
+      ],
+      "status": "ok",
+      "elapsed_seconds": 0.2
+    },
+    "columns": {
+      "sql": "SELECT table_schema,table_name,column_name,data_type,is_nullable FROM information_schema.columns WHERE table_schema IN ('public','analysis') AND table_name IN ('page','actor','revision','logging','page_restrictions','protected_titles','protect_event','protection_episode','rfpp_request','protect_log_api','sample_request_full','sample_page_full') ORDER BY table_schema,table_name,ordinal_position",
+      "rows": [
+        {
+          "table_schema": "analysis",
+          "table_name": "protect_event",
+          "column_name": "event_id",
+          "data_type": "bigint",
+          "is_nullable": "NO"
+        },
+        {
+          "table_schema": "analysis",
+          "table_name": "protect_event",
+          "column_name": "log_id",
+          "data_type": "bigint",
+          "is_nullable": "NO"
+        },
+        {
+          "table_schema": "analysis",
+          "table_name": "protect_event",
+          "column_name": "event_seq",
+          "data_type": "smallint",
+          "is_nullable": "NO"
+        },
+        {
+          "table_schema": "analysis",
+          "table_name": "protect_event",
+          "column_name": "ts",
+          "data_type": "timestamp with time zone",
+          "is_nullable": "NO"
+        },
+        {
+          "table_schema": "analysis",
+          "table_name": "protect_event",
+          "column_name": "log_type",
+          "data_type": "text",
+          "is_nullable": "NO"
+        },
+        {
+          "table_schema": "analysis",
+          "table_name": "protect_event",
+          "column_name": "log_action",
+          "data_type": "text",
+          "is_nullable": "NO"
+        },
+        {
+          "table_schema": "analysis",
+          "table_name": "protect_event",
+          "column_name": "admin_actor_id",
+          "data_type": "bigint",
+          "is_nullable": "YES"
+        },
+        {
+          "table_schema": "analysis",
+          "table_name": "protect_event",
+          "column_name": "admin_name",
+          "data_type": "text",
+          "is_nullable": "YES"
+        },
+        {
+          "table_schema": "analysis",
+          "table_name": "protect_event",
+          "column_name": "page_namespace",
+          "data_type": "integer",
+          "is_nullable": "NO"
+        },
+        {
+          "table_schema": "analysis",
+          "table_name": "protect_event",
+          "column_name": "log_title",
+          "data_type": "text",
+          "is_nullable": "NO"
+        },
+        {
+          "table_schema": "analysis",
+          "table_name": "protect_event",
+          "column_name": "page_id",
+          "data_type": "bigint",
+          "is_nullable": "YES"
+        },
+        {
+          "table_schema": "analysis",
+          "table_name": "protect_event",
+          "column_name": "resolution_method",
+          "data_type": "text",
+          "is_nullable": "YES"
+        },
+        {
+          "table_schema": "analysis",
+          "table_name": "protect_event",
+          "column_name": "is_opening",
+          "data_type": "boolean",
+          "is_nullable": "NO"
+        },
+        {
+          "table_schema": "analysis",
+          "table_name": "protect_event",
+          "column_name": "is_closing",
+          "data_type": "boolean",
+          "is_nullable": "NO"
+        },
+        {
+          "table_schema": "analysis",
+          "table_name": "protect_event",
+          "column_name": "restriction_type",
+          "data_type": "text",
+          "is_nullable": "YES"
+        },
+        {
+          "table_schema": "analysis",
+          "table_name": "protect_event",
+          "column_name": "level",
+          "data_type": "text",
+          "is_nullable": "YES"
+        },
+        {
+          "table_schema": "analysis",
+          "table_name": "protect_event",
+          "column_name": "expiry",
+          "data_type": "timestamp with time zone",
+          "is_nullable": "YES"
+        },
+        {
+          "table_schema": "analysis",
+          "table_name": "protect_event",
+          "column_name": "is_indefinite",
+          "data_type": "boolean",
+          "is_nullable": "YES"
+        },
+        {
+          "table_schema": "analysis",
+          "table_name": "protect_event",
+          "column_name": "cascade",
+          "data_type": "boolean",
+          "is_nullable": "YES"
+        },
+        {
+          "table_schema": "analysis",
+          "table_name": "protect_event",
+          "column_name": "params_era",
+          "data_type": "text",
+          "is_nullable": "NO"
+        },
+        {
+          "table_schema": "analysis",
+          "table_name": "protect_event",
+          "column_name": "level_source",
+          "data_type": "text",
+          "is_nullable": "YES"
+        },
+        {
+          "table_schema": "analysis",
+          "table_name": "protect_event",
+          "column_name": "expiry_raw",
+          "data_type": "text",
+          "is_nullable": "YES"
+        },
+        {
+          "table_schema": "analysis",
+          "table_name": "protect_event",
+          "column_name": "move_old_title",
+          "data_type": "text",
+          "is_nullable": "YES"
+        },
+        {
+          "table_schema": "analysis",
+          "table_name": "protect_event",
+          "column_name": "comment",
+          "data_type": "text",
+          "is_nullable": "YES"
+        },
+        {
+          "table_schema": "analysis",
+          "table_name": "protect_log_api",
+          "column_name": "log_id",
+          "data_type": "bigint",
+          "is_nullable": "NO"
+        },
+        {
+          "table_schema": "analysis",
+          "table_name": "protect_log_api",
+          "column_name": "api_pageid",
+          "data_type": "bigint",
+          "is_nullable": "YES"
+        },
+        {
+          "table_schema": "analysis",
+          "table_name": "protect_log_api",
+          "column_name": "api_logpage",
+          "data_type": "bigint",
+          "is_nullable": "YES"
+        },
+        {
+          "table_schema": "analysis",
+          "table_name": "protect_log_api",
+          "column_name": "api_revid",
+          "data_type": "bigint",
+          "is_nullable": "YES"
+        },
+        {
+          "table_schema": "analysis",
+          "table_name": "protect_log_api",
+          "column_name": "ns",
+          "data_type": "integer",
+          "is_nullable": "YES"
+        },
+        {
+          "table_schema": "analysis",
+          "table_name": "protect_log_api",
+          "column_name": "title",
+          "data_type": "text",
+          "is_nullable": "YES"
+        },
+        {
+          "table_schema": "analysis",
+          "table_name": "protect_log_api",
+          "column_name": "log_type",
+          "data_type": "text",
+          "is_nullable": "YES"
+        },
+        {
+          "table_schema": "analysis",
+          "table_name": "protect_log_api",
+          "column_name": "action",
+          "data_type": "text",
+          "is_nullable": "YES"
+        },
+        {
+          "table_schema": "analysis",
+          "table_name": "protect_log_api",
+          "column_name": "ts",
+          "data_type": "timestamp with time zone",
+          "is_nullable": "YES"
+        },
+        {
+          "table_schema": "analysis",
+          "table_name": "protect_log_api",
+          "column_name": "user_name",
+          "data_type": "text",
+          "is_nullable": "YES"
+        },
+        {
+          "table_schema": "analysis",
+          "table_name": "protect_log_api",
+          "column_name": "user_id",
+          "data_type": "bigint",
+          "is_nullable": "YES"
+        },
+        {
+          "table_schema": "analysis",
+          "table_name": "protect_log_api",
+          "column_name": "params",
+          "data_type": "jsonb",
+          "is_nullable": "YES"
+        },
+        {
+          "table_schema": "analysis",
+          "table_name": "protect_log_api",
+          "column_name": "comment",
+          "data_type": "text",
+          "is_nullable": "YES"
+        },
+        {
+          "table_schema": "analysis",
+          "table_name": "protect_log_api",
+          "column_name": "tags",
+          "data_type": "ARRAY",
+          "is_nullable": "YES"
+        },
+        {
+          "table_schema": "analysis",
+          "table_name": "protect_log_api",
+          "column_name": "action_hidden",
+          "data_type": "boolean",
+          "is_nullable": "NO"
+        },
+        {
+          "table_schema": "analysis",
+          "table_name": "protect_log_api",
+          "column_name": "user_hidden",
+          "data_type": "boolean",
+          "is_nullable": "NO"
+        },
+        {
+          "table_schema": "analysis",
+          "table_name": "protect_log_api",
+          "column_name": "comment_hidden",
+          "data_type": "boolean",
+          "is_nullable": "NO"
+        },
+        {
+          "table_schema": "analysis",
+          "table_name": "protect_log_api",
+          "column_name": "suppressed",
+          "data_type": "boolean",
+          "is_nullable": "NO"
+        },
+        {
+          "table_schema": "analysis",
+          "table_name": "protect_log_api",
+          "column_name": "collected_at",
+          "data_type": "timestamp with time zone",
+          "is_nullable": "YES"
+        },
+        {
+          "table_schema": "analysis",
+          "table_name": "protection_episode",
+          "column_name": "episode_id",
+          "data_type": "bigint",
+          "is_nullable": "NO"
+        },
+        {
+          "table_schema": "analysis",
+          "table_name": "protection_episode",
+          "column_name": "page_id",
+          "data_type": "bigint",
+          "is_nullable": "NO"
+        },
+        {
+          "table_schema": "analysis",
+          "table_name": "protection_episode",
+          "column_name": "restriction_type",
+          "data_type": "text",
+          "is_nullable": "NO"
+        },
+        {
+          "table_schema": "analysis",
+          "table_name": "protection_episode",
+          "column_name": "level",
+          "data_type": "text",
+          "is_nullable": "NO"
+        },
+        {
+          "table_schema": "analysis",
+          "table_name": "protection_episode",
+          "column_name": "start_ts",
+          "data_type": "timestamp with time zone",
+          "is_nullable": "NO"
+        },
+        {
+          "table_schema": "analysis",
+          "table_name": "protection_episode",
+          "column_name": "scheduled_expiry",
+          "data_type": "timestamp with time zone",
+          "is_nullable": "YES"
+        },
+        {
+          "table_schema": "analysis",
+          "table_name": "protection_episode",
+          "column_name": "actual_end_ts",
+          "data_type": "timestamp with time zone",
+          "is_nullable": "YES"
+        },
+        {
+          "table_schema": "analysis",
+          "table_name": "protection_episode",
+          "column_name": "close_reason",
+          "data_type": "text",
+          "is_nullable": "NO"
+        },
+        {
+          "table_schema": "analysis",
+          "table_name": "protection_episode",
+          "column_name": "is_indefinite",
+          "data_type": "boolean",
+          "is_nullable": "NO"
+        },
+        {
+          "table_schema": "analysis",
+          "table_name": "protection_episode",
+          "column_name": "expiry_unknown",
+          "data_type": "boolean",
+          "is_nullable": "NO"
+        },
+        {
+          "table_schema": "analysis",
+          "table_name": "protection_episode",
+          "column_name": "cascade",
+          "data_type": "boolean",
+          "is_nullable": "NO"
+        },
+        {
+          "table_schema": "analysis",
+          "table_name": "protection_episode",
+          "column_name": "opening_log_id",
+          "data_type": "bigint",
+          "is_nullable": "NO"
+        },
+        {
+          "table_schema": "analysis",
+          "table_name": "protection_episode",
+          "column_name": "closing_log_id",
+          "data_type": "bigint",
+          "is_nullable": "YES"
+        },
+        {
+          "table_schema": "analysis",
+          "table_name": "protection_episode",
+          "column_name": "admin_actor_id",
+          "data_type": "bigint",
+          "is_nullable": "YES"
+        },
+        {
+          "table_schema": "analysis",
+          "table_name": "protection_episode",
+          "column_name": "n_relogged",
+          "data_type": "integer",
+          "is_nullable": "NO"
+        },
+        {
+          "table_schema": "analysis",
+          "table_name": "protection_episode",
+          "column_name": "duration_scheduled",
+          "data_type": "interval",
+          "is_nullable": "YES"
+        },
+        {
+          "table_schema": "analysis",
+          "table_name": "protection_episode",
+          "column_name": "duration_actual",
+          "data_type": "interval",
+          "is_nullable": "YES"
+        },
+        {
+          "table_schema": "analysis",
+          "table_name": "rfpp_request",
+          "column_name": "rfpp_id",
+          "data_type": "bigint",
+          "is_nullable": "NO"
+        },
+        {
+          "table_schema": "analysis",
+          "table_name": "rfpp_request",
+          "column_name": "page_raw",
+          "data_type": "text",
+          "is_nullable": "NO"
+        },
+        {
+          "table_schema": "analysis",
+          "table_name": "rfpp_request",
+          "column_name": "page_namespace",
+          "data_type": "integer",
+          "is_nullable": "YES"
+        },
+        {
+          "table_schema": "analysis",
+          "table_name": "rfpp_request",
+          "column_name": "page_title",
+          "data_type": "bytea",
+          "is_nullable": "YES"
+        },
+        {
+          "table_schema": "analysis",
+          "table_name": "rfpp_request",
+          "column_name": "page_id",
+          "data_type": "bigint",
+          "is_nullable": "YES"
+        },
+        {
+          "table_schema": "analysis",
+          "table_name": "rfpp_request",
+          "column_name": "heading",
+          "data_type": "text",
+          "is_nullable": "YES"
+        },
+        {
+          "table_schema": "analysis",
+          "table_name": "rfpp_request",
+          "column_name": "requester",
+          "data_type": "text",
+          "is_nullable": "YES"
+        },
+        {
+          "table_schema": "analysis",
+          "table_name": "rfpp_request",
+          "column_name": "requester_name",
+          "data_type": "bytea",
+          "is_nullable": "YES"
+        },
+        {
+          "table_schema": "analysis",
+          "table_name": "rfpp_request",
+          "column_name": "requester_actor_id",
+          "data_type": "bigint",
+          "is_nullable": "YES"
+        },
+        {
+          "table_schema": "analysis",
+          "table_name": "rfpp_request",
+          "column_name": "request_timestamp",
+          "data_type": "timestamp with time zone",
+          "is_nullable": "YES"
+        },
+        {
+          "table_schema": "analysis",
+          "table_name": "rfpp_request",
+          "column_name": "reason",
+          "data_type": "text",
+          "is_nullable": "YES"
+        },
+        {
+          "table_schema": "analysis",
+          "table_name": "rfpp_request",
+          "column_name": "response_code",
+          "data_type": "text",
+          "is_nullable": "YES"
+        },
+        {
+          "table_schema": "analysis",
+          "table_name": "rfpp_request",
+          "column_name": "outcome",
+          "data_type": "text",
+          "is_nullable": "NO"
+        },
+        {
+          "table_schema": "analysis",
+          "table_name": "rfpp_request",
+          "column_name": "admin",
+          "data_type": "text",
+          "is_nullable": "YES"
+        },
+        {
+          "table_schema": "analysis",
+          "table_name": "rfpp_request",
+          "column_name": "admin_name",
+          "data_type": "bytea",
+          "is_nullable": "YES"
+        },
+        {
+          "table_schema": "analysis",
+          "table_name": "rfpp_request",
+          "column_name": "admin_actor_id",
+          "data_type": "bigint",
+          "is_nullable": "YES"
+        },
+        {
+          "table_schema": "analysis",
+          "table_name": "rfpp_request",
+          "column_name": "admin_timestamp",
+          "data_type": "timestamp with time zone",
+          "is_nullable": "YES"
+        },
+        {
+          "table_schema": "analysis",
+          "table_name": "rfpp_request",
+          "column_name": "archive_page",
+          "data_type": "text",
+          "is_nullable": "NO"
+        },
+        {
+          "table_schema": "analysis",
+          "table_name": "rfpp_request",
+          "column_name": "collected_at",
+          "data_type": "timestamp with time zone",
+          "is_nullable": "YES"
+        },
+        {
+          "table_schema": "analysis",
+          "table_name": "rfpp_request",
+          "column_name": "requested_action",
+          "data_type": "text",
+          "is_nullable": "YES"
+        },
+        {
+          "table_schema": "analysis",
+          "table_name": "rfpp_request",
+          "column_name": "requested_level",
+          "data_type": "text",
+          "is_nullable": "YES"
+        },
+        {
+          "table_schema": "analysis",
+          "table_name": "rfpp_request",
+          "column_name": "requested_level_source",
+          "data_type": "text",
+          "is_nullable": "YES"
+        },
+        {
+          "table_schema": "analysis",
+          "table_name": "rfpp_request",
+          "column_name": "request_label",
+          "data_type": "text",
+          "is_nullable": "YES"
+        },
+        {
+          "table_schema": "analysis",
+          "table_name": "rfpp_request",
+          "column_name": "substitute_remedy",
+          "data_type": "text",
+          "is_nullable": "YES"
+        },
+        {
+          "table_schema": "analysis",
+          "table_name": "rfpp_request",
+          "column_name": "self_decided",
+          "data_type": "boolean",
+          "is_nullable": "YES"
+        },
+        {
+          "table_schema": "analysis",
+          "table_name": "rfpp_request",
+          "column_name": "decision_ts",
+          "data_type": "timestamp with time zone",
+          "is_nullable": "YES"
+        },
+        {
+          "table_schema": "analysis",
+          "table_name": "rfpp_request",
+          "column_name": "page_is_redirect",
+          "data_type": "boolean",
+          "is_nullable": "YES"
+        },
+        {
+          "table_schema": "analysis",
+          "table_name": "rfpp_request",
+          "column_name": "page_id_log",
+          "data_type": "bigint",
+          "is_nullable": "YES"
+        },
+        {
+          "table_schema": "analysis",
+          "table_name": "rfpp_request",
+          "column_name": "page_id_match",
+          "data_type": "bigint",
+          "is_nullable": "YES"
+        },
+        {
+          "table_schema": "analysis",
+          "table_name": "rfpp_request",
+          "column_name": "matched_log_id",
+          "data_type": "bigint",
+          "is_nullable": "YES"
+        },
+        {
+          "table_schema": "analysis",
+          "table_name": "rfpp_request",
+          "column_name": "matched_offset",
+          "data_type": "interval",
+          "is_nullable": "YES"
+        },
+        {
+          "table_schema": "analysis",
+          "table_name": "rfpp_request",
+          "column_name": "matched_action",
+          "data_type": "text",
+          "is_nullable": "YES"
+        },
+        {
+          "table_schema": "analysis",
+          "table_name": "rfpp_request",
+          "column_name": "matched_same_admin",
+          "data_type": "boolean",
+          "is_nullable": "YES"
+        },
+        {
+          "table_schema": "analysis",
+          "table_name": "rfpp_request",
+          "column_name": "granted_type",
+          "data_type": "text",
+          "is_nullable": "YES"
+        },
+        {
+          "table_schema": "analysis",
+          "table_name": "rfpp_request",
+          "column_name": "granted_level",
+          "data_type": "text",
+          "is_nullable": "YES"
+        },
+        {
+          "table_schema": "analysis",
+          "table_name": "rfpp_request",
+          "column_name": "granted_level_raw",
+          "data_type": "text",
+          "is_nullable": "YES"
+        },
+        {
+          "table_schema": "analysis",
+          "table_name": "rfpp_request",
+          "column_name": "scheduled_expiry",
+          "data_type": "timestamp with time zone",
+          "is_nullable": "YES"
+        },
+        {
+          "table_schema": "analysis",
+          "table_name": "rfpp_request",
+          "column_name": "treated_by_log",
+          "data_type": "boolean",
+          "is_nullable": "YES"
+        },
+        {
+          "table_schema": "analysis",
+          "table_name": "rfpp_request",
+          "column_name": "denied_but_protected_30d",
+          "data_type": "boolean",
+          "is_nullable": "YES"
+        },
+        {
+          "table_schema": "analysis",
+          "table_name": "rfpp_request",
+          "column_name": "year_month",
+          "data_type": "text",
+          "is_nullable": "YES"
+        },
+        {
+          "table_schema": "analysis",
+          "table_name": "rfpp_request",
+          "column_name": "utc_hour_block",
+          "data_type": "smallint",
+          "is_nullable": "YES"
+        },
+        {
+          "table_schema": "analysis",
+          "table_name": "rfpp_request",
+          "column_name": "weekday",
+          "data_type": "smallint",
+          "is_nullable": "YES"
+        },
+        {
+          "table_schema": "analysis",
+          "table_name": "rfpp_request",
+          "column_name": "board",
+          "data_type": "text",
+          "is_nullable": "YES"
+        },
+        {
+          "table_schema": "analysis",
+          "table_name": "rfpp_request",
+          "column_name": "requested_intent",
+          "data_type": "jsonb",
+          "is_nullable": "YES"
+        },
+        {
+          "table_schema": "analysis",
+          "table_name": "sample_page_full",
+          "column_name": "window_id",
+          "data_type": "bigint",
+          "is_nullable": "NO"
+        },
+        {
+          "table_schema": "analysis",
+          "table_name": "sample_page_full",
+          "column_name": "page_id",
+          "data_type": "bigint",
+          "is_nullable": "YES"
+        },
+        {
+          "table_schema": "analysis",
+          "table_name": "sample_page_full",
+          "column_name": "arm",
+          "data_type": "text",
+          "is_nullable": "YES"
+        },
+        {
+          "table_schema": "analysis",
+          "table_name": "sample_page_full",
+          "column_name": "rfpp_id",
+          "data_type": "bigint",
+          "is_nullable": "YES"
+        },
+        {
+          "table_schema": "analysis",
+          "table_name": "sample_page_full",
+          "column_name": "match_rfpp_id",
+          "data_type": "bigint",
+          "is_nullable": "YES"
+        },
+        {
+          "table_schema": "analysis",
+          "table_name": "sample_page_full",
+          "column_name": "admin_ts",
+          "data_type": "timestamp with time zone",
+          "is_nullable": "YES"
+        },
+        {
+          "table_schema": "analysis",
+          "table_name": "sample_page_full",
+          "column_name": "request_timestamp",
+          "data_type": "timestamp with time zone",
+          "is_nullable": "YES"
+        },
+        {
+          "table_schema": "analysis",
+          "table_name": "sample_page_full",
+          "column_name": "admin_actor_id",
+          "data_type": "bigint",
+          "is_nullable": "YES"
+        },
+        {
+          "table_schema": "analysis",
+          "table_name": "sample_page_full",
+          "column_name": "match_admin_actor_id",
+          "data_type": "bigint",
+          "is_nullable": "YES"
+        },
+        {
+          "table_schema": "analysis",
+          "table_name": "sample_page_full",
+          "column_name": "window_start",
+          "data_type": "timestamp with time zone",
+          "is_nullable": "YES"
+        },
+        {
+          "table_schema": "analysis",
+          "table_name": "sample_page_full",
+          "column_name": "window_end",
+          "data_type": "timestamp with time zone",
+          "is_nullable": "YES"
+        },
+        {
+          "table_schema": "analysis",
+          "table_name": "sample_page_full",
+          "column_name": "pull_start",
+          "data_type": "timestamp with time zone",
+          "is_nullable": "YES"
+        },
+        {
+          "table_schema": "analysis",
+          "table_name": "sample_page_full",
+          "column_name": "pull_end",
+          "data_type": "timestamp with time zone",
+          "is_nullable": "YES"
+        },
+        {
+          "table_schema": "analysis",
+          "table_name": "sample_page_full",
+          "column_name": "requested_level",
+          "data_type": "text",
+          "is_nullable": "YES"
+        },
+        {
+          "table_schema": "analysis",
+          "table_name": "sample_page_full",
+          "column_name": "granted_type",
+          "data_type": "text",
+          "is_nullable": "YES"
+        },
+        {
+          "table_schema": "analysis",
+          "table_name": "sample_page_full",
+          "column_name": "granted_level",
+          "data_type": "text",
+          "is_nullable": "YES"
+        },
+        {
+          "table_schema": "analysis",
+          "table_name": "sample_page_full",
+          "column_name": "elig_level_code",
+          "data_type": "integer",
+          "is_nullable": "YES"
+        },
+        {
+          "table_schema": "analysis",
+          "table_name": "sample_page_full",
+          "column_name": "elig_level_source",
+          "data_type": "text",
+          "is_nullable": "YES"
+        },
+        {
+          "table_schema": "analysis",
+          "table_name": "sample_page_full",
+          "column_name": "episode_id",
+          "data_type": "bigint",
+          "is_nullable": "YES"
+        },
+        {
+          "table_schema": "analysis",
+          "table_name": "sample_page_full",
+          "column_name": "spell_start",
+          "data_type": "timestamp with time zone",
+          "is_nullable": "YES"
+        },
+        {
+          "table_schema": "analysis",
+          "table_name": "sample_page_full",
+          "column_name": "scheduled_expiry",
+          "data_type": "timestamp with time zone",
+          "is_nullable": "YES"
+        },
+        {
+          "table_schema": "analysis",
+          "table_name": "sample_page_full",
+          "column_name": "actual_end",
+          "data_type": "timestamp with time zone",
+          "is_nullable": "YES"
+        },
+        {
+          "table_schema": "analysis",
+          "table_name": "sample_page_full",
+          "column_name": "close_reason",
+          "data_type": "text",
+          "is_nullable": "YES"
+        },
+        {
+          "table_schema": "analysis",
+          "table_name": "sample_page_full",
+          "column_name": "is_indefinite",
+          "data_type": "boolean",
+          "is_nullable": "YES"
+        },
+        {
+          "table_schema": "analysis",
+          "table_name": "sample_page_full",
+          "column_name": "expiry_anchor",
+          "data_type": "timestamp with time zone",
+          "is_nullable": "YES"
+        },
+        {
+          "table_schema": "analysis",
+          "table_name": "sample_page_full",
+          "column_name": "expiry_is_pseudo",
+          "data_type": "boolean",
+          "is_nullable": "YES"
+        },
+        {
+          "table_schema": "analysis",
+          "table_name": "sample_page_full",
+          "column_name": "protected_within_30d",
+          "data_type": "boolean",
+          "is_nullable": "YES"
+        },
+        {
+          "table_schema": "analysis",
+          "table_name": "sample_page_full",
+          "column_name": "ct_regime",
+          "data_type": "boolean",
+          "is_nullable": "YES"
+        },
+        {
+          "table_schema": "analysis",
+          "table_name": "sample_page_full",
+          "column_name": "page_title",
+          "data_type": "text",
+          "is_nullable": "YES"
+        },
+        {
+          "table_schema": "analysis",
+          "table_name": "sample_page_full",
+          "column_name": "page_len",
+          "data_type": "bigint",
+          "is_nullable": "YES"
+        },
+        {
+          "table_schema": "analysis",
+          "table_name": "sample_page_full",
+          "column_name": "len_decile",
+          "data_type": "integer",
+          "is_nullable": "YES"
+        },
+        {
+          "table_schema": "analysis",
+          "table_name": "sample_page_full",
+          "column_name": "id_decile",
+          "data_type": "integer",
+          "is_nullable": "YES"
+        },
+        {
+          "table_schema": "analysis",
+          "table_name": "sample_page_full",
+          "column_name": "pre_edits_30d",
+          "data_type": "bigint",
+          "is_nullable": "YES"
+        },
+        {
+          "table_schema": "analysis",
+          "table_name": "sample_page_full",
+          "column_name": "pre_bucket",
+          "data_type": "smallint",
+          "is_nullable": "YES"
+        },
+        {
+          "table_schema": "analysis",
+          "table_name": "sample_page_full",
+          "column_name": "bucket_match",
+          "data_type": "boolean",
+          "is_nullable": "YES"
+        },
+        {
+          "table_schema": "analysis",
+          "table_name": "sample_page_full",
+          "column_name": "first_rev_ts",
+          "data_type": "timestamp with time zone",
+          "is_nullable": "YES"
+        },
+        {
+          "table_schema": "analysis",
+          "table_name": "sample_page_full",
+          "column_name": "page_age_days",
+          "data_type": "numeric",
+          "is_nullable": "YES"
+        },
+        {
+          "table_schema": "analysis",
+          "table_name": "sample_page_full",
+          "column_name": "prior_protections",
+          "data_type": "bigint",
+          "is_nullable": "YES"
+        },
+        {
+          "table_schema": "analysis",
+          "table_name": "sample_page_full",
+          "column_name": "year_month",
+          "data_type": "text",
+          "is_nullable": "YES"
+        },
+        {
+          "table_schema": "analysis",
+          "table_name": "sample_page_full",
+          "column_name": "utc_hour_block",
+          "data_type": "smallint",
+          "is_nullable": "YES"
+        },
+        {
+          "table_schema": "analysis",
+          "table_name": "sample_page_full",
+          "column_name": "weekday",
+          "data_type": "smallint",
+          "is_nullable": "YES"
+        },
+        {
+          "table_schema": "analysis",
+          "table_name": "sample_page_full",
+          "column_name": "board",
+          "data_type": "text",
+          "is_nullable": "YES"
+        },
+        {
+          "table_schema": "analysis",
+          "table_name": "sample_page_full",
+          "column_name": "talk_page_id",
+          "data_type": "bigint",
+          "is_nullable": "YES"
+        },
+        {
+          "table_schema": "analysis",
+          "table_name": "sample_page_full",
+          "column_name": "mode",
+          "data_type": "text",
+          "is_nullable": "YES"
+        },
+        {
+          "table_schema": "analysis",
+          "table_name": "sample_request_full",
+          "column_name": "rfpp_id",
+          "data_type": "bigint",
+          "is_nullable": "YES"
+        },
+        {
+          "table_schema": "analysis",
+          "table_name": "sample_request_full",
+          "column_name": "page_id",
+          "data_type": "bigint",
+          "is_nullable": "YES"
+        },
+        {
+          "table_schema": "analysis",
+          "table_name": "sample_request_full",
+          "column_name": "outcome",
+          "data_type": "text",
+          "is_nullable": "YES"
+        },
+        {
+          "table_schema": "analysis",
+          "table_name": "sample_request_full",
+          "column_name": "treated",
+          "data_type": "boolean",
+          "is_nullable": "YES"
+        },
+        {
+          "table_schema": "analysis",
+          "table_name": "sample_request_full",
+          "column_name": "decision_ts",
+          "data_type": "timestamp with time zone",
+          "is_nullable": "YES"
+        },
+        {
+          "table_schema": "analysis",
+          "table_name": "sample_request_full",
+          "column_name": "request_timestamp",
+          "data_type": "timestamp with time zone",
+          "is_nullable": "YES"
+        },
+        {
+          "table_schema": "analysis",
+          "table_name": "sample_request_full",
+          "column_name": "admin_actor_id",
+          "data_type": "bigint",
+          "is_nullable": "YES"
+        },
+        {
+          "table_schema": "public",
+          "table_name": "actor",
+          "column_name": "actor_id",
+          "data_type": "bigint",
+          "is_nullable": "NO"
+        },
+        {
+          "table_schema": "public",
+          "table_name": "actor",
+          "column_name": "actor_user",
+          "data_type": "bigint",
+          "is_nullable": "YES"
+        },
+        {
+          "table_schema": "public",
+          "table_name": "actor",
+          "column_name": "actor_name",
+          "data_type": "bytea",
+          "is_nullable": "NO"
+        },
+        {
+          "table_schema": "public",
+          "table_name": "logging",
+          "column_name": "log_id",
+          "data_type": "bigint",
+          "is_nullable": "NO"
+        },
+        {
+          "table_schema": "public",
+          "table_name": "logging",
+          "column_name": "log_type",
+          "data_type": "text",
+          "is_nullable": "NO"
+        },
+        {
+          "table_schema": "public",
+          "table_name": "logging",
+          "column_name": "log_action",
+          "data_type": "text",
+          "is_nullable": "NO"
+        },
+        {
+          "table_schema": "public",
+          "table_name": "logging",
+          "column_name": "log_timestamp",
+          "data_type": "timestamp with time zone",
+          "is_nullable": "NO"
+        },
+        {
+          "table_schema": "public",
+          "table_name": "logging",
+          "column_name": "log_actor",
+          "data_type": "bigint",
+          "is_nullable": "YES"
+        },
+        {
+          "table_schema": "public",
+          "table_name": "logging",
+          "column_name": "log_actor_name",
+          "data_type": "bytea",
+          "is_nullable": "YES"
+        },
+        {
+          "table_schema": "public",
+          "table_name": "logging",
+          "column_name": "log_namespace",
+          "data_type": "integer",
+          "is_nullable": "NO"
+        },
+        {
+          "table_schema": "public",
+          "table_name": "logging",
+          "column_name": "log_title",
+          "data_type": "bytea",
+          "is_nullable": "NO"
+        },
+        {
+          "table_schema": "public",
+          "table_name": "logging",
+          "column_name": "log_page",
+          "data_type": "bigint",
+          "is_nullable": "YES"
+        },
+        {
+          "table_schema": "public",
+          "table_name": "logging",
+          "column_name": "log_comment",
+          "data_type": "text",
+          "is_nullable": "YES"
+        },
+        {
+          "table_schema": "public",
+          "table_name": "logging",
+          "column_name": "log_params",
+          "data_type": "jsonb",
+          "is_nullable": "YES"
+        },
+        {
+          "table_schema": "public",
+          "table_name": "logging",
+          "column_name": "log_deleted",
+          "data_type": "integer",
+          "is_nullable": "NO"
+        },
+        {
+          "table_schema": "public",
+          "table_name": "page",
+          "column_name": "page_id",
+          "data_type": "bigint",
+          "is_nullable": "NO"
+        },
+        {
+          "table_schema": "public",
+          "table_name": "page",
+          "column_name": "page_namespace",
+          "data_type": "integer",
+          "is_nullable": "NO"
+        },
+        {
+          "table_schema": "public",
+          "table_name": "page",
+          "column_name": "page_title",
+          "data_type": "bytea",
+          "is_nullable": "NO"
+        },
+        {
+          "table_schema": "public",
+          "table_name": "page",
+          "column_name": "page_is_redirect",
+          "data_type": "boolean",
+          "is_nullable": "NO"
+        },
+        {
+          "table_schema": "public",
+          "table_name": "page",
+          "column_name": "page_is_new",
+          "data_type": "boolean",
+          "is_nullable": "NO"
+        },
+        {
+          "table_schema": "public",
+          "table_name": "page",
+          "column_name": "page_random",
+          "data_type": "double precision",
+          "is_nullable": "NO"
+        },
+        {
+          "table_schema": "public",
+          "table_name": "page",
+          "column_name": "page_touched",
+          "data_type": "timestamp with time zone",
+          "is_nullable": "YES"
+        },
+        {
+          "table_schema": "public",
+          "table_name": "page",
+          "column_name": "page_links_updated",
+          "data_type": "timestamp with time zone",
+          "is_nullable": "YES"
+        },
+        {
+          "table_schema": "public",
+          "table_name": "page",
+          "column_name": "page_latest",
+          "data_type": "bigint",
+          "is_nullable": "NO"
+        },
+        {
+          "table_schema": "public",
+          "table_name": "page",
+          "column_name": "page_len",
+          "data_type": "bigint",
+          "is_nullable": "NO"
+        },
+        {
+          "table_schema": "public",
+          "table_name": "page",
+          "column_name": "page_content_model",
+          "data_type": "text",
+          "is_nullable": "YES"
+        },
+        {
+          "table_schema": "public",
+          "table_name": "page",
+          "column_name": "page_lang",
+          "data_type": "text",
+          "is_nullable": "YES"
+        },
+        {
+          "table_schema": "public",
+          "table_name": "page_restrictions",
+          "column_name": "pr_id",
+          "data_type": "bigint",
+          "is_nullable": "NO"
+        },
+        {
+          "table_schema": "public",
+          "table_name": "page_restrictions",
+          "column_name": "pr_page",
+          "data_type": "bigint",
+          "is_nullable": "NO"
+        },
+        {
+          "table_schema": "public",
+          "table_name": "page_restrictions",
+          "column_name": "pr_type",
+          "data_type": "text",
+          "is_nullable": "NO"
+        },
+        {
+          "table_schema": "public",
+          "table_name": "page_restrictions",
+          "column_name": "pr_level",
+          "data_type": "text",
+          "is_nullable": "NO"
+        },
+        {
+          "table_schema": "public",
+          "table_name": "page_restrictions",
+          "column_name": "pr_cascade",
+          "data_type": "boolean",
+          "is_nullable": "NO"
+        },
+        {
+          "table_schema": "public",
+          "table_name": "page_restrictions",
+          "column_name": "pr_expiry",
+          "data_type": "timestamp with time zone",
+          "is_nullable": "YES"
+        },
+        {
+          "table_schema": "public",
+          "table_name": "protected_titles",
+          "column_name": "pt_namespace",
+          "data_type": "integer",
+          "is_nullable": "NO"
+        },
+        {
+          "table_schema": "public",
+          "table_name": "protected_titles",
+          "column_name": "pt_title",
+          "data_type": "bytea",
+          "is_nullable": "NO"
+        },
+        {
+          "table_schema": "public",
+          "table_name": "protected_titles",
+          "column_name": "pt_user",
+          "data_type": "bigint",
+          "is_nullable": "YES"
+        },
+        {
+          "table_schema": "public",
+          "table_name": "protected_titles",
+          "column_name": "pt_reason_id",
+          "data_type": "bigint",
+          "is_nullable": "YES"
+        },
+        {
+          "table_schema": "public",
+          "table_name": "protected_titles",
+          "column_name": "pt_timestamp",
+          "data_type": "timestamp with time zone",
+          "is_nullable": "NO"
+        },
+        {
+          "table_schema": "public",
+          "table_name": "protected_titles",
+          "column_name": "pt_expiry",
+          "data_type": "timestamp with time zone",
+          "is_nullable": "YES"
+        },
+        {
+          "table_schema": "public",
+          "table_name": "protected_titles",
+          "column_name": "pt_create_perm",
+          "data_type": "text",
+          "is_nullable": "NO"
+        },
+        {
+          "table_schema": "public",
+          "table_name": "revision",
+          "column_name": "rev_id",
+          "data_type": "bigint",
+          "is_nullable": "NO"
+        },
+        {
+          "table_schema": "public",
+          "table_name": "revision",
+          "column_name": "rev_page",
+          "data_type": "bigint",
+          "is_nullable": "NO"
+        },
+        {
+          "table_schema": "public",
+          "table_name": "revision",
+          "column_name": "rev_actor",
+          "data_type": "bigint",
+          "is_nullable": "YES"
+        },
+        {
+          "table_schema": "public",
+          "table_name": "revision",
+          "column_name": "rev_timestamp",
+          "data_type": "timestamp with time zone",
+          "is_nullable": "NO"
+        },
+        {
+          "table_schema": "public",
+          "table_name": "revision",
+          "column_name": "rev_minor",
+          "data_type": "boolean",
+          "is_nullable": "NO"
+        },
+        {
+          "table_schema": "public",
+          "table_name": "revision",
+          "column_name": "rev_comment",
+          "data_type": "text",
+          "is_nullable": "YES"
+        },
+        {
+          "table_schema": "public",
+          "table_name": "revision",
+          "column_name": "rev_sha1",
+          "data_type": "text",
+          "is_nullable": "YES"
+        },
+        {
+          "table_schema": "public",
+          "table_name": "revision",
+          "column_name": "rev_len",
+          "data_type": "bigint",
+          "is_nullable": "YES"
+        },
+        {
+          "table_schema": "public",
+          "table_name": "revision",
+          "column_name": "rev_parent_id",
+          "data_type": "bigint",
+          "is_nullable": "YES"
+        }
+      ],
+      "status": "ok",
+      "elapsed_seconds": 0.03
+    },
+    "provenance_tables": {
+      "sql": "SELECT table_schema,table_name FROM information_schema.tables WHERE table_schema NOT IN ('pg_catalog','information_schema') AND table_name ~ '(manifest|load|source|provenance|run|coverage|checkpoint|etl)' ORDER BY 1,2",
+      "rows": [
+        {
+          "table_schema": "analysis",
+          "table_name": "rfpp_intent_v2_first_run"
+        },
+        {
+          "table_schema": "analysis",
+          "table_name": "rfpp_intent_v2_run"
+        }
+      ],
+      "status": "ok",
+      "elapsed_seconds": 0.011
+    },
+    "repair": {
+      "sql": "SELECT * FROM analysis.rfpp_intent_v2_run",
+      "rows": [
+        {
+          "id": 1,
+          "parser_signature": "20650d4ec484afa2739613b3155b45aa",
+          "status": "applied",
+          "staged_at": "2026-10-10 21:02:39.315102+00:00",
+          "applied_at": "2026-10-10 21:04:16.173196+00:00"
+        }
+      ],
+      "status": "ok",
+      "elapsed_seconds": 0.002
+    },
+    "active_work": {
+      "sql": "SELECT application_name,state,wait_event_type,wait_event,count(*) FROM pg_stat_activity WHERE datname=current_database() GROUP BY 1,2,3,4 ORDER BY 1,2",
+      "rows": [
+        {
+          "application_name": "panel-audit-20261011",
+          "state": "active",
+          "wait_event_type": null,
+          "wait_event": null,
+          "count": 1
+        },
+        {
+          "application_name": "psql",
+          "state": "active",
+          "wait_event_type": "IO",
+          "wait_event": "DataFileRead",
+          "count": 2
+        },
+        {
+          "application_name": "psql",
+          "state": "active",
+          "wait_event_type": "IPC",
+          "wait_event": "MessageQueueReceive",
+          "count": 1
+        },
+        {
+          "application_name": "vscode-pgsql - untitled:Untitled-1",
+          "state": "idle",
+          "wait_event_type": "Client",
+          "wait_event": "ClientRead",
+          "count": 1
+        }
+      ],
+      "status": "ok",
+      "elapsed_seconds": 0.005
+    }
+  }
+}

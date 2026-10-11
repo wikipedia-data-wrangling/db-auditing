@@ -1,0 +1,1983 @@
+{
+  "recorded_at": "2026-10-10T16:51:36.174523+00:00",
+  "mode": "read-only repeatable read",
+  "source_hashes": {
+    "audit_issue_1.py": "0ae59079d1e99202dc855ff8d4f51b326ba223c103caacaf079f4e814ba48be2",
+    "ecp-label-diagnostics.sql": "2beb0ad0abd3d095f1eed3709cbdd13e22ca0db48b6a9416e6b849da106a0ca0",
+    "ecp-label-issue-report.org": "2903339a8032d3d14d3ad2ced56926c6888a299a382fe041e8cf5bbd2fec13c6",
+    "../20261001/wpp-analysis/sql/04_rfpp_request_extend.sql": "b6f4a1d99b4ef514bfed2917a1948e92d5bc43b69a6b9c9117803a57c3aeb914",
+    "../20261001/wpp-analysis/data/interim/rfpp_request.parquet": "c516207250f292445087d78d5926395a7385290725219cf3c943fc3d4aa41e35"
+  },
+  "queries": {
+    "connection": {
+      "sql": "SELECT current_database() AS database,current_setting('port') AS port,current_setting('server_version') AS server_version,current_setting('transaction_read_only') AS transaction_read_only,current_timestamp AS audit_timestamp",
+      "rows": [
+        {
+          "database": "wiki20260401",
+          "port": "5434",
+          "server_version": "18.4 (Ubuntu 18.4-1.pgdg22.04+1)",
+          "transaction_read_only": "on",
+          "audit_timestamp": "2026-10-10T16:51:36.292095+00:00"
+        }
+      ]
+    },
+    "population": {
+      "sql": "SELECT page_namespace,outcome,count(*) AS cases,min(request_timestamp) AS first_request,max(request_timestamp) AS last_request FROM analysis.rfpp_request GROUP BY 1,2 ORDER BY 1,2",
+      "rows": [
+        {
+          "page_namespace": 0,
+          "outcome": "denied",
+          "cases": 43331,
+          "first_request": "2012-10-29T06:54:00+00:00",
+          "last_request": "2026-09-30T07:11:00+00:00"
+        },
+        {
+          "page_namespace": 0,
+          "outcome": "granted",
+          "cases": 134779,
+          "first_request": "2012-10-29T08:09:00+00:00",
+          "last_request": "2026-09-30T03:36:00+00:00"
+        },
+        {
+          "page_namespace": 0,
+          "outcome": "other",
+          "cases": 24009,
+          "first_request": "2012-10-29T19:49:00+00:00",
+          "last_request": "2026-09-29T23:27:00+00:00"
+        },
+        {
+          "page_namespace": 0,
+          "outcome": "unparsed",
+          "cases": 1070,
+          "first_request": "2005-04-13T17:06:00+00:00",
+          "last_request": "2026-09-30T10:46:00+00:00"
+        },
+        {
+          "page_namespace": 1,
+          "outcome": "denied",
+          "cases": 765,
+          "first_request": "2015-05-12T20:57:00+00:00",
+          "last_request": "2026-09-29T18:48:00+00:00"
+        },
+        {
+          "page_namespace": 1,
+          "outcome": "granted",
+          "cases": 1768,
+          "first_request": "2015-02-09T19:41:00+00:00",
+          "last_request": "2026-09-28T23:34:00+00:00"
+        },
+        {
+          "page_namespace": 1,
+          "outcome": "other",
+          "cases": 410,
+          "first_request": "2015-05-25T17:50:00+00:00",
+          "last_request": "2026-09-26T20:33:00+00:00"
+        },
+        {
+          "page_namespace": 1,
+          "outcome": "unparsed",
+          "cases": 7,
+          "first_request": "2005-05-31T13:25:00+00:00",
+          "last_request": "2026-09-30T10:46:00+00:00"
+        },
+        {
+          "page_namespace": 2,
+          "outcome": "denied",
+          "cases": 462,
+          "first_request": "2015-05-23T13:44:00+00:00",
+          "last_request": "2026-09-26T10:31:00+00:00"
+        },
+        {
+          "page_namespace": 2,
+          "outcome": "granted",
+          "cases": 663,
+          "first_request": "2013-04-26T16:39:00+00:00",
+          "last_request": "2026-09-27T18:34:00+00:00"
+        },
+        {
+          "page_namespace": 2,
+          "outcome": "other",
+          "cases": 174,
+          "first_request": "2015-07-29T03:01:00+00:00",
+          "last_request": "2026-08-30T17:43:00+00:00"
+        },
+        {
+          "page_namespace": 2,
+          "outcome": "unparsed",
+          "cases": 6,
+          "first_request": "2005-05-23T20:26:00+00:00",
+          "last_request": "2024-06-21T13:32:00+00:00"
+        },
+        {
+          "page_namespace": 3,
+          "outcome": "denied",
+          "cases": 580,
+          "first_request": "2006-07-14T11:37:00+00:00",
+          "last_request": "2026-09-24T21:56:00+00:00"
+        },
+        {
+          "page_namespace": 3,
+          "outcome": "granted",
+          "cases": 1514,
+          "first_request": "2010-08-14T15:10:00+00:00",
+          "last_request": "2026-09-28T10:55:00+00:00"
+        },
+        {
+          "page_namespace": 3,
+          "outcome": "other",
+          "cases": 589,
+          "first_request": "2010-12-09T22:44:00+00:00",
+          "last_request": "2026-09-28T18:41:00+00:00"
+        },
+        {
+          "page_namespace": 3,
+          "outcome": "unparsed",
+          "cases": 4,
+          "first_request": "2005-05-28T16:40:00+00:00",
+          "last_request": "2019-04-04T07:23:00+00:00"
+        },
+        {
+          "page_namespace": 4,
+          "outcome": "denied",
+          "cases": 639,
+          "first_request": "2015-05-30T07:08:00+00:00",
+          "last_request": "2026-09-26T15:49:00+00:00"
+        },
+        {
+          "page_namespace": 4,
+          "outcome": "granted",
+          "cases": 1265,
+          "first_request": "2012-12-19T00:58:00+00:00",
+          "last_request": "2026-09-27T15:54:00+00:00"
+        },
+        {
+          "page_namespace": 4,
+          "outcome": "other",
+          "cases": 318,
+          "first_request": "2015-06-15T15:35:00+00:00",
+          "last_request": "2026-09-24T01:45:00+00:00"
+        },
+        {
+          "page_namespace": 4,
+          "outcome": "unparsed",
+          "cases": 24,
+          "first_request": "2005-05-12T13:09:00+00:00",
+          "last_request": "2026-09-22T11:48:00+00:00"
+        },
+        {
+          "page_namespace": 5,
+          "outcome": "denied",
+          "cases": 65,
+          "first_request": "2015-08-21T11:16:00+00:00",
+          "last_request": "2026-08-10T04:37:00+00:00"
+        },
+        {
+          "page_namespace": 5,
+          "outcome": "granted",
+          "cases": 164,
+          "first_request": "2014-11-27T03:04:00+00:00",
+          "last_request": "2026-09-14T15:59:00+00:00"
+        },
+        {
+          "page_namespace": 5,
+          "outcome": "other",
+          "cases": 38,
+          "first_request": "2015-06-02T20:34:00+00:00",
+          "last_request": "2026-06-09T21:37:00+00:00"
+        },
+        {
+          "page_namespace": 5,
+          "outcome": "unparsed",
+          "cases": 1,
+          "first_request": "2015-12-30T23:13:00+00:00",
+          "last_request": "2015-12-30T23:13:00+00:00"
+        },
+        {
+          "page_namespace": 6,
+          "outcome": "denied",
+          "cases": 45,
+          "first_request": "2015-09-17T20:25:00+00:00",
+          "last_request": "2026-05-26T19:18:00+00:00"
+        },
+        {
+          "page_namespace": 6,
+          "outcome": "granted",
+          "cases": 128,
+          "first_request": "2015-09-09T05:11:00+00:00",
+          "last_request": "2026-08-04T20:03:00+00:00"
+        },
+        {
+          "page_namespace": 6,
+          "outcome": "other",
+          "cases": 19,
+          "first_request": "2015-03-17T16:31:00+00:00",
+          "last_request": "2026-05-28T23:14:00+00:00"
+        },
+        {
+          "page_namespace": 7,
+          "outcome": "denied",
+          "cases": 5,
+          "first_request": "2018-07-31T09:41:00+00:00",
+          "last_request": "2024-09-27T06:57:00+00:00"
+        },
+        {
+          "page_namespace": 7,
+          "outcome": "granted",
+          "cases": 19,
+          "first_request": "2017-02-12T01:42:00+00:00",
+          "last_request": "2026-01-11T11:43:00+00:00"
+        },
+        {
+          "page_namespace": 8,
+          "outcome": "other",
+          "cases": 1,
+          "first_request": "2026-07-11T14:04:00+00:00",
+          "last_request": "2026-07-11T14:04:00+00:00"
+        },
+        {
+          "page_namespace": 9,
+          "outcome": "denied",
+          "cases": 5,
+          "first_request": "2023-05-07T14:16:00+00:00",
+          "last_request": "2026-07-15T11:47:00+00:00"
+        },
+        {
+          "page_namespace": 9,
+          "outcome": "granted",
+          "cases": 11,
+          "first_request": "2008-08-25T00:58:00+00:00",
+          "last_request": "2024-11-26T14:57:00+00:00"
+        },
+        {
+          "page_namespace": 9,
+          "outcome": "other",
+          "cases": 1,
+          "first_request": "2026-01-25T20:15:00+00:00",
+          "last_request": "2026-01-25T20:15:00+00:00"
+        },
+        {
+          "page_namespace": 10,
+          "outcome": "denied",
+          "cases": 736,
+          "first_request": "2013-05-23T18:08:00+00:00",
+          "last_request": "2026-08-31T12:14:00+00:00"
+        },
+        {
+          "page_namespace": 10,
+          "outcome": "granted",
+          "cases": 1975,
+          "first_request": "2013-01-17T02:43:00+00:00",
+          "last_request": "2026-09-24T06:50:00+00:00"
+        },
+        {
+          "page_namespace": 10,
+          "outcome": "other",
+          "cases": 317,
+          "first_request": "2015-06-02T03:09:00+00:00",
+          "last_request": "2026-09-26T20:58:00+00:00"
+        },
+        {
+          "page_namespace": 10,
+          "outcome": "unparsed",
+          "cases": 6,
+          "first_request": "2005-05-02T00:39:00+00:00",
+          "last_request": "2021-04-17T07:24:00+00:00"
+        },
+        {
+          "page_namespace": 11,
+          "outcome": "denied",
+          "cases": 10,
+          "first_request": "2017-10-13T12:44:00+00:00",
+          "last_request": "2025-05-04T16:49:00+00:00"
+        },
+        {
+          "page_namespace": 11,
+          "outcome": "granted",
+          "cases": 8,
+          "first_request": "2017-01-25T03:56:00+00:00",
+          "last_request": "2025-10-09T22:54:00+00:00"
+        },
+        {
+          "page_namespace": 11,
+          "outcome": "other",
+          "cases": 3,
+          "first_request": "2024-12-23T14:16:00+00:00",
+          "last_request": "2025-10-07T06:56:00+00:00"
+        },
+        {
+          "page_namespace": 12,
+          "outcome": "denied",
+          "cases": 17,
+          "first_request": "2016-09-09T15:01:00+00:00",
+          "last_request": "2026-08-30T02:35:00+00:00"
+        },
+        {
+          "page_namespace": 12,
+          "outcome": "granted",
+          "cases": 38,
+          "first_request": "2015-10-19T15:08:00+00:00",
+          "last_request": "2026-05-10T00:19:00+00:00"
+        },
+        {
+          "page_namespace": 12,
+          "outcome": "other",
+          "cases": 7,
+          "first_request": "2017-08-08T03:48:00+00:00",
+          "last_request": "2026-01-03T08:05:00+00:00"
+        },
+        {
+          "page_namespace": 13,
+          "outcome": "denied",
+          "cases": 5,
+          "first_request": "2016-03-06T05:39:00+00:00",
+          "last_request": "2023-12-05T12:51:00+00:00"
+        },
+        {
+          "page_namespace": 13,
+          "outcome": "granted",
+          "cases": 8,
+          "first_request": "2019-02-22T15:38:00+00:00",
+          "last_request": "2021-03-30T15:27:00+00:00"
+        },
+        {
+          "page_namespace": 13,
+          "outcome": "other",
+          "cases": 3,
+          "first_request": "2020-07-18T10:49:00+00:00",
+          "last_request": "2023-09-02T18:15:00+00:00"
+        },
+        {
+          "page_namespace": 14,
+          "outcome": "denied",
+          "cases": 54,
+          "first_request": "2015-07-08T19:17:00+00:00",
+          "last_request": "2026-04-06T02:50:00+00:00"
+        },
+        {
+          "page_namespace": 14,
+          "outcome": "granted",
+          "cases": 163,
+          "first_request": "2015-08-17T15:00:00+00:00",
+          "last_request": "2026-08-11T13:28:00+00:00"
+        },
+        {
+          "page_namespace": 14,
+          "outcome": "other",
+          "cases": 28,
+          "first_request": "2015-09-04T17:23:00+00:00",
+          "last_request": "2026-07-11T09:14:00+00:00"
+        },
+        {
+          "page_namespace": 14,
+          "outcome": "unparsed",
+          "cases": 1,
+          "first_request": "2020-09-30T23:22:00+00:00",
+          "last_request": "2020-09-30T23:22:00+00:00"
+        },
+        {
+          "page_namespace": 15,
+          "outcome": "denied",
+          "cases": 4,
+          "first_request": "2016-01-02T16:18:00+00:00",
+          "last_request": "2026-05-10T22:47:00+00:00"
+        },
+        {
+          "page_namespace": 15,
+          "outcome": "granted",
+          "cases": 8,
+          "first_request": "2017-03-18T16:38:00+00:00",
+          "last_request": "2026-02-28T15:41:00+00:00"
+        },
+        {
+          "page_namespace": 15,
+          "outcome": "other",
+          "cases": 1,
+          "first_request": "2018-08-15T04:32:00+00:00",
+          "last_request": "2018-08-15T04:32:00+00:00"
+        },
+        {
+          "page_namespace": 100,
+          "outcome": "denied",
+          "cases": 24,
+          "first_request": "2016-10-01T13:03:00+00:00",
+          "last_request": "2026-08-25T22:10:00+00:00"
+        },
+        {
+          "page_namespace": 100,
+          "outcome": "granted",
+          "cases": 62,
+          "first_request": "2015-11-02T20:15:00+00:00",
+          "last_request": "2026-07-18T20:48:00+00:00"
+        },
+        {
+          "page_namespace": 100,
+          "outcome": "other",
+          "cases": 32,
+          "first_request": "2015-06-25T09:00:00+00:00",
+          "last_request": "2026-06-30T09:30:00+00:00"
+        },
+        {
+          "page_namespace": 101,
+          "outcome": "granted",
+          "cases": 3,
+          "first_request": "2018-04-18T20:19:00+00:00",
+          "last_request": "2022-02-27T20:12:00+00:00"
+        },
+        {
+          "page_namespace": 118,
+          "outcome": "denied",
+          "cases": 270,
+          "first_request": "2015-09-20T21:27:00+00:00",
+          "last_request": "2026-09-24T16:36:00+00:00"
+        },
+        {
+          "page_namespace": 118,
+          "outcome": "granted",
+          "cases": 428,
+          "first_request": "2015-05-29T03:04:00+00:00",
+          "last_request": "2026-09-14T01:27:00+00:00"
+        },
+        {
+          "page_namespace": 118,
+          "outcome": "other",
+          "cases": 93,
+          "first_request": "2016-01-16T11:17:00+00:00",
+          "last_request": "2026-09-25T19:24:00+00:00"
+        },
+        {
+          "page_namespace": 118,
+          "outcome": "unparsed",
+          "cases": 2,
+          "first_request": "2020-02-14T16:15:00+00:00",
+          "last_request": "2020-02-14T16:21:00+00:00"
+        },
+        {
+          "page_namespace": 119,
+          "outcome": "denied",
+          "cases": 5,
+          "first_request": "2024-12-05T19:28:00+00:00",
+          "last_request": "2025-04-27T00:05:00+00:00"
+        },
+        {
+          "page_namespace": 119,
+          "outcome": "granted",
+          "cases": 10,
+          "first_request": "2016-11-23T16:02:00+00:00",
+          "last_request": "2024-08-16T04:19:00+00:00"
+        },
+        {
+          "page_namespace": 119,
+          "outcome": "other",
+          "cases": 4,
+          "first_request": "2017-03-13T12:30:00+00:00",
+          "last_request": "2024-10-13T06:17:00+00:00"
+        },
+        {
+          "page_namespace": 711,
+          "outcome": "granted",
+          "cases": 1,
+          "first_request": "2024-01-20T04:55:00+00:00",
+          "last_request": "2024-01-20T04:55:00+00:00"
+        },
+        {
+          "page_namespace": 828,
+          "outcome": "denied",
+          "cases": 58,
+          "first_request": "2015-09-03T23:09:00+00:00",
+          "last_request": "2026-06-24T05:12:00+00:00"
+        },
+        {
+          "page_namespace": 828,
+          "outcome": "granted",
+          "cases": 263,
+          "first_request": "2013-07-12T20:35:00+00:00",
+          "last_request": "2026-09-03T08:55:00+00:00"
+        },
+        {
+          "page_namespace": 828,
+          "outcome": "other",
+          "cases": 23,
+          "first_request": "2015-09-03T23:11:00+00:00",
+          "last_request": "2026-07-08T05:50:00+00:00"
+        },
+        {
+          "page_namespace": 829,
+          "outcome": "denied",
+          "cases": 1,
+          "first_request": "2018-10-22T21:53:00+00:00",
+          "last_request": "2018-10-22T21:53:00+00:00"
+        },
+        {
+          "page_namespace": null,
+          "outcome": "denied",
+          "cases": 2,
+          "first_request": "2020-12-11T10:58:00+00:00",
+          "last_request": "2023-08-04T01:49:00+00:00"
+        },
+        {
+          "page_namespace": null,
+          "outcome": "other",
+          "cases": 2,
+          "first_request": "2019-06-30T15:32:00+00:00",
+          "last_request": "2021-10-31T06:17:00+00:00"
+        }
+      ]
+    },
+    "snapshot_equivalent": {
+      "sql": "SELECT count(*) AS cases,min(request_timestamp) AS first_request,max(request_timestamp) AS last_request FROM analysis.rfpp_request WHERE page_namespace=0 AND outcome IN ('granted','denied')",
+      "rows": [
+        {
+          "cases": 178110,
+          "first_request": "2012-10-29T06:54:00+00:00",
+          "last_request": "2026-09-30T07:11:00+00:00"
+        }
+      ]
+    },
+    "ecp_candidates_2016_2025": {
+      "sql": "SELECT outcome,count(*) AS cases,count(DISTINCT page_id_match) AS pages,count(*) FILTER(WHERE granted_type='edit' AND granted_level='ecp') AS ecp_log_matches,count(*) FILTER(WHERE granted_type='edit' AND granted_level='semi') AS semi_log_matches,count(*) FILTER(WHERE request_label LIKE '%extended%' AND request_label LIKE '%semi%') AS dual_word_labels FROM analysis.rfpp_request WHERE page_namespace=0 AND outcome IN ('granted','denied') AND requested_action='increase' AND requested_level='ecp' AND request_timestamp >= '2016-01-01 00:00:00+00' AND request_timestamp < '2026-01-01 00:00:00+00' GROUP BY 1 ORDER BY 1",
+      "rows": [
+        {
+          "outcome": "denied",
+          "cases": 2595,
+          "pages": 2287,
+          "ecp_log_matches": 94,
+          "semi_log_matches": 120,
+          "dual_word_labels": 12
+        },
+        {
+          "outcome": "granted",
+          "cases": 3535,
+          "pages": 3268,
+          "ecp_log_matches": 809,
+          "semi_log_matches": 2324,
+          "dual_word_labels": 57
+        }
+      ]
+    },
+    "extended_semi_full_population": {
+      "sql": "SELECT request_label,requested_action,requested_level,requested_level_source,outcome,count(*) AS cases FROM analysis.rfpp_request WHERE request_label LIKE '%extended%' AND request_label LIKE '%semi%' GROUP BY 1,2,3,4,5 ORDER BY 1,2,3,4,5",
+      "rows": [
+        {
+          "request_label": "change from extended-confirmed-protection to semi-protection",
+          "requested_action": "increase",
+          "requested_level": "ecp",
+          "requested_level_source": "label",
+          "outcome": "denied",
+          "cases": 1
+        },
+        {
+          "request_label": "change to extended confirmed or semi-protection and extend protection time",
+          "requested_action": "increase",
+          "requested_level": "ecp",
+          "requested_level_source": "label",
+          "outcome": "granted",
+          "cases": 1
+        },
+        {
+          "request_label": "extended confirmed protection (or semi-protection)",
+          "requested_action": "increase",
+          "requested_level": "ecp",
+          "requested_level_source": "label",
+          "outcome": "granted",
+          "cases": 1
+        },
+        {
+          "request_label": "extended confirmed protection or semi-confirmed protection",
+          "requested_action": "increase",
+          "requested_level": "ecp",
+          "requested_level_source": "label",
+          "outcome": "denied",
+          "cases": 1
+        },
+        {
+          "request_label": "extended confirmed protection or semi-protection",
+          "requested_action": "increase",
+          "requested_level": "ecp",
+          "requested_level_source": "label",
+          "outcome": "denied",
+          "cases": 1
+        },
+        {
+          "request_label": "extended confirmed protection or semi-protection",
+          "requested_action": "increase",
+          "requested_level": "ecp",
+          "requested_level_source": "label",
+          "outcome": "granted",
+          "cases": 1
+        },
+        {
+          "request_label": "extended or indef semi",
+          "requested_action": "increase",
+          "requested_level": "ecp",
+          "requested_level_source": "label",
+          "outcome": "granted",
+          "cases": 1
+        },
+        {
+          "request_label": "extended or indefinite semi",
+          "requested_action": "increase",
+          "requested_level": "ecp",
+          "requested_level_source": "label",
+          "outcome": "granted",
+          "cases": 1
+        },
+        {
+          "request_label": "extended or indefinite semi-protection",
+          "requested_action": "increase",
+          "requested_level": "ecp",
+          "requested_level_source": "label",
+          "outcome": "granted",
+          "cases": 1
+        },
+        {
+          "request_label": "extended period of semi-protection",
+          "requested_action": "increase",
+          "requested_level": "ecp",
+          "requested_level_source": "label",
+          "outcome": "granted",
+          "cases": 1
+        },
+        {
+          "request_label": "extended period semi-protection",
+          "requested_action": "increase",
+          "requested_level": "ecp",
+          "requested_level_source": "label",
+          "outcome": "granted",
+          "cases": 1
+        },
+        {
+          "request_label": "extended semi",
+          "requested_action": "increase",
+          "requested_level": "ecp",
+          "requested_level_source": "label",
+          "outcome": "granted",
+          "cases": 2
+        },
+        {
+          "request_label": "extended semi protection",
+          "requested_action": "increase",
+          "requested_level": "ecp",
+          "requested_level_source": "label",
+          "outcome": "granted",
+          "cases": 1
+        },
+        {
+          "request_label": "extended semi-protection",
+          "requested_action": "increase",
+          "requested_level": "ecp",
+          "requested_level_source": "label",
+          "outcome": "denied",
+          "cases": 4
+        },
+        {
+          "request_label": "extended semi-protection",
+          "requested_action": "increase",
+          "requested_level": "ecp",
+          "requested_level_source": "label",
+          "outcome": "granted",
+          "cases": 40
+        },
+        {
+          "request_label": "extended semi-protection",
+          "requested_action": "increase",
+          "requested_level": "ecp",
+          "requested_level_source": "label",
+          "outcome": "other",
+          "cases": 5
+        },
+        {
+          "request_label": "extended temporary semi-protection",
+          "requested_action": "increase",
+          "requested_level": "ecp",
+          "requested_level_source": "label",
+          "outcome": "denied",
+          "cases": 2
+        },
+        {
+          "request_label": "extended temporary semi-protection",
+          "requested_action": "increase",
+          "requested_level": "ecp",
+          "requested_level_source": "label",
+          "outcome": "granted",
+          "cases": 5
+        },
+        {
+          "request_label": "from extended confirmed protection to semi-protection",
+          "requested_action": "increase",
+          "requested_level": "ecp",
+          "requested_level_source": "label",
+          "outcome": "denied",
+          "cases": 1
+        },
+        {
+          "request_label": "full long-term extended semi-protection",
+          "requested_action": "increase",
+          "requested_level": "full",
+          "requested_level_source": "label",
+          "outcome": "granted",
+          "cases": 1
+        },
+        {
+          "request_label": "increase protection from semi-protection to extended confirmed protection",
+          "requested_action": "increase",
+          "requested_level": "semi",
+          "requested_level_source": "label",
+          "outcome": "denied",
+          "cases": 1
+        },
+        {
+          "request_label": "indefinite <s>semi-protection</s> extended confirmed",
+          "requested_action": "increase",
+          "requested_level": "semi",
+          "requested_level_source": "label",
+          "outcome": "granted",
+          "cases": 1
+        },
+        {
+          "request_label": "indefinite extended semi-protection",
+          "requested_action": "increase",
+          "requested_level": "ecp",
+          "requested_level_source": "label",
+          "outcome": "denied",
+          "cases": 1
+        },
+        {
+          "request_label": "indefinite extended semi-protection",
+          "requested_action": "increase",
+          "requested_level": "ecp",
+          "requested_level_source": "label",
+          "outcome": "other",
+          "cases": 1
+        },
+        {
+          "request_label": "indefinite extended-confirmed protection or semi-protection",
+          "requested_action": "increase",
+          "requested_level": "ecp",
+          "requested_level_source": "label",
+          "outcome": "denied",
+          "cases": 1
+        },
+        {
+          "request_label": "indefinite semi-protection (or extended-confirmed)",
+          "requested_action": "increase",
+          "requested_level": "semi",
+          "requested_level_source": "label",
+          "outcome": "other",
+          "cases": 1
+        },
+        {
+          "request_label": "indefinite semi-protection or extended confirmed protection",
+          "requested_action": "increase",
+          "requested_level": "semi",
+          "requested_level_source": "label",
+          "outcome": "denied",
+          "cases": 2
+        },
+        {
+          "request_label": "indefinite/extended semi-protection",
+          "requested_action": "increase",
+          "requested_level": "ecp",
+          "requested_level_source": "label",
+          "outcome": "granted",
+          "cases": 1
+        },
+        {
+          "request_label": "indefinite/extended temporary semi-protection",
+          "requested_action": "increase",
+          "requested_level": "ecp",
+          "requested_level_source": "label",
+          "outcome": "granted",
+          "cases": 1
+        },
+        {
+          "request_label": "pending changes protection/semi protection/extended confirmed protection",
+          "requested_action": "increase",
+          "requested_level": "pc",
+          "requested_level_source": "label",
+          "outcome": "granted",
+          "cases": 1
+        },
+        {
+          "request_label": "permanent/extended semi-protection",
+          "requested_action": "increase",
+          "requested_level": "ecp",
+          "requested_level_source": "label",
+          "outcome": "unparsed",
+          "cases": 1
+        },
+        {
+          "request_label": "reduce level of protection from extended protection to semi-protection",
+          "requested_action": "decrease",
+          "requested_level": "ecp",
+          "requested_level_source": "label",
+          "outcome": "denied",
+          "cases": 1
+        },
+        {
+          "request_label": "requesting indef semi-extended page protection",
+          "requested_action": "increase",
+          "requested_level": "semi",
+          "requested_level_source": "label",
+          "outcome": "granted",
+          "cases": 1
+        },
+        {
+          "request_label": "semi or extended confirmed protection",
+          "requested_action": "increase",
+          "requested_level": "semi",
+          "requested_level_source": "label",
+          "outcome": "denied",
+          "cases": 1
+        },
+        {
+          "request_label": "semi or extended-confirmed protection",
+          "requested_action": "increase",
+          "requested_level": "semi",
+          "requested_level_source": "label",
+          "outcome": "other",
+          "cases": 1
+        },
+        {
+          "request_label": "semi-protection extended confirmed",
+          "requested_action": "increase",
+          "requested_level": "semi",
+          "requested_level_source": "label",
+          "outcome": "denied",
+          "cases": 1
+        },
+        {
+          "request_label": "semi-protection for an extended period",
+          "requested_action": "increase",
+          "requested_level": "semi",
+          "requested_level_source": "label",
+          "outcome": "denied",
+          "cases": 1
+        },
+        {
+          "request_label": "semi-protection or extended changes protection",
+          "requested_action": "increase",
+          "requested_level": "semi",
+          "requested_level_source": "label",
+          "outcome": "granted",
+          "cases": 1
+        },
+        {
+          "request_label": "semi-protection or extended confirmed protection",
+          "requested_action": "increase",
+          "requested_level": "semi",
+          "requested_level_source": "label",
+          "outcome": "granted",
+          "cases": 3
+        },
+        {
+          "request_label": "semi-protection or extended confirmed protection",
+          "requested_action": "increase",
+          "requested_level": "semi",
+          "requested_level_source": "label",
+          "outcome": "other",
+          "cases": 2
+        },
+        {
+          "request_label": "semi-protection or extended-confirmed protection",
+          "requested_action": "increase",
+          "requested_level": "semi",
+          "requested_level_source": "label",
+          "outcome": "granted",
+          "cases": 1
+        },
+        {
+          "request_label": "semi-protection, extended term",
+          "requested_action": "increase",
+          "requested_level": "semi",
+          "requested_level_source": "label",
+          "outcome": "denied",
+          "cases": 1
+        },
+        {
+          "request_label": "semi-protection/extended confirmed protection",
+          "requested_action": "increase",
+          "requested_level": "semi",
+          "requested_level_source": "label",
+          "outcome": "granted",
+          "cases": 1
+        },
+        {
+          "request_label": "temporary <s>extended confirmed protection</s> semi-protection",
+          "requested_action": "increase",
+          "requested_level": "ecp",
+          "requested_level_source": "label",
+          "outcome": "denied",
+          "cases": 1
+        },
+        {
+          "request_label": "temporary <s>semi-protection</s> extended confirmed",
+          "requested_action": "increase",
+          "requested_level": "semi",
+          "requested_level_source": "label",
+          "outcome": "granted",
+          "cases": 1
+        },
+        {
+          "request_label": "temporary extended confirmed or semi-protection",
+          "requested_action": "increase",
+          "requested_level": "ecp",
+          "requested_level_source": "label",
+          "outcome": "granted",
+          "cases": 1
+        },
+        {
+          "request_label": "temporary extended confirmed protection or indefinite semi-protection",
+          "requested_action": "increase",
+          "requested_level": "ecp",
+          "requested_level_source": "label",
+          "outcome": "other",
+          "cases": 1
+        },
+        {
+          "request_label": "temporary extended confirmed users semi-protection",
+          "requested_action": "increase",
+          "requested_level": "ecp",
+          "requested_level_source": "label",
+          "outcome": "granted",
+          "cases": 2
+        },
+        {
+          "request_label": "temporary extended semi-protection",
+          "requested_action": "increase",
+          "requested_level": "ecp",
+          "requested_level_source": "label",
+          "outcome": "granted",
+          "cases": 5
+        },
+        {
+          "request_label": "temporary extended semi-protection",
+          "requested_action": "increase",
+          "requested_level": "ecp",
+          "requested_level_source": "label",
+          "outcome": "other",
+          "cases": 1
+        },
+        {
+          "request_label": "temporary extended-semi-protection",
+          "requested_action": "increase",
+          "requested_level": "ecp",
+          "requested_level_source": "label",
+          "outcome": "other",
+          "cases": 1
+        },
+        {
+          "request_label": "temporary semi-protection / extended confirmed",
+          "requested_action": "increase",
+          "requested_level": "semi",
+          "requested_level_source": "label",
+          "outcome": "other",
+          "cases": 1
+        },
+        {
+          "request_label": "temporary semi-protection or extended confirmed protection",
+          "requested_action": "increase",
+          "requested_level": "semi",
+          "requested_level_source": "label",
+          "outcome": "granted",
+          "cases": 1
+        },
+        {
+          "request_label": "temporary semi/extended-protection",
+          "requested_action": "increase",
+          "requested_level": "semi",
+          "requested_level_source": "label",
+          "outcome": "granted",
+          "cases": 1
+        }
+      ]
+    },
+    "bare_extended_ecp_labels": {
+      "sql": "SELECT request_label,count(*) AS cases FROM analysis.rfpp_request WHERE requested_level='ecp' AND requested_level_source='label' AND request_label !~ '(extended[ -]+confirmed|\\mecp\\M|\\mec\\M)' GROUP BY 1 ORDER BY 2 DESC,1",
+      "rows": [
+        {
+          "request_label": "indefinite extended protection",
+          "cases": 315
+        },
+        {
+          "request_label": "temporary extended protection",
+          "cases": 230
+        },
+        {
+          "request_label": "extended semi-protection",
+          "cases": 49
+        },
+        {
+          "request_label": "extended protection",
+          "cases": 35
+        },
+        {
+          "request_label": "indefinite extended-protection",
+          "cases": 10
+        },
+        {
+          "request_label": "indefinite long-term extended protection",
+          "cases": 9
+        },
+        {
+          "request_label": "extended temporary semi-protection",
+          "cases": 7
+        },
+        {
+          "request_label": "temporary extended semi-protection",
+          "cases": 6
+        },
+        {
+          "request_label": "extended confirm protection",
+          "cases": 4
+        },
+        {
+          "request_label": "long term extended protection",
+          "cases": 4
+        },
+        {
+          "request_label": "temporary extended autoconfirmed protection",
+          "cases": 4
+        },
+        {
+          "request_label": "extended user protection",
+          "cases": 3
+        },
+        {
+          "request_label": "temporary extended-protection",
+          "cases": 3
+        },
+        {
+          "request_label": "extended full protection",
+          "cases": 2
+        },
+        {
+          "request_label": "extended semi",
+          "cases": 2
+        },
+        {
+          "request_label": "extended-confirm protection",
+          "cases": 2
+        },
+        {
+          "request_label": "extended-protection",
+          "cases": 2
+        },
+        {
+          "request_label": "indefinite extended confirm protection",
+          "cases": 2
+        },
+        {
+          "request_label": "indefinite extended semi-protection",
+          "cases": 2
+        },
+        {
+          "request_label": "long term indefinite extended protection",
+          "cases": 2
+        },
+        {
+          "request_label": "permanent extended confirmation protection",
+          "cases": 2
+        },
+        {
+          "request_label": "<s>extended</s> temporary full protection",
+          "cases": 1
+        },
+        {
+          "request_label": "edit extended-protected",
+          "cases": 1
+        },
+        {
+          "request_label": "extended",
+          "cases": 1
+        },
+        {
+          "request_label": "extended (the blue one) forever",
+          "cases": 1
+        },
+        {
+          "request_label": "extended blue-lock protection",
+          "cases": 1
+        },
+        {
+          "request_label": "extended confirm",
+          "cases": 1
+        },
+        {
+          "request_label": "extended confirmation protection",
+          "cases": 1
+        },
+        {
+          "request_label": "extended confirmation-protection",
+          "cases": 1
+        },
+        {
+          "request_label": "extended one-month protection",
+          "cases": 1
+        },
+        {
+          "request_label": "extended or indef semi",
+          "cases": 1
+        },
+        {
+          "request_label": "extended or indefinite semi",
+          "cases": 1
+        },
+        {
+          "request_label": "extended or indefinite semi-protection",
+          "cases": 1
+        },
+        {
+          "request_label": "extended page protection",
+          "cases": 1
+        },
+        {
+          "request_label": "extended period of semi-protection",
+          "cases": 1
+        },
+        {
+          "request_label": "extended period semi-protection",
+          "cases": 1
+        },
+        {
+          "request_label": "extended semi protection",
+          "cases": 1
+        },
+        {
+          "request_label": "extended-confirmation",
+          "cases": 1
+        },
+        {
+          "request_label": "extended/indefinite protection against ip-editing",
+          "cases": 1
+        },
+        {
+          "request_label": "increased extended-protection by half-a-year or more",
+          "cases": 1
+        },
+        {
+          "request_label": "indefenite extended protection",
+          "cases": 1
+        },
+        {
+          "request_label": "indefinite extended confirm-protection",
+          "cases": 1
+        },
+        {
+          "request_label": "indefinite extended protected",
+          "cases": 1
+        },
+        {
+          "request_label": "indefinite extended-confirm protection",
+          "cases": 1
+        },
+        {
+          "request_label": "indefinite extended-protected move protection",
+          "cases": 1
+        },
+        {
+          "request_label": "indefinite extended-protection (cascade)",
+          "cases": 1
+        },
+        {
+          "request_label": "indefinite user extended protection",
+          "cases": 1
+        },
+        {
+          "request_label": "indefinite/extended semi-protection",
+          "cases": 1
+        },
+        {
+          "request_label": "indefinite/extended temporary semi-protection",
+          "cases": 1
+        },
+        {
+          "request_label": "perm extended confirm protection",
+          "cases": 1
+        },
+        {
+          "request_label": "permanent extended-protection",
+          "cases": 1
+        },
+        {
+          "request_label": "permanent/extended semi-protection",
+          "cases": 1
+        },
+        {
+          "request_label": "permanently extended-protected",
+          "cases": 1
+        },
+        {
+          "request_label": "reduce level of protection from extended protection to semi-protection",
+          "cases": 1
+        },
+        {
+          "request_label": "temporary <s>extended</s>auto confirmed",
+          "cases": 1
+        },
+        {
+          "request_label": "temporary and extended full protection",
+          "cases": 1
+        },
+        {
+          "request_label": "temporary extended (30/500) protection",
+          "cases": 1
+        },
+        {
+          "request_label": "temporary extended (or auto confirmed) protection",
+          "cases": 1
+        },
+        {
+          "request_label": "temporary extended user protection",
+          "cases": 1
+        },
+        {
+          "request_label": "temporary extended-semi-protection",
+          "cases": 1
+        },
+        {
+          "request_label": "temporary increase from extended protection to full protection",
+          "cases": 1
+        },
+        {
+          "request_label": "ten-month extended confirm",
+          "cases": 1
+        }
+      ]
+    },
+    "explicit_direction_candidates": {
+      "sql": "SELECT rfpp_id,request_timestamp,archive_page,request_label,requested_action,requested_level,outcome FROM analysis.rfpp_request WHERE request_label ~ '\\mfrom\\M.*\\mto\\M' AND request_label ~ '(semi|extended)' ORDER BY request_timestamp,rfpp_id",
+      "rows": [
+        {
+          "rfpp_id": 18057,
+          "request_timestamp": "2014-08-14T19:56:00+00:00",
+          "archive_page": "Wikipedia:Requests for page protection/Archive/2014/08",
+          "request_label": "reduce from full-protection to semi-protection",
+          "requested_action": "decrease",
+          "requested_level": "full",
+          "outcome": "denied"
+        },
+        {
+          "rfpp_id": 21322,
+          "request_timestamp": "2014-12-12T09:37:00+00:00",
+          "archive_page": "Wikipedia:Requests for page protection/Archive/2014/12",
+          "request_label": "reduce from full to semi-protection",
+          "requested_action": "decrease",
+          "requested_level": "full",
+          "outcome": "granted"
+        },
+        {
+          "rfpp_id": 30905,
+          "request_timestamp": "2015-09-08T13:38:00+00:00",
+          "archive_page": "Wikipedia:Requests for page protection/Archive/2015/09",
+          "request_label": "unprotection (from full to semi)",
+          "requested_action": "decrease",
+          "requested_level": "full",
+          "outcome": "other"
+        },
+        {
+          "rfpp_id": 44440,
+          "request_timestamp": "2016-07-30T01:00:00+00:00",
+          "archive_page": "Wikipedia:Requests for page protection/Archive/2016/07",
+          "request_label": "increase from semi-protection to full-protection",
+          "requested_action": "increase",
+          "requested_level": "semi",
+          "outcome": "denied"
+        },
+        {
+          "rfpp_id": 59459,
+          "request_timestamp": "2017-07-03T23:46:00+00:00",
+          "archive_page": "Wikipedia:Requests for page protection/Archive/2017/07",
+          "request_label": "upgrade from pending changes to semi-protection",
+          "requested_action": "increase",
+          "requested_level": "pc",
+          "outcome": "denied"
+        },
+        {
+          "rfpp_id": 66970,
+          "request_timestamp": "2017-12-22T08:29:00+00:00",
+          "archive_page": "Wikipedia:Requests for page protection/Archive/2017/12",
+          "request_label": "from pending changes to semi-protection",
+          "requested_action": "increase",
+          "requested_level": "pc",
+          "outcome": "granted"
+        },
+        {
+          "rfpp_id": 87454,
+          "request_timestamp": "2019-03-14T10:22:00+00:00",
+          "archive_page": "Wikipedia:Requests for page protection/Archive/2019/03",
+          "request_label": "reduce level of protection from extended protection to semi-protection",
+          "requested_action": "decrease",
+          "requested_level": "ecp",
+          "outcome": "denied"
+        },
+        {
+          "rfpp_id": 88812,
+          "request_timestamp": "2019-04-10T06:44:00+00:00",
+          "archive_page": "Wikipedia:Requests for page protection/Archive/2019/04",
+          "request_label": "upgrade from pending changes to semi-protection for a day or two or three",
+          "requested_action": "increase",
+          "requested_level": "pc",
+          "outcome": "granted"
+        },
+        {
+          "rfpp_id": 89831,
+          "request_timestamp": "2019-05-02T10:25:00+00:00",
+          "archive_page": "Wikipedia:Requests for page protection/Archive/2019/05",
+          "request_label": "change from pending changes protection to semi-protection",
+          "requested_action": "increase",
+          "requested_level": "pc",
+          "outcome": "granted"
+        },
+        {
+          "rfpp_id": 95610,
+          "request_timestamp": "2019-09-02T15:49:00+00:00",
+          "archive_page": "Wikipedia:Requests for page protection/Archive/2019/09",
+          "request_label": "increase protection from pending changes to extended confirmed",
+          "requested_action": "increase",
+          "requested_level": "pc",
+          "outcome": "other"
+        },
+        {
+          "rfpp_id": 105148,
+          "request_timestamp": "2020-04-13T12:56:00+00:00",
+          "archive_page": "Wikipedia:Requests for page protection/Archive/2020/04",
+          "request_label": "increase from pending changes to semi-protection",
+          "requested_action": "increase",
+          "requested_level": "pc",
+          "outcome": "granted"
+        },
+        {
+          "rfpp_id": 117901,
+          "request_timestamp": "2021-01-08T04:06:00+00:00",
+          "archive_page": "Wikipedia:Requests for page protection/Archive/2021/01",
+          "request_label": "temporary increase from extended protection to full protection",
+          "requested_action": "increase",
+          "requested_level": "ecp",
+          "outcome": "denied"
+        },
+        {
+          "rfpp_id": 121254,
+          "request_timestamp": "2021-03-05T05:49:00+00:00",
+          "archive_page": "Wikipedia:Requests for page protection/Archive/2021/03",
+          "request_label": "change from semi-protection to pending changes",
+          "requested_action": "decrease",
+          "requested_level": "semi",
+          "outcome": "granted"
+        },
+        {
+          "rfpp_id": 121914,
+          "request_timestamp": "2021-03-20T12:56:00+00:00",
+          "archive_page": "Wikipedia:Requests for page protection/Archive/2021/03",
+          "request_label": "modify from pending changes to semi",
+          "requested_action": "increase",
+          "requested_level": "pc",
+          "outcome": "denied"
+        },
+        {
+          "rfpp_id": 127462,
+          "request_timestamp": "2021-06-25T00:16:00+00:00",
+          "archive_page": "Wikipedia:Requests for page protection/Archive/2021/06",
+          "request_label": "from extended confirmed protection to semi-protection",
+          "requested_action": "increase",
+          "requested_level": "ecp",
+          "outcome": "denied"
+        },
+        {
+          "rfpp_id": 144377,
+          "request_timestamp": "2022-05-27T21:45:00+00:00",
+          "archive_page": "Wikipedia:Requests for page protection/Archive/2022/05",
+          "request_label": "change from extended-confirmed-protection to semi-protection",
+          "requested_action": "increase",
+          "requested_level": "ecp",
+          "outcome": "denied"
+        },
+        {
+          "rfpp_id": 154614,
+          "request_timestamp": "2023-02-04T04:26:00+00:00",
+          "archive_page": "Wikipedia:Requests for page protection/Archive/2023/02",
+          "request_label": "increase protection from semi-protection to extended confirmed protection",
+          "requested_action": "increase",
+          "requested_level": "semi",
+          "outcome": "denied"
+        },
+        {
+          "rfpp_id": 170749,
+          "request_timestamp": "2024-02-25T15:59:00+00:00",
+          "archive_page": "Wikipedia:Requests for page protection/Archive/2024/02",
+          "request_label": "please change the page protection rights from open to semi-protected",
+          "requested_action": "increase",
+          "requested_level": "semi",
+          "outcome": "other"
+        }
+      ]
+    },
+    "fixtures": {
+      "sql": "SELECT rfpp_id,request_timestamp,archive_page,request_label,requested_action,requested_level,requested_level_source,outcome,response_code,matched_log_id,granted_type,granted_level_raw,granted_level,md5(reason) AS reason_md5 FROM analysis.rfpp_request WHERE rfpp_id IN (737,4219,5302,12914,30062,91188,127462,144377,192925) ORDER BY request_timestamp,rfpp_id",
+      "rows": [
+        {
+          "rfpp_id": 737,
+          "request_timestamp": "2012-11-22T02:20:00+00:00",
+          "archive_page": "Wikipedia:Requests for page protection/Archive/2012/11",
+          "request_label": "extended semi-protection",
+          "requested_action": "increase",
+          "requested_level": "ecp",
+          "requested_level_source": "label",
+          "outcome": "granted",
+          "response_code": "semi",
+          "matched_log_id": 45951392,
+          "granted_type": "edit",
+          "granted_level_raw": "autoconfirmed",
+          "granted_level": "semi",
+          "reason_md5": "1ade24f6fe4a51478f87a09c3d6a3ac3"
+        },
+        {
+          "rfpp_id": 4219,
+          "request_timestamp": "2013-03-20T17:26:00+00:00",
+          "archive_page": "Wikipedia:Requests for page protection/Archive/2013/03",
+          "request_label": "extended semi protection",
+          "requested_action": "increase",
+          "requested_level": "ecp",
+          "requested_level_source": "label",
+          "outcome": "granted",
+          "response_code": "Done",
+          "matched_log_id": 48009641,
+          "granted_type": "edit",
+          "granted_level_raw": "autoconfirmed",
+          "granted_level": "semi",
+          "reason_md5": "e62812a973f4418e59fb1b807729ecf6"
+        },
+        {
+          "rfpp_id": 5302,
+          "request_timestamp": "2013-04-24T14:25:00+00:00",
+          "archive_page": "Wikipedia:Requests for page protection/Archive/2013/04",
+          "request_label": "extended temporary semi-protection",
+          "requested_action": "increase",
+          "requested_level": "ecp",
+          "requested_level_source": "label",
+          "outcome": "granted",
+          "response_code": "pend",
+          "matched_log_id": 48549551,
+          "granted_type": "stable",
+          "granted_level_raw": "autoconfirmed",
+          "granted_level": "pc",
+          "reason_md5": "b2704a44531f782f8bb45443ee378d3b"
+        },
+        {
+          "rfpp_id": 12914,
+          "request_timestamp": "2014-02-08T07:59:00+00:00",
+          "archive_page": "Wikipedia:Requests for page protection/Archive/2014/02",
+          "request_label": "extended semi-protection",
+          "requested_action": "increase",
+          "requested_level": "ecp",
+          "requested_level_source": "label",
+          "outcome": "granted",
+          "response_code": "semi",
+          "matched_log_id": 54715194,
+          "granted_type": "edit",
+          "granted_level_raw": "autoconfirmed",
+          "granted_level": "semi",
+          "reason_md5": "42af2c11a1810103b366ca54fadc8b2b"
+        },
+        {
+          "rfpp_id": 30062,
+          "request_timestamp": "2015-08-20T21:45:00+00:00",
+          "archive_page": "Wikipedia:Requests for page protection/Archive/2015/08",
+          "request_label": "extended semi-protection",
+          "requested_action": "increase",
+          "requested_level": "ecp",
+          "requested_level_source": "label",
+          "outcome": "granted",
+          "response_code": "semi",
+          "matched_log_id": 68520631,
+          "granted_type": "edit",
+          "granted_level_raw": "autoconfirmed",
+          "granted_level": "semi",
+          "reason_md5": "115c1c2ddab86860fadf36bf1fb9788a"
+        },
+        {
+          "rfpp_id": 91188,
+          "request_timestamp": "2019-05-31T21:06:00+00:00",
+          "archive_page": "Wikipedia:Requests for page protection/Archive/2019/06",
+          "request_label": "temporary extended confirmed or semi-protection",
+          "requested_action": "increase",
+          "requested_level": "ecp",
+          "requested_level_source": "label",
+          "outcome": "granted",
+          "response_code": "semi",
+          "matched_log_id": 99590898,
+          "granted_type": "edit",
+          "granted_level_raw": "autoconfirmed",
+          "granted_level": "semi",
+          "reason_md5": "7578548ead55025056c02df577da5618"
+        },
+        {
+          "rfpp_id": 127462,
+          "request_timestamp": "2021-06-25T00:16:00+00:00",
+          "archive_page": "Wikipedia:Requests for page protection/Archive/2021/06",
+          "request_label": "from extended confirmed protection to semi-protection",
+          "requested_action": "increase",
+          "requested_level": "ecp",
+          "requested_level_source": "label",
+          "outcome": "denied",
+          "response_code": "Not done",
+          "matched_log_id": null,
+          "granted_type": null,
+          "granted_level_raw": null,
+          "granted_level": null,
+          "reason_md5": "29454b40d1afa32bab4ae7f737389988"
+        },
+        {
+          "rfpp_id": 144377,
+          "request_timestamp": "2022-05-27T21:45:00+00:00",
+          "archive_page": "Wikipedia:Requests for page protection/Archive/2022/05",
+          "request_label": "change from extended-confirmed-protection to semi-protection",
+          "requested_action": "increase",
+          "requested_level": "ecp",
+          "requested_level_source": "label",
+          "outcome": "denied",
+          "response_code": "Declined",
+          "matched_log_id": null,
+          "granted_type": null,
+          "granted_level_raw": null,
+          "granted_level": null,
+          "reason_md5": "a20f03ae67e9e25b7fb58b7aee6b6e61"
+        },
+        {
+          "rfpp_id": 192925,
+          "request_timestamp": "2025-05-26T00:49:00+00:00",
+          "archive_page": "Wikipedia:Requests for page protection/Archive/2025/05",
+          "request_label": "temporary <s>extended confirmed protection</s> semi-protection",
+          "requested_action": "increase",
+          "requested_level": "ecp",
+          "requested_level_source": "label",
+          "outcome": "denied",
+          "response_code": "Declined",
+          "matched_log_id": null,
+          "granted_type": null,
+          "granted_level_raw": null,
+          "granted_level": null,
+          "reason_md5": "992b3c0ee2b7caf3a48a38373f7e7619"
+        }
+      ]
+    },
+    "missing_tiers_by_year": {
+      "sql": "SELECT extract(year FROM request_timestamp)::int AS request_year,count(*) AS cases,count(*) FILTER(WHERE requested_level IS NULL) AS missing_tier FROM analysis.rfpp_request WHERE page_namespace=0 AND outcome IN ('granted','denied') AND requested_action='increase' AND request_timestamp >= '2013-01-01 00:00:00+00' AND request_timestamp < '2026-01-01 00:00:00+00' GROUP BY 1 ORDER BY 1",
+      "rows": [
+        {
+          "request_year": 2013,
+          "cases": 8725,
+          "missing_tier": 63
+        },
+        {
+          "request_year": 2014,
+          "cases": 9315,
+          "missing_tier": 67
+        },
+        {
+          "request_year": 2015,
+          "cases": 11475,
+          "missing_tier": 63
+        },
+        {
+          "request_year": 2016,
+          "cases": 13548,
+          "missing_tier": 54
+        },
+        {
+          "request_year": 2017,
+          "cases": 13168,
+          "missing_tier": 48
+        },
+        {
+          "request_year": 2018,
+          "cases": 14178,
+          "missing_tier": 39
+        },
+        {
+          "request_year": 2019,
+          "cases": 14303,
+          "missing_tier": 56
+        },
+        {
+          "request_year": 2020,
+          "cases": 13671,
+          "missing_tier": 49
+        },
+        {
+          "request_year": 2021,
+          "cases": 15848,
+          "missing_tier": 2075
+        },
+        {
+          "request_year": 2022,
+          "cases": 13291,
+          "missing_tier": 4906
+        },
+        {
+          "request_year": 2023,
+          "cases": 11150,
+          "missing_tier": 3886
+        },
+        {
+          "request_year": 2024,
+          "cases": 12720,
+          "missing_tier": 4246
+        },
+        {
+          "request_year": 2025,
+          "cases": 13669,
+          "missing_tier": 4399
+        }
+      ]
+    },
+    "parser_dependency_columns": {
+      "sql": "SELECT table_name,column_name FROM information_schema.columns WHERE table_schema='analysis' AND column_name IN ('requested_action','requested_level','board','elig_level_code','elig_level_source','expiry_is_pseudo','rfpp_id') ORDER BY 1,2",
+      "rows": [
+        {
+          "table_name": "quality_cutoff",
+          "column_name": "rfpp_id"
+        },
+        {
+          "table_name": "rfpp_request",
+          "column_name": "board"
+        },
+        {
+          "table_name": "rfpp_request",
+          "column_name": "requested_action"
+        },
+        {
+          "table_name": "rfpp_request",
+          "column_name": "requested_level"
+        },
+        {
+          "table_name": "rfpp_request",
+          "column_name": "rfpp_id"
+        },
+        {
+          "table_name": "sample_cand_full",
+          "column_name": "rfpp_id"
+        },
+        {
+          "table_name": "sample_cand_pre_full",
+          "column_name": "rfpp_id"
+        },
+        {
+          "table_name": "sample_cand_pre_full_0",
+          "column_name": "rfpp_id"
+        },
+        {
+          "table_name": "sample_cand_pre_full_1",
+          "column_name": "rfpp_id"
+        },
+        {
+          "table_name": "sample_cand_pre_full_2",
+          "column_name": "rfpp_id"
+        },
+        {
+          "table_name": "sample_cand_pre_full_3",
+          "column_name": "rfpp_id"
+        },
+        {
+          "table_name": "sample_cand_pre_full_4",
+          "column_name": "rfpp_id"
+        },
+        {
+          "table_name": "sample_cand_pre_full_5",
+          "column_name": "rfpp_id"
+        },
+        {
+          "table_name": "sample_cand_pre_smoke",
+          "column_name": "rfpp_id"
+        },
+        {
+          "table_name": "sample_cand_pre_smoke_0",
+          "column_name": "rfpp_id"
+        },
+        {
+          "table_name": "sample_cand_pre_smoke_1",
+          "column_name": "rfpp_id"
+        },
+        {
+          "table_name": "sample_cand_smoke",
+          "column_name": "rfpp_id"
+        },
+        {
+          "table_name": "sample_cand_top_full",
+          "column_name": "rfpp_id"
+        },
+        {
+          "table_name": "sample_cand_top_smoke",
+          "column_name": "rfpp_id"
+        },
+        {
+          "table_name": "sample_page_full",
+          "column_name": "board"
+        },
+        {
+          "table_name": "sample_page_full",
+          "column_name": "elig_level_code"
+        },
+        {
+          "table_name": "sample_page_full",
+          "column_name": "elig_level_source"
+        },
+        {
+          "table_name": "sample_page_full",
+          "column_name": "expiry_is_pseudo"
+        },
+        {
+          "table_name": "sample_page_full",
+          "column_name": "requested_level"
+        },
+        {
+          "table_name": "sample_page_full",
+          "column_name": "rfpp_id"
+        },
+        {
+          "table_name": "sample_page_smoke",
+          "column_name": "board"
+        },
+        {
+          "table_name": "sample_page_smoke",
+          "column_name": "elig_level_code"
+        },
+        {
+          "table_name": "sample_page_smoke",
+          "column_name": "elig_level_source"
+        },
+        {
+          "table_name": "sample_page_smoke",
+          "column_name": "expiry_is_pseudo"
+        },
+        {
+          "table_name": "sample_page_smoke",
+          "column_name": "requested_level"
+        },
+        {
+          "table_name": "sample_page_smoke",
+          "column_name": "rfpp_id"
+        },
+        {
+          "table_name": "sample_request_full",
+          "column_name": "rfpp_id"
+        },
+        {
+          "table_name": "sample_request_smoke",
+          "column_name": "rfpp_id"
+        },
+        {
+          "table_name": "sample_request_treated",
+          "column_name": "requested_level"
+        },
+        {
+          "table_name": "sample_request_treated",
+          "column_name": "rfpp_id"
+        },
+        {
+          "table_name": "sample_treated_full",
+          "column_name": "board"
+        },
+        {
+          "table_name": "sample_treated_full",
+          "column_name": "requested_level"
+        },
+        {
+          "table_name": "sample_treated_full",
+          "column_name": "rfpp_id"
+        },
+        {
+          "table_name": "sample_treated_smoke",
+          "column_name": "board"
+        },
+        {
+          "table_name": "sample_treated_smoke",
+          "column_name": "requested_level"
+        },
+        {
+          "table_name": "sample_treated_smoke",
+          "column_name": "rfpp_id"
+        }
+      ]
+    },
+    "reproducer": {
+      "sql": "WITH examples(label,expected_target) AS (VALUES ('extended semi-protection','semi'),('extended semi protection','semi'),('extended temporary semi-protection','semi'),('temporary extended confirmed protection','ecp'),('extended-confirmed protection','ecp'),('semi-protection','semi')), tokens AS (SELECT *,substring(label FROM '(semi|extended|\\mecp\\M|\\mec\\M|full|fully|pending|\\mpc\\M|flagged|template|creat|salt|\\mmove)') AS token FROM examples) SELECT label,expected_target,token,CASE WHEN token='semi' THEN 'semi' WHEN token IN ('extended','ecp','ec') THEN 'ecp' END AS old_target FROM tokens ORDER BY label",
+      "rows": [
+        {
+          "label": "extended semi protection",
+          "expected_target": "semi",
+          "token": "extended",
+          "old_target": "ecp"
+        },
+        {
+          "label": "extended semi-protection",
+          "expected_target": "semi",
+          "token": "extended",
+          "old_target": "ecp"
+        },
+        {
+          "label": "extended temporary semi-protection",
+          "expected_target": "semi",
+          "token": "extended",
+          "old_target": "ecp"
+        },
+        {
+          "label": "extended-confirmed protection",
+          "expected_target": "ecp",
+          "token": "extended",
+          "old_target": "ecp"
+        },
+        {
+          "label": "semi-protection",
+          "expected_target": "semi",
+          "token": "semi",
+          "old_target": "semi"
+        },
+        {
+          "label": "temporary extended confirmed protection",
+          "expected_target": "ecp",
+          "token": "extended",
+          "old_target": "ecp"
+        }
+      ]
+    }
+  },
+  "label_destination_review": [
+    {
+      "rfpp_id": 18057,
+      "destination_text": "semi-protection",
+      "label_destination": "semi",
+      "stored_tier": "full",
+      "disagrees": true
+    },
+    {
+      "rfpp_id": 21322,
+      "destination_text": "semi-protection",
+      "label_destination": "semi",
+      "stored_tier": "full",
+      "disagrees": true
+    },
+    {
+      "rfpp_id": 30905,
+      "destination_text": "semi)",
+      "label_destination": "semi",
+      "stored_tier": "full",
+      "disagrees": true
+    },
+    {
+      "rfpp_id": 44440,
+      "destination_text": "full-protection",
+      "label_destination": "full",
+      "stored_tier": "semi",
+      "disagrees": true
+    },
+    {
+      "rfpp_id": 59459,
+      "destination_text": "semi-protection",
+      "label_destination": "semi",
+      "stored_tier": "pc",
+      "disagrees": true
+    },
+    {
+      "rfpp_id": 66970,
+      "destination_text": "semi-protection",
+      "label_destination": "semi",
+      "stored_tier": "pc",
+      "disagrees": true
+    },
+    {
+      "rfpp_id": 87454,
+      "destination_text": "semi-protection",
+      "label_destination": "semi",
+      "stored_tier": "ecp",
+      "disagrees": true
+    },
+    {
+      "rfpp_id": 88812,
+      "destination_text": "semi-protection for a day or two or three",
+      "label_destination": "semi",
+      "stored_tier": "pc",
+      "disagrees": true
+    },
+    {
+      "rfpp_id": 89831,
+      "destination_text": "semi-protection",
+      "label_destination": "semi",
+      "stored_tier": "pc",
+      "disagrees": true
+    },
+    {
+      "rfpp_id": 95610,
+      "destination_text": "extended confirmed",
+      "label_destination": "ecp",
+      "stored_tier": "pc",
+      "disagrees": true
+    },
+    {
+      "rfpp_id": 105148,
+      "destination_text": "semi-protection",
+      "label_destination": "semi",
+      "stored_tier": "pc",
+      "disagrees": true
+    },
+    {
+      "rfpp_id": 117901,
+      "destination_text": "full protection",
+      "label_destination": "full",
+      "stored_tier": "ecp",
+      "disagrees": true
+    },
+    {
+      "rfpp_id": 121254,
+      "destination_text": "pending changes",
+      "label_destination": "pc",
+      "stored_tier": "semi",
+      "disagrees": true
+    },
+    {
+      "rfpp_id": 121914,
+      "destination_text": "semi",
+      "label_destination": "semi",
+      "stored_tier": "pc",
+      "disagrees": true
+    },
+    {
+      "rfpp_id": 127462,
+      "destination_text": "semi-protection",
+      "label_destination": "semi",
+      "stored_tier": "ecp",
+      "disagrees": true
+    },
+    {
+      "rfpp_id": 144377,
+      "destination_text": "semi-protection",
+      "label_destination": "semi",
+      "stored_tier": "ecp",
+      "disagrees": true
+    },
+    {
+      "rfpp_id": 154614,
+      "destination_text": "extended confirmed protection",
+      "label_destination": "ecp",
+      "stored_tier": "semi",
+      "disagrees": true
+    },
+    {
+      "rfpp_id": 170749,
+      "destination_text": "semi-protected",
+      "label_destination": "semi",
+      "stored_tier": "semi",
+      "disagrees": false
+    }
+  ],
+  "checks": {
+    "old_parser_mismatches": [
+      "extended semi protection",
+      "extended semi-protection",
+      "extended temporary semi-protection"
+    ],
+    "historical_fixture_count": 9,
+    "database_changes": "none; transaction rolled back"
+  },
+  "completed_at": "2026-10-10T16:51:39.459541+00:00",
+  "state": "complete"
+}

@@ -1,0 +1,4 @@
+{
+  "negative_episode_examples": "SELECT episode_id,page_id,restriction_type,level,start_ts,scheduled_expiry,actual_end_ts,close_reason,opening_log_id FROM analysis.protection_episode WHERE actual_end_ts<start_ts ORDER BY episode_id LIMIT 8",
+  "negative_expiry_sources": "SELECT e.level_source,count(*) AS episodes FROM analysis.protection_episode p JOIN analysis.protect_event e ON e.log_id=p.opening_log_id AND e.restriction_type=p.restriction_type WHERE p.actual_end_ts<p.start_ts GROUP BY 1 ORDER BY 2 DESC"
+}

@@ -1,0 +1,14 @@
+old_action,new_action,n
+decrease,change,1
+decrease,decrease,2664
+decrease,increase,131
+decrease,,1059
+edit,decrease,12
+edit,edit,10
+edit,increase,2
+edit,,354
+increase,change,12
+increase,decrease,112
+increase,edit,1
+increase,increase,178560
+increase,,34636

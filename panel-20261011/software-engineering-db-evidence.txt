@@ -1,0 +1,52 @@
+BEGIN
+SET
+SET
+ current_database | port | server_encoding 
+------------------+------+-----------------
+ wiki20260401     | 5434 | SQL_ASCII
+(1 row)
+
+ id |         parser_signature         | status  |           staged_at           |          applied_at           
+----+----------------------------------+---------+-------------------------------+-------------------------------
+  1 | 20650d4ec484afa2739613b3155b45aa | applied | 2026-10-10 22:02:39.315102+01 | 2026-10-10 22:04:16.173196+01
+(1 row)
+
+           object_name            | direct_changed_rows |      status       
+----------------------------------+---------------------+-------------------
+ analysis.quality_cutoff          |                9029 | review_or_rebuild
+ analysis.sample_cand_full        |               81120 | review_or_rebuild
+ analysis.sample_cand_pre_full    |               81120 | review_or_rebuild
+ analysis.sample_cand_pre_full_0  |               14400 | review_or_rebuild
+ analysis.sample_cand_pre_full_1  |               14220 | review_or_rebuild
+ analysis.sample_cand_pre_full_2  |               14220 | review_or_rebuild
+ analysis.sample_cand_pre_full_3  |               12840 | review_or_rebuild
+ analysis.sample_cand_pre_full_4  |               11760 | review_or_rebuild
+ analysis.sample_cand_pre_full_5  |               13680 | review_or_rebuild
+ analysis.sample_cand_pre_smoke   |               17200 | review_or_rebuild
+ analysis.sample_cand_pre_smoke_0 |                9600 | review_or_rebuild
+ analysis.sample_cand_pre_smoke_1 |                7600 | review_or_rebuild
+ analysis.sample_cand_smoke       |               17200 | review_or_rebuild
+ analysis.sample_cand_top_full    |                6760 | review_or_rebuild
+ analysis.sample_cand_top_smoke   |                 430 | review_or_rebuild
+ analysis.sample_page_full        |                1352 | review_or_rebuild
+ analysis.sample_page_smoke       |                  86 | review_or_rebuild
+ analysis.sample_request_smoke    |                  83 | review_or_rebuild
+ analysis.sample_request_treated  |                1751 | review_or_rebuild
+ analysis.sample_treated_full     |                1352 | review_or_rebuild
+ analysis.sample_treated_smoke    |                  86 | review_or_rebuild
+(21 rows)
+
+     current_parser_signature     
+----------------------------------
+ 20650d4ec484afa2739613b3155b45aa
+(1 row)
+
+ rfpp_id | requested_action | requested_level |   parser_version   
+---------+------------------+-----------------+--------------------
+     737 | increase         | semi            | rfpp-intent-v2.0.0
+  127462 | decrease         | semi            | rfpp-intent-v2.0.0
+  144377 | decrease         | semi            | rfpp-intent-v2.0.0
+  154614 | increase         | ecp             | rfpp-intent-v2.0.0
+(4 rows)
+
+ROLLBACK

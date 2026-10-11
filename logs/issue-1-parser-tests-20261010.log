@@ -1,0 +1,12 @@
+test_alternative_targets_and_origin (__main__.IntentTests) ... ok
+test_body_intent (__main__.IntentTests) ... ok
+test_historical_fixtures (__main__.IntentTests) ... ok
+test_labels (__main__.IntentTests) ... ok
+test_long_label_and_provenance (__main__.IntentTests) ... ok
+test_nested_heading_and_partial_alternatives (__main__.IntentTests) ... ok
+test_unicode_bytes_preserved_on_sql_ascii (__main__.IntentTests) ... ok
+
+----------------------------------------------------------------------
+Ran 7 tests in 0.158s
+
+OK

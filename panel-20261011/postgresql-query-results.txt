@@ -1,0 +1,1902 @@
+Pager usage is off.
+Timing is on.
+BEGIN
+Time: 0.200 ms
+SET
+Time: 0.109 ms
+SET
+Time: 0.059 ms
+          audited_at           | current_database | current_setting |                                                               version                                                               | current_setting | pg_size_pretty 
+-------------------------------+------------------+-----------------+-------------------------------------------------------------------------------------------------------------------------------------+-----------------+----------------
+ 2026-10-11 09:25:15.137176+01 | wiki20260401     | 5434            | PostgreSQL 18.4 (Ubuntu 18.4-1.pgdg22.04+1) on x86_64-pc-linux-gnu, compiled by gcc (Ubuntu 11.4.0-1ubuntu1~22.04.3) 11.4.0, 64-bit | SQL_ASCII       | 14 TB
+(1 row)
+
+Time: 65.254 ms
+ nspname |      relname       | relkind | estimated_rows | total_size |     spcname     | n_live_tup | n_dead_tup |         last_analyze          |       last_autoanalyze        |        last_autovacuum        
+---------+--------------------+---------+----------------+------------+-----------------+------------+------------+-------------------------------+-------------------------------+-------------------------------
+ public  | revision_text_p1   | r       |      914149056 | 9705 GB    |                 |  914149049 |          0 | 2026-07-03 12:45:08.955356+01 | 2026-06-29 19:40:38.290335+01 | 2026-07-01 21:38:03.587627+01
+ public  | revision_text_p2   | r       |      333731104 | 4334 GB    | wiki_ts         |  333731090 |          0 | 2026-07-03 12:45:12.631091+01 | 2026-07-03 02:36:43.519819+01 | 2026-07-03 11:53:14.926801+01
+ public  | revision           | r       |     1249572224 | 336 GB     | wiki_ts_lacie10 | 1249572175 |          0 | 2026-05-25 07:59:56.036198+01 | 2026-05-25 02:21:46.965774+01 | 2026-05-25 05:54:49.084886+01
+ public  | change_tag         | r       |      545880896 | 66 GB      | wiki_ts_lacie10 |  545880887 |          0 |                               | 2026-05-10 17:37:08.886971+01 | 2026-05-10 17:37:07.574259+01
+ public  | logging            | r       |      158079680 | 54 GB      | wiki_ts_lacie10 |  158079687 |          0 | 2026-05-16 08:25:03.528814+01 | 2026-05-16 06:32:42.186781+01 | 2026-05-16 08:00:59.740532+01
+ public  | actor              | r       |      110916064 | 19 GB      |                 |  110916065 |      26820 | 2026-10-10 16:04:03.173678+01 | 2026-05-19 23:20:52.524767+01 | 2026-05-19 19:05:23.886403+01
+ public  | page               | r       |       65414500 | 13 GB      | wiki_ts_lacie10 |   65414499 |          0 |                               | 2026-05-10 14:12:41.205991+01 | 2026-05-10 14:12:39.938479+01
+ public  | page_restrictions  | r       |         192836 | 22 MB      |                 |     192836 |          0 |                               | 2026-05-10 13:11:15.171399+01 | 2026-05-10 13:11:15.035715+01
+ public  | user_groups        | r       |         103060 | 11 MB      |                 |     103060 |          0 |                               | 2026-05-10 13:11:14.955941+01 | 2026-05-10 13:11:14.864967+01
+ public  | protected_titles   | r       |          58920 | 8816 kB    |                 |      58920 |          0 |                               | 2026-05-10 13:11:15.31316+01  | 2026-05-10 13:11:15.195276+01
+ public  | user_former_groups | r       |          22004 | 2232 kB    |                 |      22004 |          0 |                               | 2026-05-10 13:11:14.822137+01 | 2026-05-10 13:11:14.786503+01
+ public  | change_tag_def     | r       |            335 | 88 kB      |                 |        335 |          0 |                               | 2026-05-10 13:11:14.7705+01   | 
+ public  | revision_text      | p       |     1254580608 | 0 bytes    |                 |          0 |          0 | 2026-07-03 12:43:04.493196+01 |                               | 
+(13 rows)
+
+Time: 104.882 ms
+                     conrelid                      |                      conname                       | contype | convalidated |                   pg_get_constraintdef                    
+---------------------------------------------------+----------------------------------------------------+---------+--------------+-----------------------------------------------------------
+ actor                                             | actor_actor_id_not_null                            | n       | t            | NOT NULL actor_id
+ actor                                             | actor_actor_name_not_null                          | n       | t            | NOT NULL actor_name
+ actor                                             | actor_pkey                                         | p       | t            | PRIMARY KEY (actor_id)
+ actor                                             | actor_user_name_uniq                               | u       | t            | UNIQUE NULLS NOT DISTINCT (actor_user, actor_name)
+ analysis.block_interval                           | block_interval_is_ip_not_null                      | n       | t            | NOT NULL is_ip
+ analysis.block_interval                           | block_interval_is_range_not_null                   | n       | t            | NOT NULL is_range
+ analysis.block_interval                           | block_interval_log_action_not_null                 | n       | t            | NOT NULL log_action
+ analysis.block_interval                           | block_interval_log_id_not_null                     | n       | t            | NOT NULL log_id
+ analysis.block_interval                           | block_interval_param_era_not_null                  | n       | t            | NOT NULL param_era
+ analysis.block_interval                           | block_interval_pkey                                | p       | t            | PRIMARY KEY (log_id)
+ analysis.block_interval                           | block_interval_sitewide_not_null                   | n       | t            | NOT NULL sitewide
+ analysis.block_interval                           | block_interval_start_ts_not_null                   | n       | t            | NOT NULL start_ts
+ analysis.block_interval                           | block_interval_target_name_not_null                | n       | t            | NOT NULL target_name
+ analysis.edit_actor_full                          | edit_actor_full_actor_id_not_null                  | n       | t            | NOT NULL actor_id
+ analysis.edit_actor_full                          | edit_actor_full_pkey                               | p       | t            | PRIMARY KEY (actor_id)
+ analysis.edit_actor_smoke                         | edit_actor_smoke_actor_id_not_null                 | n       | t            | NOT NULL actor_id
+ analysis.edit_actor_smoke                         | edit_actor_smoke_pkey                              | p       | t            | PRIMARY KEY (actor_id)
+ analysis.edit_event_full                          | edit_event_full_is_revert_not_null                 | n       | t            | NOT NULL is_revert
+ analysis.edit_event_full                          | edit_event_full_is_revert_sha1_not_null            | n       | t            | NOT NULL is_revert_sha1
+ analysis.edit_event_full                          | edit_event_full_is_revert_tag_not_null             | n       | t            | NOT NULL is_revert_tag
+ analysis.edit_event_full                          | edit_event_full_pkey                               | p       | t            | PRIMARY KEY (rev_id)
+ analysis.edit_event_full                          | edit_event_full_rev_id_not_null                    | n       | t            | NOT NULL rev_id
+ analysis.edit_event_full                          | edit_event_full_was_reverted_not_null              | n       | t            | NOT NULL was_reverted
+ analysis.edit_event_full                          | edit_event_full_was_reverted_sha1_not_null         | n       | t            | NOT NULL was_reverted_sha1
+ analysis.edit_event_full                          | edit_event_full_was_reverted_tag_not_null          | n       | t            | NOT NULL was_reverted_tag
+ analysis.edit_event_smoke                         | edit_event_smoke_is_revert_not_null                | n       | t            | NOT NULL is_revert
+ analysis.edit_event_smoke                         | edit_event_smoke_is_revert_sha1_not_null           | n       | t            | NOT NULL is_revert_sha1
+ analysis.edit_event_smoke                         | edit_event_smoke_is_revert_tag_not_null            | n       | t            | NOT NULL is_revert_tag
+ analysis.edit_event_smoke                         | edit_event_smoke_pkey                              | p       | t            | PRIMARY KEY (rev_id)
+ analysis.edit_event_smoke                         | edit_event_smoke_rev_id_not_null                   | n       | t            | NOT NULL rev_id
+ analysis.edit_event_smoke                         | edit_event_smoke_was_reverted_not_null             | n       | t            | NOT NULL was_reverted
+ analysis.edit_event_smoke                         | edit_event_smoke_was_reverted_sha1_not_null        | n       | t            | NOT NULL was_reverted_sha1
+ analysis.edit_event_smoke                         | edit_event_smoke_was_reverted_tag_not_null         | n       | t            | NOT NULL was_reverted_tag
+ analysis.editor_history                           | editor_history_actor_id_not_null                   | n       | t            | NOT NULL actor_id
+ analysis.editor_history                           | editor_history_first_edit_ts_not_null              | n       | t            | NOT NULL first_edit_ts
+ analysis.editor_history                           | editor_history_last_edit_ts_not_null               | n       | t            | NOT NULL last_edit_ts
+ analysis.editor_history                           | editor_history_n_distinct_pages_not_null           | n       | t            | NOT NULL n_distinct_pages
+ analysis.editor_history                           | editor_history_n_distinct_pages_ns0_not_null       | n       | t            | NOT NULL n_distinct_pages_ns0
+ analysis.editor_history                           | editor_history_n_edits_ns0_not_null                | n       | t            | NOT NULL n_edits_ns0
+ analysis.editor_history                           | editor_history_n_edits_ns1_not_null                | n       | t            | NOT NULL n_edits_ns1
+ analysis.editor_history                           | editor_history_n_edits_total_not_null              | n       | t            | NOT NULL n_edits_total
+ analysis.editor_history                           | editor_history_pkey                                | p       | t            | PRIMARY KEY (actor_id)
+ analysis.editor_state                             | editor_state_actor_id_not_null                     | n       | t            | NOT NULL actor_id
+ analysis.editor_state                             | editor_state_pkey                                  | p       | t            | PRIMARY KEY (actor_id)
+ analysis.neighbour_actor_full                     | neighbour_actor_full_actor_id_not_null             | n       | t            | NOT NULL actor_id
+ analysis.neighbour_actor_full                     | neighbour_actor_full_pkey                          | p       | t            | PRIMARY KEY (actor_id)
+ analysis.neighbour_actor_smoke                    | neighbour_actor_smoke_actor_id_not_null            | n       | t            | NOT NULL actor_id
+ analysis.neighbour_actor_smoke                    | neighbour_actor_smoke_pkey                         | p       | t            | PRIMARY KEY (actor_id)
+ analysis.neighbour_cand_full                      | neighbour_cand_full_cand_rank_not_null             | n       | t            | NOT NULL cand_rank
+ analysis.neighbour_cand_full                      | neighbour_cand_full_direction_not_null             | n       | t            | NOT NULL direction
+ analysis.neighbour_cand_full                      | neighbour_cand_full_mutual_not_null                | n       | t            | NOT NULL mutual
+ analysis.neighbour_cand_full                      | neighbour_cand_full_neighbour_page_id_not_null     | n       | t            | NOT NULL neighbour_page_id
+ analysis.neighbour_cand_full                      | neighbour_cand_full_page_id_not_null               | n       | t            | NOT NULL page_id
+ analysis.neighbour_cand_full                      | neighbour_cand_full_window_id_not_null             | n       | t            | NOT NULL window_id
+ analysis.neighbour_cand_smoke                     | neighbour_cand_smoke_cand_rank_not_null            | n       | t            | NOT NULL cand_rank
+ analysis.neighbour_cand_smoke                     | neighbour_cand_smoke_direction_not_null            | n       | t            | NOT NULL direction
+ analysis.neighbour_cand_smoke                     | neighbour_cand_smoke_mutual_not_null               | n       | t            | NOT NULL mutual
+ analysis.neighbour_cand_smoke                     | neighbour_cand_smoke_neighbour_page_id_not_null    | n       | t            | NOT NULL neighbour_page_id
+ analysis.neighbour_cand_smoke                     | neighbour_cand_smoke_page_id_not_null              | n       | t            | NOT NULL page_id
+ analysis.neighbour_cand_smoke                     | neighbour_cand_smoke_window_id_not_null            | n       | t            | NOT NULL window_id
+ analysis.neighbour_event_full                     | neighbour_event_full_pkey                          | p       | t            | PRIMARY KEY (rev_id)
+ analysis.neighbour_event_full                     | neighbour_event_full_rev_id_not_null               | n       | t            | NOT NULL rev_id
+ analysis.neighbour_event_smoke                    | neighbour_event_smoke_pkey                         | p       | t            | PRIMARY KEY (rev_id)
+ analysis.neighbour_event_smoke                    | neighbour_event_smoke_rev_id_not_null              | n       | t            | NOT NULL rev_id
+ analysis.neighbour_page_full                      | neighbour_page_full_neighbour_page_id_not_null     | n       | t            | NOT NULL neighbour_page_id
+ analysis.neighbour_page_full                      | neighbour_page_full_pkey                           | p       | t            | PRIMARY KEY (window_id, neighbour_page_id)
+ analysis.neighbour_page_full                      | neighbour_page_full_window_id_not_null             | n       | t            | NOT NULL window_id
+ analysis.neighbour_page_smoke                     | neighbour_page_smoke_neighbour_page_id_not_null    | n       | t            | NOT NULL neighbour_page_id
+ analysis.neighbour_page_smoke                     | neighbour_page_smoke_pkey                          | p       | t            | PRIMARY KEY (window_id, neighbour_page_id)
+ analysis.neighbour_page_smoke                     | neighbour_page_smoke_window_id_not_null            | n       | t            | NOT NULL window_id
+ analysis.neighbour_pull_full                      | neighbour_pull_full_pkey                           | p       | t            | PRIMARY KEY (pull_id)
+ analysis.neighbour_pull_full                      | neighbour_pull_full_pull_id_not_null               | n       | t            | NOT NULL pull_id
+ analysis.neighbour_pull_smoke                     | neighbour_pull_smoke_pkey                          | p       | t            | PRIMARY KEY (pull_id)
+ analysis.neighbour_pull_smoke                     | neighbour_pull_smoke_pull_id_not_null              | n       | t            | NOT NULL pull_id
+ analysis.page_quality                             | page_quality_ok_not_null                           | n       | t            | NOT NULL ok
+ analysis.page_quality                             | page_quality_pkey                                  | p       | t            | PRIMARY KEY (rev_id)
+ analysis.page_quality                             | page_quality_rev_id_not_null                       | n       | t            | NOT NULL rev_id
+ analysis.page_quality                             | page_quality_scored_at_not_null                    | n       | t            | NOT NULL scored_at
+ analysis.page_topic                               | page_topic_ok_not_null                             | n       | t            | NOT NULL ok
+ analysis.page_topic                               | page_topic_pkey                                    | p       | t            | PRIMARY KEY (rev_id)
+ analysis.page_topic                               | page_topic_rev_id_not_null                         | n       | t            | NOT NULL rev_id
+ analysis.page_topic                               | page_topic_scored_at_not_null                      | n       | t            | NOT NULL scored_at
+ analysis.page_topic_wp                            | page_topic_wp_confident_not_null                   | n       | t            | NOT NULL confident
+ analysis.page_topic_wp                            | page_topic_wp_n_mapped_not_null                    | n       | t            | NOT NULL n_mapped
+ analysis.page_topic_wp                            | page_topic_wp_n_projects_not_null                  | n       | t            | NOT NULL n_projects
+ analysis.page_topic_wp                            | page_topic_wp_page_id_not_null                     | n       | t            | NOT NULL page_id
+ analysis.page_topic_wp                            | page_topic_wp_pkey                                 | p       | t            | PRIMARY KEY (window_id)
+ analysis.page_topic_wp                            | page_topic_wp_stem_vs_hum_wp_not_null              | n       | t            | NOT NULL stem_vs_hum_wp
+ analysis.page_topic_wp                            | page_topic_wp_topic_wp_coarse_not_null             | n       | t            | NOT NULL topic_wp_coarse
+ analysis.page_topic_wp                            | page_topic_wp_window_id_not_null                   | n       | t            | NOT NULL window_id
+ analysis.page_wp_class                            | page_wp_class_ok_not_null                          | n       | t            | NOT NULL ok
+ analysis.page_wp_class                            | page_wp_class_pkey                                 | p       | t            | PRIMARY KEY (rev_id)
+ analysis.page_wp_class                            | page_wp_class_rev_id_not_null                      | n       | t            | NOT NULL rev_id
+ analysis.page_wp_class                            | page_wp_class_scored_at_not_null                   | n       | t            | NOT NULL scored_at
+ analysis.protect_event                            | protect_event_event_id_not_null                    | n       | t            | NOT NULL event_id
+ analysis.protect_event                            | protect_event_event_seq_not_null                   | n       | t            | NOT NULL event_seq
+ analysis.protect_event                            | protect_event_is_closing_not_null                  | n       | t            | NOT NULL is_closing
+ analysis.protect_event                            | protect_event_is_opening_not_null                  | n       | t            | NOT NULL is_opening
+ analysis.protect_event                            | protect_event_log_action_not_null                  | n       | t            | NOT NULL log_action
+ analysis.protect_event                            | protect_event_log_id_not_null                      | n       | t            | NOT NULL log_id
+ analysis.protect_event                            | protect_event_log_title_not_null                   | n       | t            | NOT NULL log_title
+ analysis.protect_event                            | protect_event_log_type_not_null                    | n       | t            | NOT NULL log_type
+ analysis.protect_event                            | protect_event_page_namespace_not_null              | n       | t            | NOT NULL page_namespace
+ analysis.protect_event                            | protect_event_params_era_not_null                  | n       | t            | NOT NULL params_era
+ analysis.protect_event                            | protect_event_pkey                                 | p       | t            | PRIMARY KEY (event_id)
+ analysis.protect_event                            | protect_event_ts_not_null                          | n       | t            | NOT NULL ts
+ analysis.protect_log_api                          | protect_log_api_action_hidden_not_null             | n       | t            | NOT NULL action_hidden
+ analysis.protect_log_api                          | protect_log_api_comment_hidden_not_null            | n       | t            | NOT NULL comment_hidden
+ analysis.protect_log_api                          | protect_log_api_log_id_not_null                    | n       | t            | NOT NULL log_id
+ analysis.protect_log_api                          | protect_log_api_pkey                               | p       | t            | PRIMARY KEY (log_id)
+ analysis.protect_log_api                          | protect_log_api_suppressed_not_null                | n       | t            | NOT NULL suppressed
+ analysis.protect_log_api                          | protect_log_api_user_hidden_not_null               | n       | t            | NOT NULL user_hidden
+ analysis.protect_log_src                          | protect_log_src_log_id_not_null                    | n       | t            | NOT NULL log_id
+ analysis.protect_log_src                          | protect_log_src_pkey                               | p       | t            | PRIMARY KEY (log_id)
+ analysis.protection_episode                       | protection_episode_cascade_not_null                | n       | t            | NOT NULL cascade
+ analysis.protection_episode                       | protection_episode_close_reason_not_null           | n       | t            | NOT NULL close_reason
+ analysis.protection_episode                       | protection_episode_episode_id_not_null             | n       | t            | NOT NULL episode_id
+ analysis.protection_episode                       | protection_episode_expiry_unknown_not_null         | n       | t            | NOT NULL expiry_unknown
+ analysis.protection_episode                       | protection_episode_is_indefinite_not_null          | n       | t            | NOT NULL is_indefinite
+ analysis.protection_episode                       | protection_episode_level_not_null                  | n       | t            | NOT NULL level
+ analysis.protection_episode                       | protection_episode_n_relogged_not_null             | n       | t            | NOT NULL n_relogged
+ analysis.protection_episode                       | protection_episode_opening_log_id_not_null         | n       | t            | NOT NULL opening_log_id
+ analysis.protection_episode                       | protection_episode_page_id_not_null                | n       | t            | NOT NULL page_id
+ analysis.protection_episode                       | protection_episode_pkey                            | p       | t            | PRIMARY KEY (episode_id)
+ analysis.protection_episode                       | protection_episode_restriction_type_not_null       | n       | t            | NOT NULL restriction_type
+ analysis.protection_episode                       | protection_episode_start_ts_not_null               | n       | t            | NOT NULL start_ts
+ analysis.quality_cutoff                           | quality_cutoff_anchor_ts_not_null                  | n       | t            | NOT NULL anchor_ts
+ analysis.quality_cutoff                           | quality_cutoff_article_page_id_not_null            | n       | t            | NOT NULL article_page_id
+ analysis.quality_cutoff                           | quality_cutoff_beyond_dump_not_null                | n       | t            | NOT NULL beyond_dump
+ analysis.quality_cutoff                           | quality_cutoff_clock_not_null                      | n       | t            | NOT NULL clock
+ analysis.quality_cutoff                           | quality_cutoff_cutoff_not_null                     | n       | t            | NOT NULL cutoff
+ analysis.quality_cutoff                           | quality_cutoff_cutoff_ts_not_null                  | n       | t            | NOT NULL cutoff_ts
+ analysis.quality_cutoff                           | quality_cutoff_offset_days_not_null                | n       | t            | NOT NULL offset_days
+ analysis.quality_cutoff                           | quality_cutoff_outcome_not_null                    | n       | t            | NOT NULL outcome
+ analysis.quality_cutoff                           | quality_cutoff_page_id_not_null                    | n       | t            | NOT NULL page_id
+ analysis.quality_cutoff                           | quality_cutoff_pkey                                | p       | t            | PRIMARY KEY (rfpp_id, cutoff)
+ analysis.quality_cutoff                           | quality_cutoff_rfpp_id_not_null                    | n       | t            | NOT NULL rfpp_id
+ analysis.rfpp_intent_v2_changes                   | rfpp_intent_v2_changes_pkey1                       | p       | t            | PRIMARY KEY (rfpp_id)
+ analysis.rfpp_intent_v2_changes                   | rfpp_intent_v2_changes_rfpp_id_not_null1           | n       | t            | NOT NULL rfpp_id
+ analysis.rfpp_intent_v2_first_apply_changes       | rfpp_intent_v2_changes_pkey                        | p       | t            | PRIMARY KEY (rfpp_id)
+ analysis.rfpp_intent_v2_first_apply_changes       | rfpp_intent_v2_changes_rfpp_id_not_null            | n       | t            | NOT NULL rfpp_id
+ analysis.rfpp_intent_v2_first_apply_invalidations | rfpp_intent_v2_invalidations_object_name_not_null  | n       | t            | NOT NULL object_name
+ analysis.rfpp_intent_v2_first_apply_invalidations | rfpp_intent_v2_invalidations_pkey                  | p       | t            | PRIMARY KEY (object_name)
+ analysis.rfpp_intent_v2_first_apply_invalidations | rfpp_intent_v2_invalidations_reason_not_null       | n       | t            | NOT NULL reason
+ analysis.rfpp_intent_v2_first_apply_invalidations | rfpp_intent_v2_invalidations_status_not_null       | n       | t            | NOT NULL status
+ analysis.rfpp_intent_v2_invalidations             | rfpp_intent_v2_invalidations_object_name_not_null1 | n       | t            | NOT NULL object_name
+ analysis.rfpp_intent_v2_invalidations             | rfpp_intent_v2_invalidations_pkey1                 | p       | t            | PRIMARY KEY (object_name)
+ analysis.rfpp_intent_v2_invalidations             | rfpp_intent_v2_invalidations_reason_not_null1      | n       | t            | NOT NULL reason
+ analysis.rfpp_intent_v2_invalidations             | rfpp_intent_v2_invalidations_status_not_null1      | n       | t            | NOT NULL status
+ analysis.rfpp_intent_v2_run                       | rfpp_intent_v2_run_id_check                        | c       | t            | CHECK ((id = 1))
+ analysis.rfpp_intent_v2_run                       | rfpp_intent_v2_run_id_not_null                     | n       | t            | NOT NULL id
+ analysis.rfpp_intent_v2_run                       | rfpp_intent_v2_run_parser_signature_not_null       | n       | t            | NOT NULL parser_signature
+ analysis.rfpp_intent_v2_run                       | rfpp_intent_v2_run_pkey                            | p       | t            | PRIMARY KEY (id)
+ analysis.rfpp_intent_v2_run                       | rfpp_intent_v2_run_staged_at_not_null              | n       | t            | NOT NULL staged_at
+ analysis.rfpp_intent_v2_run                       | rfpp_intent_v2_run_status_not_null                 | n       | t            | NOT NULL status
+ analysis.rfpp_intent_v2_stage                     | rfpp_intent_v2_stage_pkey                          | p       | t            | PRIMARY KEY (rfpp_id)
+ analysis.rfpp_intent_v2_stage                     | rfpp_intent_v2_stage_rfpp_id_not_null              | n       | t            | NOT NULL rfpp_id
+ analysis.rfpp_request                             | rfpp_request_archive_page_not_null                 | n       | t            | NOT NULL archive_page
+ analysis.rfpp_request                             | rfpp_request_outcome_not_null                      | n       | t            | NOT NULL outcome
+ analysis.rfpp_request                             | rfpp_request_page_raw_not_null                     | n       | t            | NOT NULL page_raw
+ analysis.rfpp_request                             | rfpp_request_pkey                                  | p       | t            | PRIMARY KEY (rfpp_id)
+ analysis.rfpp_request                             | rfpp_request_rfpp_id_not_null                      | n       | t            | NOT NULL rfpp_id
+ analysis.rfpp_request_pre_intent_v2               | rfpp_request_pre_intent_v2_pkey                    | p       | t            | PRIMARY KEY (rfpp_id)
+ analysis.rfpp_request_pre_intent_v2               | rfpp_request_pre_intent_v2_rfpp_id_not_null        | n       | t            | NOT NULL rfpp_id
+ analysis.rights_change                            | rights_change_change_not_null                      | n       | t            | NOT NULL change
+ analysis.rights_change                            | rights_change_grp_not_null                         | n       | t            | NOT NULL grp
+ analysis.rights_change                            | rights_change_log_action_not_null                  | n       | t            | NOT NULL log_action
+ analysis.rights_change                            | rights_change_log_id_not_null                      | n       | t            | NOT NULL log_id
+ analysis.rights_change                            | rights_change_param_era_not_null                   | n       | t            | NOT NULL param_era
+ analysis.rights_change                            | rights_change_ts_not_null                          | n       | t            | NOT NULL ts
+ analysis.rights_change                            | rights_change_user_name_not_null                   | n       | t            | NOT NULL user_name
+ analysis.sample_page_full                         | sample_page_full_pkey                              | p       | t            | PRIMARY KEY (window_id)
+ analysis.sample_page_full                         | sample_page_full_window_id_not_null                | n       | t            | NOT NULL window_id
+ analysis.sample_page_smoke                        | sample_page_smoke_pkey                             | p       | t            | PRIMARY KEY (window_id)
+ analysis.sample_page_smoke                        | sample_page_smoke_window_id_not_null               | n       | t            | NOT NULL window_id
+ analysis.sample_request_smoke                     | sample_request_smoke_pkey                          | p       | t            | PRIMARY KEY (rfpp_id)
+ analysis.sample_request_smoke                     | sample_request_smoke_rfpp_id_not_null              | n       | t            | NOT NULL rfpp_id
+ analysis.sample_request_treated                   | sample_request_treated_pkey                        | p       | t            | PRIMARY KEY (rfpp_id)
+ analysis.sample_request_treated                   | sample_request_treated_rfpp_id_not_null            | n       | t            | NOT NULL rfpp_id
+ analysis.sample_treated_full                      | sample_treated_full_pkey                           | p       | t            | PRIMARY KEY (rfpp_id)
+ analysis.sample_treated_full                      | sample_treated_full_rfpp_id_not_null               | n       | t            | NOT NULL rfpp_id
+ analysis.sample_treated_smoke                     | sample_treated_smoke_pkey                          | p       | t            | PRIMARY KEY (rfpp_id)
+ analysis.sample_treated_smoke                     | sample_treated_smoke_rfpp_id_not_null              | n       | t            | NOT NULL rfpp_id
+ analysis.user_group_interval                      | user_group_interval_grp_not_null                   | n       | t            | NOT NULL grp
+ analysis.user_group_interval                      | user_group_interval_source_not_null                | n       | t            | NOT NULL source
+ analysis.user_group_interval                      | user_group_interval_user_name_not_null             | n       | t            | NOT NULL user_name
+ analysis.user_registration                        | user_registration_log_action_not_null              | n       | t            | NOT NULL log_action
+ analysis.user_registration                        | user_registration_log_id_not_null                  | n       | t            | NOT NULL log_id
+ analysis.user_registration                        | user_registration_pkey                             | p       | t            | PRIMARY KEY (user_id)
+ analysis.user_registration                        | user_registration_registration_ts_not_null         | n       | t            | NOT NULL registration_ts
+ analysis.user_registration                        | user_registration_resolved_by_not_null             | n       | t            | NOT NULL resolved_by
+ analysis.user_registration                        | user_registration_user_id_not_null                 | n       | t            | NOT NULL user_id
+ change_tag                                        | change_tag_ct_id_not_null                          | n       | t            | NOT NULL ct_id
+ change_tag                                        | change_tag_ct_tag_id_not_null                      | n       | t            | NOT NULL ct_tag_id
+ change_tag                                        | change_tag_pkey                                    | p       | t            | PRIMARY KEY (ct_id)
+ change_tag_def                                    | change_tag_def_ctd_count_not_null                  | n       | t            | NOT NULL ctd_count
+ change_tag_def                                    | change_tag_def_ctd_id_not_null                     | n       | t            | NOT NULL ctd_id
+ change_tag_def                                    | change_tag_def_ctd_name_key                        | u       | t            | UNIQUE (ctd_name)
+ change_tag_def                                    | change_tag_def_ctd_name_not_null                   | n       | t            | NOT NULL ctd_name
+ change_tag_def                                    | change_tag_def_ctd_user_defined_not_null           | n       | t            | NOT NULL ctd_user_defined
+ change_tag_def                                    | change_tag_def_pkey                                | p       | t            | PRIMARY KEY (ctd_id)
+ logging                                           | logging_log_action_not_null                        | n       | t            | NOT NULL log_action
+ logging                                           | logging_log_actor_fkey                             | f       | t            | FOREIGN KEY (log_actor) REFERENCES actor(actor_id)
+ logging                                           | logging_log_deleted_not_null                       | n       | t            | NOT NULL log_deleted
+ logging                                           | logging_log_id_not_null                            | n       | t            | NOT NULL log_id
+ logging                                           | logging_log_namespace_not_null                     | n       | t            | NOT NULL log_namespace
+ logging                                           | logging_log_timestamp_not_null                     | n       | t            | NOT NULL log_timestamp
+ logging                                           | logging_log_title_not_null                         | n       | t            | NOT NULL log_title
+ logging                                           | logging_log_type_not_null                          | n       | t            | NOT NULL log_type
+ logging                                           | logging_pkey                                       | p       | t            | PRIMARY KEY (log_id)
+ page                                              | page_page_id_not_null                              | n       | t            | NOT NULL page_id
+ page                                              | page_page_is_new_not_null                          | n       | t            | NOT NULL page_is_new
+ page                                              | page_page_is_redirect_not_null                     | n       | t            | NOT NULL page_is_redirect
+ page                                              | page_page_latest_not_null                          | n       | t            | NOT NULL page_latest
+ page                                              | page_page_len_not_null                             | n       | t            | NOT NULL page_len
+ page                                              | page_page_namespace_not_null                       | n       | t            | NOT NULL page_namespace
+ page                                              | page_page_random_not_null                          | n       | t            | NOT NULL page_random
+ page                                              | page_page_title_not_null                           | n       | t            | NOT NULL page_title
+ page                                              | page_pkey                                          | p       | t            | PRIMARY KEY (page_id)
+ page_restrictions                                 | page_restrictions_pkey                             | p       | t            | PRIMARY KEY (pr_id)
+ page_restrictions                                 | page_restrictions_pr_cascade_not_null              | n       | t            | NOT NULL pr_cascade
+ page_restrictions                                 | page_restrictions_pr_id_not_null                   | n       | t            | NOT NULL pr_id
+ page_restrictions                                 | page_restrictions_pr_level_not_null                | n       | t            | NOT NULL pr_level
+ page_restrictions                                 | page_restrictions_pr_page_not_null                 | n       | t            | NOT NULL pr_page
+ page_restrictions                                 | page_restrictions_pr_type_not_null                 | n       | t            | NOT NULL pr_type
+ protected_titles                                  | protected_titles_pkey                              | p       | t            | PRIMARY KEY (pt_namespace, pt_title)
+ protected_titles                                  | protected_titles_pt_create_perm_not_null           | n       | t            | NOT NULL pt_create_perm
+ protected_titles                                  | protected_titles_pt_namespace_not_null             | n       | t            | NOT NULL pt_namespace
+ protected_titles                                  | protected_titles_pt_timestamp_not_null             | n       | t            | NOT NULL pt_timestamp
+ protected_titles                                  | protected_titles_pt_title_not_null                 | n       | t            | NOT NULL pt_title
+ revision                                          | revision_pkey                                      | p       | t            | PRIMARY KEY (rev_id)
+ revision                                          | revision_rev_actor_fkey                            | f       | t            | FOREIGN KEY (rev_actor) REFERENCES actor(actor_id)
+ revision                                          | revision_rev_id_not_null                           | n       | t            | NOT NULL rev_id
+ revision                                          | revision_rev_minor_not_null                        | n       | t            | NOT NULL rev_minor
+ revision                                          | revision_rev_page_fkey                             | f       | f            | FOREIGN KEY (rev_page) REFERENCES page(page_id) NOT VALID
+ revision                                          | revision_rev_page_not_null                         | n       | t            | NOT NULL rev_page
+ revision                                          | revision_rev_timestamp_not_null                    | n       | t            | NOT NULL rev_timestamp
+ revision_text                                     | revision_text_rev_id_fkey                          | f       | t            | FOREIGN KEY (rev_id) REFERENCES revision(rev_id)
+ revision_text                                     | revision_text_v2_pkey                              | p       | t            | PRIMARY KEY (rev_id)
+ revision_text                                     | revision_text_v2_rev_id_not_null                   | n       | t            | NOT NULL rev_id
+ revision_text                                     | revision_text_v2_rev_text_bytes_not_null           | n       | t            | NOT NULL rev_text_bytes
+ revision_text_p1                                  | revision_text_p1_pkey                              | p       | t            | PRIMARY KEY (rev_id)
+ revision_text_p1                                  | revision_text_rev_id_fkey                          | f       | t            | FOREIGN KEY (rev_id) REFERENCES revision(rev_id)
+ revision_text_p1                                  | revision_text_v2_rev_id_not_null                   | n       | t            | NOT NULL rev_id
+ revision_text_p1                                  | revision_text_v2_rev_text_bytes_not_null           | n       | t            | NOT NULL rev_text_bytes
+ revision_text_p2                                  | revision_text_p2_pkey                              | p       | t            | PRIMARY KEY (rev_id)
+ revision_text_p2                                  | revision_text_rev_id_fkey                          | f       | t            | FOREIGN KEY (rev_id) REFERENCES revision(rev_id)
+ revision_text_p2                                  | revision_text_v2_rev_id_not_null                   | n       | t            | NOT NULL rev_id
+ revision_text_p2                                  | revision_text_v2_rev_text_bytes_not_null           | n       | t            | NOT NULL rev_text_bytes
+ user_former_groups                                | user_former_groups_pkey                            | p       | t            | PRIMARY KEY (ufg_user, ufg_group)
+ user_former_groups                                | user_former_groups_ufg_group_not_null              | n       | t            | NOT NULL ufg_group
+ user_former_groups                                | user_former_groups_ufg_user_not_null               | n       | t            | NOT NULL ufg_user
+ user_groups                                       | user_groups_pkey                                   | p       | t            | PRIMARY KEY (ug_user, ug_group)
+ user_groups                                       | user_groups_ug_group_not_null                      | n       | t            | NOT NULL ug_group
+ user_groups                                       | user_groups_ug_user_not_null                       | n       | t            | NOT NULL ug_user
+(255 rows)
+
+Time: 9.228 ms
+ nspname |      relname       |            indexrelid             | indisvalid | indisready | pg_size_pretty |                                                  pg_get_indexdef                                                   
+---------+--------------------+-----------------------------------+------------+------------+----------------+--------------------------------------------------------------------------------------------------------------------
+ public  | actor              | actor_name_idx                    | t          | t          | 3614 MB        | CREATE INDEX actor_name_idx ON public.actor USING btree (actor_name)
+ public  | actor              | actor_pkey                        | t          | t          | 2377 MB        | CREATE UNIQUE INDEX actor_pkey ON public.actor USING btree (actor_id)
+ public  | actor              | actor_user_idx                    | t          | t          | 1100 MB        | CREATE INDEX actor_user_idx ON public.actor USING btree (actor_user) WHERE (actor_user IS NOT NULL)
+ public  | actor              | actor_user_name_uniq              | t          | t          | 6562 MB        | CREATE UNIQUE INDEX actor_user_name_uniq ON public.actor USING btree (actor_user, actor_name) NULLS NOT DISTINCT
+ public  | change_tag         | change_tag_log_idx                | t          | t          | 725 MB         | CREATE INDEX change_tag_log_idx ON public.change_tag USING btree (ct_log_id) WHERE (ct_log_id IS NOT NULL)
+ public  | change_tag         | change_tag_pkey                   | t          | t          | 11 GB          | CREATE UNIQUE INDEX change_tag_pkey ON public.change_tag USING btree (ct_id)
+ public  | change_tag         | change_tag_rev_idx                | t          | t          | 9913 MB        | CREATE INDEX change_tag_rev_idx ON public.change_tag USING btree (ct_rev_id) WHERE (ct_rev_id IS NOT NULL)
+ public  | change_tag         | change_tag_tag_idx                | t          | t          | 3612 MB        | CREATE INDEX change_tag_tag_idx ON public.change_tag USING btree (ct_tag_id)
+ public  | change_tag_def     | change_tag_def_ctd_name_key       | t          | t          | 40 kB          | CREATE UNIQUE INDEX change_tag_def_ctd_name_key ON public.change_tag_def USING btree (ctd_name)
+ public  | change_tag_def     | change_tag_def_pkey               | t          | t          | 16 kB          | CREATE UNIQUE INDEX change_tag_def_pkey ON public.change_tag_def USING btree (ctd_id)
+ public  | logging            | logging_actor_idx                 | t          | t          | 1837 MB        | CREATE INDEX logging_actor_idx ON public.logging USING btree (log_actor)
+ public  | logging            | logging_namespace_title_idx       | t          | t          | 4825 MB        | CREATE INDEX logging_namespace_title_idx ON public.logging USING btree (log_namespace, log_title)
+ public  | logging            | logging_page_idx                  | t          | t          | 8192 bytes     | CREATE INDEX logging_page_idx ON public.logging USING btree (log_page) WHERE (log_page IS NOT NULL)
+ public  | logging            | logging_params_gin_idx            | t          | t          | 8137 MB        | CREATE INDEX logging_params_gin_idx ON public.logging USING gin (log_params)
+ public  | logging            | logging_pkey                      | t          | t          | 3381 MB        | CREATE UNIQUE INDEX logging_pkey ON public.logging USING btree (log_id)
+ public  | logging            | logging_type_timestamp_idx        | t          | t          | 4744 MB        | CREATE INDEX logging_type_timestamp_idx ON public.logging USING btree (log_type, log_timestamp)
+ public  | page               | page_namespace_title_idx          | t          | t          | 2928 MB        | CREATE INDEX page_namespace_title_idx ON public.page USING btree (page_namespace, page_title)
+ public  | page               | page_pkey                         | t          | t          | 1401 MB        | CREATE UNIQUE INDEX page_pkey ON public.page USING btree (page_id)
+ public  | page               | page_redirect_namespace_idx       | t          | t          | 432 MB         | CREATE INDEX page_redirect_namespace_idx ON public.page USING btree (page_is_redirect, page_namespace)
+ public  | page_restrictions  | page_restrictions_page_idx        | t          | t          | 3896 kB        | CREATE INDEX page_restrictions_page_idx ON public.page_restrictions USING btree (pr_page)
+ public  | page_restrictions  | page_restrictions_pkey            | t          | t          | 4248 kB        | CREATE UNIQUE INDEX page_restrictions_pkey ON public.page_restrictions USING btree (pr_id)
+ public  | page_restrictions  | page_restrictions_type_level_idx  | t          | t          | 1368 kB        | CREATE INDEX page_restrictions_type_level_idx ON public.page_restrictions USING btree (pr_type, pr_level)
+ public  | protected_titles   | protected_titles_pkey             | t          | t          | 2416 kB        | CREATE UNIQUE INDEX protected_titles_pkey ON public.protected_titles USING btree (pt_namespace, pt_title)
+ public  | protected_titles   | protected_titles_timestamp_idx    | t          | t          | 1240 kB        | CREATE INDEX protected_titles_timestamp_idx ON public.protected_titles USING btree (pt_timestamp)
+ public  | revision           | revision_actor_timestamp_idx      | t          | t          | 36 GB          | CREATE INDEX revision_actor_timestamp_idx ON public.revision USING btree (rev_actor, rev_timestamp)
+ public  | revision           | revision_page_timestamp_actor_idx | t          | t          | 47 GB          | CREATE INDEX revision_page_timestamp_actor_idx ON public.revision USING btree (rev_page, rev_timestamp, rev_actor)
+ public  | revision           | revision_parent_idx               | t          | t          | 25 GB          | CREATE INDEX revision_parent_idx ON public.revision USING btree (rev_parent_id) WHERE (rev_parent_id IS NOT NULL)
+ public  | revision           | revision_pkey                     | t          | t          | 34 GB          | CREATE UNIQUE INDEX revision_pkey ON public.revision USING btree (rev_id)
+ public  | revision_text      | revision_text_v2_pkey             | t          | t          | 0 bytes        | CREATE UNIQUE INDEX revision_text_v2_pkey ON ONLY public.revision_text USING btree (rev_id)
+ public  | revision_text_p1   | revision_text_p1_pkey             | t          | t          | 25 GB          | CREATE UNIQUE INDEX revision_text_p1_pkey ON public.revision_text_p1 USING btree (rev_id)
+ public  | revision_text_p2   | revision_text_p2_pkey             | t          | t          | 9285 MB        | CREATE UNIQUE INDEX revision_text_p2_pkey ON public.revision_text_p2 USING btree (rev_id)
+ public  | user_former_groups | user_former_groups_group_idx      | t          | t          | 176 kB         | CREATE INDEX user_former_groups_group_idx ON public.user_former_groups USING btree (ufg_group)
+ public  | user_former_groups | user_former_groups_pkey           | t          | t          | 888 kB         | CREATE UNIQUE INDEX user_former_groups_pkey ON public.user_former_groups USING btree (ufg_user, ufg_group)
+ public  | user_groups        | user_groups_expiry_idx            | t          | t          | 32 kB          | CREATE INDEX user_groups_expiry_idx ON public.user_groups USING btree (ug_expiry) WHERE (ug_expiry IS NOT NULL)
+ public  | user_groups        | user_groups_group_idx             | t          | t          | 728 kB         | CREATE INDEX user_groups_group_idx ON public.user_groups USING btree (ug_group)
+ public  | user_groups        | user_groups_pkey                  | t          | t          | 4784 kB        | CREATE UNIQUE INDEX user_groups_pkey ON public.user_groups USING btree (ug_user, ug_group)
+(36 rows)
+
+Time: 7.383 ms
+ indrelid | possible_duplicate_indexes 
+----------+----------------------------
+(0 rows)
+
+Time: 5.007 ms
+      oid      | pg_get_partkeydef 
+---------------+-------------------
+ revision_text | RANGE (rev_id)
+(1 row)
+
+Time: 2.029 ms
+       inhparent       |       inhrelid        |                 pg_get_expr                  
+-----------------------+-----------------------+----------------------------------------------
+ revision_text         | revision_text_p2      | FOR VALUES FROM ('1000000000') TO (MAXVALUE)
+ revision_text_v2_pkey | revision_text_p2_pkey | 
+ revision_text         | revision_text_p1      | FOR VALUES FROM (MINVALUE) TO ('1000000000')
+ revision_text_v2_pkey | revision_text_p1_pkey | 
+(4 rows)
+
+Time: 22.707 ms
+     spcname     |       pg_tablespace_location        
+-----------------+-------------------------------------
+ pg_default      | 
+ pg_global       | 
+ wiki_ts         | /media/simone/ssd1/postgres-wiki
+ core_ts         | /media/simone/ssd/core_pg_ts
+ wiki_ts_lacie   | /media/simone/lacie14/postgres-wiki
+ wiki_ts_sys     | /var/lib/postgres-wiki-idx
+ lk_ts           | /media/simone/ssd1/postgres-lk
+ wiki_ts_lacie10 | /media/simone/lacie10/postgres-wiki
+(8 rows)
+
+Time: 0.354 ms
+              name               | setting | unit 
+---------------------------------+---------+------
+ autovacuum                      | on      | 
+ autovacuum_analyze_scale_factor | 0.1     | 
+ autovacuum_vacuum_scale_factor  | 0.2     | 
+ data_checksums                  | on      | 
+ default_statistics_target       | 100     | 
+ effective_cache_size            | 524288  | 8kB
+ maintenance_work_mem            | 65536   | kB
+ max_connections                 | 100     | 
+ max_parallel_workers_per_gather | 2       | 
+ shared_buffers                  | 4194304 | 8kB
+ work_mem                        | 4096    | kB
+(11 rows)
+
+Time: 3.347 ms
+   datname    | stats_reset | deadlocks | temp_files | temp_bytes | checksum_failures 
+--------------+-------------+-----------+------------+------------+-------------------
+ wiki20260401 |             |         4 |   10296297 | 20 TB      |                 0
+(1 row)
+
+Time: 2.163 ms
+ page_id 
+---------
+(0 rows)
+
+Time: 12.706 ms
+  rev_id   | rev_page 
+-----------+----------
+   7111938 |  1133504
+  11708322 |  1133504
+  16896358 |  1133504
+ 773988997 |  1133504
+ 784468480 |  1133504
+(5 rows)
+
+Time: 51.428 ms
+ pr_page  | count 
+----------+-------
+        0 |     3
+    17848 |     2
+  1065736 |     2
+  3943927 |     1
+  4773925 |     2
+  5109369 |     2
+  5109372 |     2
+  5109393 |     2
+  5109394 |     2
+  5109534 |     2
+  5109546 |     2
+  8960859 |     2
+  9074927 |     2
+ 15064653 |     2
+ 19521103 |     2
+ 19543230 |     2
+ 19543233 |     2
+ 19545485 |     2
+ 19550276 |     1
+ 19565298 |     1
+ 19567788 |     2
+ 19568201 |     2
+ 19568216 |     2
+ 19568574 |     2
+ 19568583 |     2
+ 19569481 |     2
+ 19569482 |     2
+ 19602105 |     1
+ 19602478 |     2
+ 19602502 |     2
+ 19602522 |     2
+ 19621839 |     2
+ 19632221 |     2
+ 19632293 |     2
+ 19632319 |     2
+ 19632355 |     2
+ 19632754 |     2
+ 19652737 |     2
+ 19653655 |     2
+ 19653661 |     2
+ 19657576 |     2
+ 19666124 |     2
+ 19681070 |     2
+ 19681117 |     2
+ 19681119 |     1
+ 19681185 |     2
+ 19683107 |     2
+ 19683150 |     2
+ 19684772 |     2
+ 19685077 |     2
+ 19708517 |     1
+ 19723678 |     2
+ 19723865 |     2
+ 19727529 |     2
+ 19739181 |     2
+ 19772985 |     1
+ 19773181 |     2
+ 19828110 |     2
+ 19828165 |     2
+ 19828185 |     2
+ 19833527 |     2
+ 19840620 |     2
+ 19898771 |     2
+ 19903450 |     2
+ 19903565 |     2
+ 19903570 |     2
+ 19903600 |     2
+ 19907476 |     1
+ 19915914 |     2
+ 19916129 |     2
+ 19916135 |     2
+ 19916136 |     2
+ 19916139 |     2
+ 19916140 |     2
+ 19916142 |     2
+ 19916143 |     2
+ 19916146 |     2
+ 19916147 |     2
+ 19924657 |     2
+ 19943268 |     2
+ 19943412 |     2
+ 19952101 |     2
+ 19962320 |     2
+ 20026218 |     1
+ 20034664 |     2
+ 20037466 |     1
+ 20037491 |     1
+ 20067307 |     2
+ 20087114 |     1
+ 20106783 |     2
+ 20106784 |     2
+ 20106805 |     2
+ 20107249 |     2
+ 20132514 |     2
+ 20200937 |     1
+ 20254822 |     1
+ 20276615 |     2
+ 20342515 |     1
+ 20389953 |     1
+ 20406024 |     2
+ 20497793 |     2
+ 20497804 |     2
+ 20497805 |     2
+ 20497811 |     1
+ 20497813 |     2
+ 20498386 |     2
+ 20498453 |     2
+ 20499198 |     2
+ 20499209 |     2
+ 20499210 |     2
+ 20499212 |     2
+ 20514002 |     2
+ 20514500 |     2
+ 20514877 |     1
+ 20516472 |     2
+ 20517302 |     2
+ 20593109 |     1
+ 20593112 |     1
+ 20593138 |     1
+ 20593196 |     2
+ 20593346 |     2
+ 20593355 |     2
+ 20593957 |     2
+ 20594287 |     2
+ 20594451 |     2
+ 20647208 |     1
+ 20647484 |     1
+ 20647568 |     1
+ 20661189 |     2
+ 20661263 |     2
+ 20691471 |     2
+ 20691472 |     2
+ 20691487 |     2
+ 20720101 |     2
+ 20770647 |     2
+ 20775063 |     2
+ 20780050 |     2
+ 20780322 |     2
+ 20780326 |     2
+ 20780418 |     2
+ 20793222 |     2
+ 20793223 |     1
+ 20846392 |     1
+ 20846394 |     1
+ 20864053 |     2
+ 20901208 |     2
+ 20924229 |     2
+ 20924260 |     2
+ 20924279 |     2
+ 20924281 |     2
+ 20924716 |     2
+ 20925522 |     2
+ 20934995 |     2
+ 20935032 |     2
+ 20938961 |     2
+ 20947715 |     2
+ 20969920 |     2
+ 20970111 |     2
+ 21002923 |     2
+ 21026552 |     2
+ 21026584 |     2
+ 21026585 |     2
+ 21042438 |     2
+ 21068074 |     1
+ 21068136 |     2
+ 21068137 |     2
+ 21070449 |     2
+ 21071160 |     2
+ 21071194 |     2
+ 21086773 |     2
+ 21112697 |     2
+ 21130509 |     2
+ 21130536 |     2
+ 21130541 |     2
+ 21131814 |     2
+ 21131815 |     2
+ 21145026 |     2
+ 21150349 |     2
+ 21150350 |     2
+ 21150438 |     1
+ 21150439 |     1
+ 21150441 |     1
+ 21150442 |     1
+ 21150444 |     1
+ 21150445 |     1
+ 21150446 |     1
+ 21150447 |     1
+ 21150448 |     1
+ 21150449 |     1
+ 21150450 |     1
+ 21150451 |     1
+ 21150453 |     1
+ 21150454 |     1
+ 21150455 |     1
+ 21150456 |     1
+ 21150459 |     1
+ 21150460 |     1
+ 21150461 |     1
+ 21150462 |     1
+ 21150463 |     1
+ 21150464 |     1
+ 21150465 |     1
+ 21150466 |     1
+ 21150467 |     1
+ 21150468 |     1
+ 21150470 |     1
+ 21150471 |     1
+ 21150472 |     1
+ 21150473 |     1
+ 21150474 |     1
+ 21150475 |     1
+ 21150476 |     1
+ 21150477 |     1
+ 21150479 |     1
+ 21150480 |     1
+ 21150481 |     1
+ 21150486 |     1
+ 21150487 |     1
+ 21150499 |     1
+ 21150515 |     1
+ 21150517 |     1
+ 21150518 |     1
+ 21150526 |     1
+ 21167632 |     2
+ 21188487 |     2
+ 21188971 |     2
+ 21189493 |     2
+ 21198633 |     1
+ 21235886 |     2
+ 21236213 |     2
+ 21238282 |     2
+ 21238286 |     2
+ 21239491 |     2
+ 21253215 |     2
+ 21274096 |     2
+ 21292615 |     2
+ 21292836 |     2
+ 21305709 |     2
+ 21306743 |     2
+ 21307014 |     1
+ 21307049 |     2
+ 21307143 |     1
+ 21307165 |     1
+ 21307240 |     2
+ 21307246 |     2
+ 21307247 |     1
+ 21307250 |     1
+ 21307255 |     1
+ 21307262 |     2
+ 21307263 |     2
+ 21307268 |     1
+ 21307276 |     1
+ 21307277 |     2
+ 21307285 |     2
+ 21307289 |     2
+ 21307294 |     2
+ 21307299 |     2
+ 21307307 |     2
+ 21307313 |     2
+ 21307315 |     2
+ 21307316 |     2
+ 21307324 |     2
+ 21307334 |     2
+ 21307338 |     1
+ 21309475 |     2
+ 21341150 |     2
+ 21346617 |     2
+ 21348082 |     2
+ 21349007 |     2
+ 21351757 |     2
+ 21358231 |     2
+ 21373783 |     2
+ 21376379 |     2
+ 21383163 |     2
+ 21383176 |     2
+ 21416634 |     2
+ 21416672 |     2
+ 21417616 |     2
+ 21430220 |     2
+ 21430275 |     2
+ 21432228 |     2
+ 21434988 |     2
+ 21464101 |     2
+ 21473170 |     2
+ 21473207 |     2
+ 21476650 |     2
+ 21485309 |     2
+ 21491966 |     2
+ 21507075 |     1
+ 21511492 |     2
+ 21515050 |     2
+ 21515860 |     2
+ 21516995 |     2
+ 21525149 |     2
+ 21525434 |     2
+ 21532774 |     2
+ 21549956 |     2
+ 21549957 |     2
+ 21592970 |     1
+ 21592971 |     1
+ 21603784 |     2
+ 21605668 |     1
+ 21616641 |     2
+ 21616939 |     2
+ 21631395 |     2
+ 21633195 |     2
+ 21633342 |     2
+ 21633352 |     1
+ 21633737 |     2
+ 21648476 |     2
+ 21712906 |     2
+ 21712907 |     2
+ 21713196 |     2
+ 21716427 |     1
+ 21742316 |     2
+ 21758903 |     2
+ 21801022 |     1
+ 21847812 |     2
+ 21851019 |     2
+ 21851020 |     2
+ 21851022 |     2
+ 21851028 |     2
+ 21855904 |     2
+ 21883278 |     2
+ 21883316 |     2
+ 21883460 |     2
+ 21883463 |     2
+ 21884602 |     2
+ 22009515 |     2
+ 22009516 |     2
+ 22009661 |     2
+ 22025553 |     2
+ 22030467 |     1
+ 22052007 |     2
+ 22058243 |     2
+ 22058272 |     2
+ 22058279 |     2
+ 22058316 |     2
+ 22058317 |     2
+ 22131740 |     2
+ 22159601 |     1
+ 22159642 |     1
+ 22185720 |     2
+ 22198748 |     1
+ 22200081 |     2
+ 22200102 |     2
+ 22215482 |     2
+ 22233111 |     2
+ 22287500 |     2
+ 22287501 |     2
+ 22322816 |     1
+ 22328137 |     2
+ 22354253 |     2
+ 22418202 |     2
+ 22423119 |     2
+ 22443404 |     2
+ 22452419 |     2
+ 22480057 |     1
+ 22518802 |     2
+ 22631072 |     1
+ 22681971 |     1
+ 22715747 |     2
+ 22773919 |     2
+ 22774521 |     2
+ 22800468 |     2
+ 22801395 |     1
+ 22817085 |     2
+ 22868751 |     2
+ 22872161 |     2
+ 22965769 |     2
+ 22988666 |     1
+ 23008401 |     2
+ 23032907 |     2
+ 23130277 |     2
+ 23139406 |     1
+ 23139438 |     1
+ 23140136 |     1
+ 23140171 |     1
+ 23140282 |     1
+ 23140293 |     1
+ 23140484 |     1
+ 23141101 |     1
+ 23141278 |     1
+ 23141319 |     1
+ 23174548 |     2
+ 23175872 |     2
+ 23175875 |     2
+ 23209265 |     2
+ 23213387 |     1
+ 23362204 |     2
+ 23371185 |     1
+ 23409094 |     1
+ 23425166 |     2
+ 23439167 |     2
+ 23439526 |     2
+ 23445080 |     1
+ 23445123 |     1
+ 23454464 |     2
+ 23468000 |     2
+ 23488385 |     1
+ 23531762 |     2
+ 23536252 |     2
+ 23537301 |     2
+ 23537862 |     1
+ 23602427 |     2
+ 23603167 |     2
+ 23650948 |     2
+ 23651763 |     2
+ 23701148 |     2
+ 23710601 |     1
+ 23714721 |     1
+ 23714756 |     1
+ 23726878 |     1
+ 23739037 |     1
+ 23741510 |     1
+ 23757499 |     2
+ 23791207 |     2
+ 23812695 |     1
+ 23812696 |     1
+ 23836138 |     2
+ 23869267 |     2
+ 23869346 |     1
+ 23912972 |     1
+ 23913044 |     1
+ 23926489 |     1
+ 23941571 |     1
+ 23943163 |     1
+ 23947746 |     2
+ 23980349 |     2
+ 23994412 |     2
+ 24005829 |     2
+ 24022921 |     2
+ 24048362 |     2
+ 24066402 |     2
+ 24237440 |     2
+ 24241286 |     2
+ 24256248 |     2
+ 24260154 |     2
+ 24280390 |     2
+ 24309257 |     2
+ 24312470 |     2
+ 24387641 |     1
+ 24413090 |     2
+ 24413254 |     2
+ 24471071 |     2
+ 24536250 |     2
+ 24563190 |     2
+ 24563222 |     2
+ 24565361 |     2
+ 24565412 |     2
+ 24565490 |     2
+ 24565491 |     2
+ 24576320 |     2
+ 24576325 |     2
+ 24576379 |     2
+ 24662796 |     2
+ 24674778 |     1
+ 24699585 |     2
+ 24699708 |     2
+ 24712380 |     1
+ 24717885 |     1
+ 24718227 |     1
+ 24720705 |     1
+ 24720758 |     1
+ 24738232 |     1
+ 24740936 |     1
+ 24741479 |     1
+ 24748291 |     1
+ 24829992 |     2
+ 24833652 |     1
+ 24980097 |     2
+ 25004103 |     2
+ 25008322 |     1
+ 25072778 |     2
+ 25090451 |     2
+ 25145914 |     1
+ 25160370 |     2
+ 25187346 |     1
+ 25187464 |     1
+ 25198957 |     2
+ 25205698 |     1
+ 25271856 |     1
+ 25291489 |     1
+ 25329761 |     1
+ 25365539 |     2
+ 25384483 |     2
+ 25386913 |     1
+ 25417012 |     1
+ 25417425 |     2
+ 25417538 |     2
+ 25417771 |     2
+ 25418176 |     1
+ 25418240 |     1
+ 25419571 |     2
+ 25420809 |     2
+ 25426602 |     1
+ 25426627 |     2
+ 25426922 |     2
+ 25429542 |     2
+ 25432114 |     2
+ 25438327 |     2
+ 25438632 |     2
+ 25438635 |     2
+ 25439367 |     2
+ 25439457 |     2
+ 25452086 |     2
+ 25453471 |     1
+ 25454364 |     2
+ 25455200 |     1
+ 25461865 |     1
+ 25463645 |     2
+ 25464684 |     2
+ 25465086 |     2
+ 25465538 |     2
+ 25466802 |     1
+ 25467075 |     1
+ 25467156 |     1
+ 25475609 |     1
+ 25476679 |     2
+ 25476736 |     2
+ 25477730 |     1
+ 25478386 |     1
+ 25478608 |     2
+ 25478657 |     1
+ 25487957 |     1
+ 25488238 |     2
+ 25498823 |     1
+ 25500001 |     2
+ 25500126 |     1
+ 25500929 |     1
+ 25501094 |     2
+ 25511729 |     2
+ 25511753 |     2
+ 25512444 |     2
+ 25512562 |     1
+ 25512610 |     2
+ 25520938 |     2
+ 25521006 |     2
+ 25521053 |     2
+ 25521296 |     1
+ 25523663 |     2
+ 25523785 |     1
+ 25523868 |     2
+ 25524133 |     1
+ 25524677 |     2
+ 25525174 |     2
+ 25534160 |     1
+ 25534168 |     1
+ 25534834 |     1
+ 25535335 |     1
+ 25535969 |     2
+ 25544553 |     1
+ 25545842 |     1
+ 25546038 |     1
+ 25546084 |     1
+ 25555026 |     1
+ 25555631 |     1
+ 25555743 |     1
+ 25555759 |     2
+ 25555813 |     2
+ 25560601 |     1
+ 25560770 |     2
+ 25561691 |     1
+ 25561873 |     1
+ 25561935 |     1
+ 25562029 |     2
+ 25563177 |     1
+ 25564040 |     2
+ 25572660 |     1
+ 25574072 |     1
+ 25574209 |     1
+ 25574361 |     1
+ 25574377 |     1
+ 25574496 |     1
+ 25581062 |     2
+ 25581191 |     1
+ 25581794 |     1
+ 25581873 |     1
+ 25582411 |     2
+ 25583996 |     2
+ 25585464 |     2
+ 25585730 |     1
+ 25585820 |     2
+ 25594592 |     1
+ 25595381 |     1
+ 25596928 |     2
+ 25597339 |     1
+ 25605047 |     2
+ 25605265 |     2
+ 25609068 |     1
+ 25612557 |     2
+ 25612706 |     2
+ 25644491 |     2
+ 25644531 |     2
+ 25652184 |     1
+ 25652801 |     2
+ 25652825 |     2
+ 25653534 |     2
+ 25654916 |     2
+ 25663267 |     1
+ 25663274 |     1
+ 25664355 |     1
+ 25665176 |     1
+ 25666000 |     1
+ 25686876 |     1
+ 25687991 |     2
+ 25690277 |     2
+ 25691128 |     1
+ 25698058 |     1
+ 25701103 |     2
+ 25725591 |     2
+ 25725873 |     1
+ 25726002 |     1
+ 25728507 |     1
+ 25728867 |     1
+ 25729637 |     2
+ 25738995 |     1
+ 25749920 |     2
+ 25750121 |     2
+ 25752471 |     1
+ 25763857 |     1
+ 25763962 |     1
+ 25764933 |     1
+ 25765275 |     2
+ 25778248 |     1
+ 25778270 |     2
+ 25808118 |     2
+ 25813837 |     2
+ 25833159 |     2
+ 25835949 |     1
+ 25836573 |     2
+ 25838712 |     1
+ 25838792 |     1
+ 25839008 |     2
+ 25839809 |     2
+ 25845447 |     2
+ 25848451 |     2
+ 25869917 |     2
+ 25875840 |     2
+ 25875957 |     1
+ 25879593 |     2
+ 25879752 |     2
+ 25890280 |     1
+ 25890297 |     1
+ 25890777 |     1
+ 25890811 |     2
+ 25890905 |     1
+ 25904010 |     2
+ 25913975 |     2
+ 25942905 |     1
+ 25945358 |     1
+ 25954980 |     2
+ 25961290 |     2
+ 25963575 |     1
+ 25964837 |     2
+ 25964953 |     1
+ 25965034 |     1
+ 25967273 |     2
+ 25990835 |     1
+ 25990886 |     1
+ 26003376 |     2
+ 26007626 |     2
+ 26014414 |     2
+ 26015170 |     1
+ 26027113 |     2
+ 26035042 |     1
+ 26046835 |     1
+ 26056040 |     2
+ 26072114 |     2
+ 26101936 |     1
+ 26102108 |     1
+ 26128178 |     1
+ 26145498 |     1
+ 26156642 |     2
+ 26156650 |     1
+ 26159757 |     2
+ 26194526 |     1
+ 26194870 |     2
+ 26195935 |     2
+ 26205037 |     2
+ 26251952 |     2
+ 26253181 |     1
+ 26268616 |     2
+ 26268916 |     1
+ 26268931 |     1
+ 26268938 |     1
+ 26269283 |     2
+ 26270233 |     2
+ 26270473 |     2
+ 26278255 |     1
+ 26280722 |     1
+ 26280893 |     1
+ 26281144 |     2
+ 26281729 |     2
+ 26281735 |     2
+ 26282166 |     1
+ 26282249 |     1
+ 26282895 |     2
+ 26283062 |     2
+ 26283325 |     2
+ 26296051 |     1
+ 26303571 |     2
+ 26303630 |     2
+ 26303711 |     1
+ 26303787 |     1
+ 26303851 |     1
+ 26303914 |     1
+ 26303947 |     2
+ 26304042 |     1
+ 26304131 |     2
+ 26304409 |     1
+ 26304723 |     1
+ 26304759 |     1
+ 26304805 |     1
+ 26304821 |     2
+ 26304910 |     1
+ 26304924 |     1
+ 26306458 |     2
+ 26307797 |     1
+ 26321299 |     1
+ 26321362 |     1
+ 26321388 |     1
+ 26321433 |     1
+ 26321544 |     1
+ 26321599 |     1
+ 26321623 |     2
+ 26321690 |     1
+ 26321731 |     1
+ 26321759 |     1
+ 26321778 |     1
+ 26321784 |     1
+ 26321861 |     1
+ 26321898 |     1
+ 26321968 |     1
+ 26321996 |     2
+ 26322012 |     1
+ 26322095 |     1
+ 26322128 |     2
+ 26322848 |     1
+ 26322927 |     1
+ 26322945 |     2
+ 26323109 |     2
+ 26331233 |     2
+ 26331524 |     2
+ 26335896 |     2
+ 26335946 |     2
+ 26342331 |     1
+ 26348267 |     2
+ 26348903 |     1
+ 26353596 |     1
+ 26360436 |     1
+ 26368457 |     1
+ 26371231 |     1
+ 26371879 |     2
+ 26372628 |     1
+ 26378464 |     2
+ 26384800 |     1
+ 26385078 |     1
+ 26385127 |     2
+ 26395356 |     1
+ 26396910 |     2
+ 26406450 |     1
+ 26406898 |     2
+ 26407710 |     1
+ 26421168 |     2
+ 26422074 |     2
+ 26422124 |     2
+ 26422972 |     1
+ 26423434 |     2
+ 26423456 |     2
+ 26435083 |     2
+ 26436691 |     1
+ 26436736 |     1
+ 26436794 |     1
+ 26444993 |     2
+ 26445304 |     2
+ 26445892 |     1
+ 26445947 |     1
+ 26446478 |     1
+ 26446522 |     1
+ 26463738 |     2
+ 26463740 |     2
+ 26463741 |     2
+ 26463744 |     2
+ 26463770 |     1
+ 26475406 |     2
+ 26496332 |     1
+ 26496873 |     1
+ 26499068 |     1
+ 26512465 |     1
+ 26512531 |     1
+ 26512771 |     2
+ 26512991 |     2
+ 26526168 |     1
+ 26526287 |     2
+ 26535947 |     1
+ 26535976 |     1
+ 26549415 |     2
+ 26551172 |     1
+ 26571091 |     2
+ 26585540 |     2
+ 26586912 |     1
+ 26598449 |     1
+ 26599999 |     2
+ 26601941 |     2
+ 26614335 |     1
+ 26614347 |     1
+ 26639157 |     2
+ 26639161 |     1
+ 26652312 |     1
+ 26652596 |     1
+ 26658549 |     2
+ 26668030 |     1
+ 26670999 |     2
+ 26671002 |     2
+ 26671004 |     2
+ 26671005 |     2
+ 26671006 |     2
+ 26671007 |     2
+ 26681983 |     1
+ 26696031 |     2
+ 26696400 |     1
+ 26696440 |     2
+ 26720624 |     2
+ 26722837 |     1
+ 26725229 |     1
+ 26729186 |     1
+ 26733445 |     1
+ 26733458 |     1
+ 26745536 |     1
+ 26754572 |     1
+ 26769590 |     1
+ 26770371 |     1
+ 26810703 |     1
+ 26810865 |     1
+ 26810970 |     1
+ 26811543 |     1
+ 26812115 |     1
+ 26818682 |     2
+ 26838349 |     2
+ 26887774 |     2
+ 26888025 |     1
+ 26901683 |     2
+ 26902544 |     1
+ 26926149 |     1
+ 26941661 |     2
+ 26951396 |     1
+ 26951648 |     1
+ 26951731 |     1
+ 26966688 |     1
+ 26997107 |     1
+ 26997196 |     1
+ 27001882 |     1
+ 27015950 |     1
+ 27039905 |     2
+ 27046435 |     1
+ 27046452 |     1
+ 27046492 |     1
+ 27046523 |     1
+ 27046545 |     2
+ 27056740 |     1
+ 27060367 |     1
+ 27065368 |     1
+ 27070805 |     2
+ 27074424 |     1
+ 27075174 |     1
+ 27084699 |     2
+ 27084700 |     2
+ 27084701 |     2
+ 27084702 |     2
+ 27084703 |     2
+ 27084704 |     2
+ 27084705 |     2
+ 27084706 |     2
+ 27084707 |     2
+ 27084708 |     2
+ 27084709 |     2
+ 27084710 |     2
+ 27084712 |     2
+ 27084713 |     2
+ 27084714 |     2
+ 27084715 |     2
+ 27084716 |     2
+ 27084719 |     2
+ 27084720 |     2
+ 27084722 |     2
+ 27084723 |     2
+ 27084724 |     2
+ 27084725 |     2
+ 27084726 |     2
+ 27084727 |     2
+ 27084728 |     2
+ 27084746 |     2
+ 27084826 |     2
+ 27084865 |     2
+ 27084917 |     2
+ 27084931 |     2
+ 27084966 |     2
+ 27084987 |     2
+ 27084998 |     2
+ 27085021 |     2
+ 27085059 |     2
+ 27085086 |     2
+ 27085107 |     2
+ 27085159 |     2
+ 27085163 |     2
+ 27085179 |     2
+ 27085180 |     2
+ 27085181 |     2
+ 27085182 |     2
+ 27085183 |     2
+ 27085184 |     2
+ 27085185 |     2
+ 27085186 |     2
+ 27085187 |     2
+ 27085188 |     2
+ 27085189 |     2
+ 27085190 |     2
+ 27085191 |     2
+ 27085192 |     2
+ 27085193 |     2
+ 27085194 |     2
+ 27085196 |     2
+ 27085199 |     2
+ 27085200 |     2
+ 27085202 |     2
+ 27085203 |     2
+ 27085204 |     2
+ 27085205 |     2
+ 27085206 |     2
+ 27085207 |     2
+ 27105670 |     1
+ 27113912 |     1
+ 27126438 |     2
+ 27126727 |     1
+ 27127328 |     1
+ 27227269 |     1
+ 27227279 |     1
+ 27268040 |     1
+ 27298046 |     1
+ 27328813 |     1
+ 27329127 |     1
+ 27395593 |     1
+ 27405546 |     2
+ 27406030 |     1
+ 27406318 |     2
+ 27406722 |     2
+ 27413956 |     1
+ 27417397 |     2
+ 27425815 |     1
+ 27426925 |     2
+ 27428397 |     2
+ 27461366 |     2
+ 27463388 |     2
+ 27552427 |     2
+ 27552577 |     2
+ 27552683 |     2
+ 27552782 |     2
+ 27552811 |     2
+ 27552846 |     1
+ 27552879 |     2
+ 27552883 |     2
+ 27552902 |     2
+ 27552971 |     1
+ 27553078 |     2
+ 27553086 |     2
+ 27553089 |     2
+ 27553094 |     2
+ 27553116 |     2
+ 27553169 |     2
+ 27553170 |     2
+ 27553183 |     1
+ 27589410 |     1
+ 27594271 |     1
+ 27599106 |     2
+ 27599430 |     1
+ 27599460 |     1
+ 27618516 |     1
+ 27618667 |     2
+ 27637168 |     1
+ 27637169 |     1
+ 27640956 |     1
+ 27643606 |     2
+ 27667411 |     2
+ 27680507 |     1
+ 27738216 |     2
+ 27741977 |     2
+ 27770422 |     1
+ 27770565 |     2
+ 27795687 |     1
+ 27802320 |     1
+ 27802347 |     1
+ 27810899 |     1
+ 27813410 |     2
+ 27818708 |     1
+ 27823434 |     1
+ 27845905 |     1
+ 27855758 |     1
+ 27869754 |     2
+ 27971088 |     2
+ 27993518 |     2
+ 28020914 |     1
+ 28032293 |     1
+ 28060787 |     1
+ 28073286 |     2
+ 28073609 |     2
+ 28129043 |     1
+ 28154446 |     1
+ 28155729 |     2
+ 28161281 |     1
+ 28167462 |     2
+ 28169643 |     1
+ 28187793 |     1
+ 28233555 |     2
+ 28241694 |     1
+ 28261223 |     2
+ 28274195 |     1
+ 28337967 |     2
+ 28342855 |     1
+ 28359213 |     1
+ 28360052 |     1
+ 28370398 |     1
+ 28375987 |     1
+ 28388445 |     2
+ 28396600 |     2
+ 28421816 |     1
+ 28421900 |     1
+ 28424138 |     2
+ 28427718 |     1
+ 28457113 |     1
+ 28487633 |     2
+ 28513769 |     2
+ 28513773 |     2
+ 28538336 |     2
+ 28538337 |     2
+ 28538340 |     2
+ 28538342 |     2
+ 28538346 |     2
+ 28561045 |     2
+ 28562473 |     2
+ 28570953 |     2
+ 28580748 |     2
+ 28620528 |     1
+ 28628168 |     1
+ 28630441 |     1
+ 28658429 |     1
+ 28659205 |     1
+ 28660555 |     1
+ 28685541 |     2
+ 28696830 |     2
+ 28698533 |     1
+ 28698707 |     2
+ 28718917 |     2
+ 28731844 |     2
+ 28745665 |     2
+ 28756028 |     1
+ 28760057 |     1
+ 28770421 |     1
+ 28772745 |     1
+ 28786000 |     1
+ 28817948 |     1
+ 28832132 |     2
+ 28837581 |     2
+ 28866791 |     2
+ 28868258 |     1
+ 28911081 |     1
+ 28935105 |     1
+ 28943467 |     1
+ 28957631 |     1
+ 28976377 |     2
+ 28983121 |     2
+ 29004033 |     1
+ 29021321 |     2
+ 29025413 |     1
+ 29025466 |     1
+ 29025565 |     2
+ 29025584 |     1
+ 29026581 |     1
+ 29040565 |     1
+ 29040628 |     1
+ 29065655 |     2
+ 29074533 |     2
+ 29081238 |     2
+ 29095638 |     2
+ 29114735 |     2
+ 29120628 |     2
+ 29125955 |     1
+ 29126059 |     1
+ 29156787 |     2
+ 29158561 |     1
+ 29160555 |     2
+ 29160572 |     1
+ 29161134 |     2
+ 29173956 |     1
+ 29177107 |     2
+ 29187470 |     2
+ 29259443 |     1
+ 29273790 |     2
+ 29273891 |     1
+ 29319389 |     1
+ 29319881 |     1
+ 29319895 |     1
+ 29468360 |     2
+ 29495592 |     1
+ 29544454 |     1
+ 29558990 |     2
+ 29560521 |     2
+ 29560717 |     2
+ 29560769 |     2
+ 29568546 |     2
+ 29581894 |     2
+ 29611177 |     2
+ 29613690 |     1
+ 29613912 |     2
+ 29621411 |     1
+ 29645162 |     1
+ 29677671 |     2
+ 29684753 |     2
+ 29686331 |     1
+ 29686670 |     2
+ 29759359 |     2
+ 29759412 |     1
+ 29767473 |     2
+ 29769618 |     2
+ 29769973 |     2
+ 29784934 |     1
+ 29828947 |     1
+ 29833591 |     1
+ 29835471 |     2
+ 29850969 |     1
+ 29874433 |     2
+ 29893836 |     2
+ 30016685 |     2
+ 30091817 |     2
+ 30124155 |     1
+ 30125960 |     1
+ 30126064 |     1
+ 30152193 |     2
+ 30154018 |     2
+ 30164731 |     2
+ 30192524 |     2
+ 30205900 |     2
+ 30308583 |     2
+ 30316316 |     2
+ 30316572 |     2
+ 30326534 |     2
+ 30329922 |     1
+ 30390203 |     2
+ 30397688 |     1
+ 30432315 |     2
+ 30625078 |     2
+ 30625111 |     2
+ 30681039 |     2
+ 30690833 |     2
+ 30711228 |     2
+ 30733496 |     1
+ 30747596 |     2
+ 30760297 |     2
+ 30775418 |     2
+ 30775555 |     2
+ 30802811 |     2
+ 30826707 |     2
+ 30828761 |     2
+ 30835883 |     2
+ 30889428 |     2
+ 30889437 |     2
+ 30889438 |     2
+ 30889553 |     2
+ 30932652 |     1
+ 30932684 |     2
+ 30937624 |     1
+ 30944071 |     2
+ 30956007 |     1
+ 30963467 |     1
+ 30967746 |     2
+ 31008704 |     2
+ 31137269 |     1
+ 31148424 |     1
+ 31247830 |     1
+ 31288075 |     2
+ 31295797 |     2
+ 31296824 |     2
+ 31311152 |     2
+ 31312401 |     2
+ 31326353 |     2
+ 31373230 |     1
+ 31459713 |     1
+ 31495947 |     2
+ 31499022 |     2
+ 31554306 |     2
+ 31554315 |     2
+ 31583357 |     2
+ 31585343 |     2
+ 31589009 |     2
+ 31596890 |     2
+ 31596905 |     2
+ 31626746 |     2
+ 31629137 |     2
+ 31650617 |     2
+ 31663099 |     1
+ 31701763 |     1
+ 31723750 |     1
+ 31723751 |     1
+ 31726737 |     2
+ 31839509 |     2
+ 31839511 |     2
+ 31839570 |     2
+ 31839594 |     2
+ 31839601 |     2
+ 31839617 |     2
+ 31839649 |     2
+ 31839658 |     2
+ 31841773 |     2
+ 31851410 |     2
+ 31875464 |     1
+ 31879093 |     2
+ 31919619 |     2
+ 31919620 |     2
+ 31927880 |     1
+ 31939378 |     2
+ 31942317 |     1
+ 31958303 |     2
+ 31967171 |     2
+ 31977850 |     2
+ 31980454 |     2
+ 32012415 |     2
+ 32030765 |     1
+ 32031349 |     1
+ 32036970 |     2
+ 32059787 |     2
+ 32083493 |     2
+ 32094869 |     2
+ 32095051 |     2
+ 32097696 |     1
+ 32216896 |     1
+ 32237109 |     2
+ 32252259 |     2
+ 32318755 |     1
+ 32352939 |     1
+ 32372353 |     2
+ 32404029 |     1
+ 32435140 |     2
+ 32451161 |     1
+ 32452727 |     1
+ 32452799 |     1
+ 32455657 |     1
+ 32466605 |     1
+ 32473821 |     2
+ 32507249 |     1
+ 32535286 |     1
+ 32535599 |     1
+ 32548198 |     1
+ 32548340 |     2
+ 32556171 |     2
+ 32606871 |     2
+ 32633297 |     1
+ 32633767 |     2
+ 32635784 |     1
+ 32635806 |     1
+ 32638737 |     1
+ 32638774 |     2
+ 32643818 |     1
+ 32667685 |     2
+ 32669325 |     2
+ 32697860 |     1
+ 32751166 |     2
+ 32784759 |     1
+ 32829508 |     2
+ 32841107 |     2
+ 32900747 |     2
+ 32920679 |     2
+ 32937868 |     1
+ 32956700 |     2
+ 32965833 |     2
+ 32965916 |     2
+ 33021681 |     2
+ 33045339 |     2
+ 33047782 |     1
+ 33052565 |     2
+ 33103982 |     2
+ 33103997 |     2
+ 33124986 |     2
+ 33132988 |     1
+ 33133008 |     1
+ 33188125 |     2
+ 33188200 |     2
+ 33227869 |     1
+ 33269062 |     1
+ 33275363 |     1
+ 33288969 |     2
+ 33305022 |     2
+ 33331406 |     2
+ 33331407 |     2
+ 33351362 |     2
+ 33458898 |     1
+ 33472583 |     2
+ 33472614 |     2
+ 33473230 |     2
+ 33484079 |     1
+ 33497519 |     2
+ 33505999 |     2
+ 33532261 |     2
+ 33602765 |     2
+ 33603650 |     2
+ 33619420 |     2
+ 33634403 |     1
+ 33689488 |     2
+ 33723998 |     2
+ 33774990 |     1
+ 33798709 |     2
+ 33860303 |     1
+ 33861524 |     2
+ 33880372 |     2
+ 33960792 |     2
+ 33962757 |     1
+ 34012740 |     2
+ 34044430 |     2
+ 34044439 |     2
+ 34056621 |     1
+ 34073724 |     1
+ 34073830 |     2
+ 34202251 |     2
+ 34202421 |     2
+ 34254309 |     2
+ 34350506 |     2
+ 34365832 |     2
+ 34421815 |     2
+ 34460267 |     2
+ 34488658 |     2
+ 34488659 |     1
+ 34492938 |     2
+ 34541649 |     2
+ 34547571 |     2
+ 34550639 |     2
+ 34696107 |     2
+ 35459783 |     2
+ 38065304 |     2
+ 39485926 |     2
+ 41091031 |     1
+ 41963244 |     2
+ 43283958 |     2
+ 43297928 |     2
+ 43498412 |     2
+ 43628310 |     2
+ 45284299 |     1
+ 45413093 |     2
+ 45567713 |     1
+ 46416516 |     2
+ 46777355 |     1
+ 46823274 |     2
+ 46874196 |     2
+ 46981952 |     1
+ 47460113 |     2
+ 48137624 |     2
+ 48137736 |     2
+ 48244409 |     2
+ 48290276 |     2
+ 48324646 |     2
+ 48371535 |     2
+ 48392718 |     2
+ 48402044 |     1
+ 48419779 |     1
+ 48448009 |     2
+ 48461441 |     2
+ 48502115 |     1
+ 48529640 |     2
+ 48541292 |     2
+ 48541303 |     2
+ 48541861 |     1
+ 48591455 |     2
+ 48606652 |     2
+ 48639848 |     2
+ 48676069 |     2
+ 48678076 |     2
+ 48696693 |     1
+ 48696709 |     1
+ 48712059 |     1
+ 48739924 |     1
+ 48749356 |     2
+ 48749406 |     2
+ 48807128 |     2
+ 48822565 |     2
+ 48850789 |     1
+ 48871499 |     2
+ 48882953 |     2
+ 48924608 |     2
+ 49064895 |     1
+ 49086459 |     2
+ 49116365 |     2
+ 49116419 |     1
+ 49131179 |     2
+ 49133999 |     2
+ 49230555 |     2
+ 49260922 |     2
+ 49294867 |     2
+ 49312896 |     2
+ 49322201 |     2
+ 49351430 |     1
+ 49355542 |     2
+ 49466906 |     2
+ 49658204 |     1
+ 49730375 |     2
+ 49746274 |     2
+ 49769334 |     2
+ 49856609 |     2
+ 49856614 |     2
+ 49943663 |     2
+ 50016634 |     2
+ 50016645 |     2
+ 50018140 |     2
+ 50066795 |     2
+ 50095718 |     2
+ 50099783 |     2
+ 50110013 |     2
+ 50131335 |     2
+ 50212972 |     1
+ 50228747 |     2
+ 50288068 |     2
+ 50367485 |     2
+ 50368717 |     2
+ 50382061 |     1
+ 50391373 |     1
+ 50489289 |     2
+ 50489290 |     1
+ 50523179 |     1
+ 50528308 |     1
+ 50530286 |     2
+ 50534360 |     1
+ 50591590 |     1
+ 50591598 |     1
+ 50602645 |     1
+ 50635359 |     1
+ 50636820 |     2
+ 50651495 |     2
+ 50662588 |     2
+ 50662866 |     2
+ 50686692 |     2
+ 50707173 |     2
+ 50710799 |     2
+ 50749809 |     1
+ 50761970 |     1
+ 50770408 |     2
+ 50774203 |     1
+ 50795586 |     1
+ 53534408 |     2
+ 53901438 |     3
+ 53946225 |     3
+ 54348061 |     1
+ 55878562 |     2
+ 58751849 |     2
+ 59566990 |     2
+ 59567473 |     2
+ 60472318 |     2
+ 60573129 |     1
+ 60603827 |     1
+ 60622943 |     2
+ 60625756 |     1
+ 60628353 |     2
+ 60637602 |     2
+ 60642343 |     2
+ 60690507 |     2
+ 60714709 |     2
+ 60724238 |     2
+ 60730435 |     2
+ 60732421 |     1
+ 60768358 |     2
+ 60768460 |     2
+ 60805786 |     1
+ 60846574 |     2
+ 60902152 |     2
+ 60932928 |     1
+ 60983323 |     2
+ 60997741 |     2
+ 61068140 |     2
+ 61118117 |     2
+ 61118803 |     2
+ 61119439 |     2
+ 61126706 |     2
+ 61150440 |     1
+ 61156432 |     2
+ 61200306 |     2
+ 61271159 |     2
+ 61294249 |     2
+ 61302744 |     2
+ 61304135 |     2
+ 61329415 |     2
+ 61359571 |     1
+(1487 rows)
+
+Time: 14994.932 ms (00:14.995)
+ relname 
+---------
+(0 rows)
+
+Time: 2.052 ms
+COMMIT
+Time: 0.207 ms

@@ -1,0 +1,129 @@
+#+title: RFPP intent v2.1 repair — classification prerequisites
+#+date: 2026-10-11
+
+Status: applied; active source/tests and direct cache updated; database verification and rollback rehearsal passed.
+
+* Scope and result
+
+The user explicitly authorized repairing the intent defects blocking request
+classification. This narrowly supersedes the earlier deferral of panel fixes for
+this repair only. No issue comments, issue-state changes, or other panel fixes
+are included.
+
+Candidate version: rfpp-intent-v2.1.0. Population: 217,554 requests.
+The final stage changes 1,561 records beyond the version marker: 565 actions and
+818 tiers change, with overlap. These are changed classifications/metadata, not
+an estimated number of previously erroneous requests.
+
+The implementation corrects:
+- Direction words in rationale: requesting semi to reduce disruption remains a
+  positive request, not a protection decrease.
+- Removal objects: remove semi/ECP/full identifies the origin and targets none.
+  Directional reductions to a stated lower tier retain that tier instead.
+- Nested bold extraction: the first nested heading no longer consumes subsequent
+  body text or a signature; immediately following alternative target spans remain
+  part of the request's evidence.
+- Explicit body transitions, standalone unprotection, requested-action headings,
+  content-edit requests, and extended confirm as an inflection variant of ECP.
+- Duration/conditional negation and rationale credentials no longer suppress a
+  clear requested tier or add a spurious semi target.
+- Response-block and signature boundaries prevent administrative protection
+  labels from being treated as requester labels in the covered formats.
+
+Ambiguous compound operations, removal of non-edit restrictions, unknown operation
+alternatives, and open tier alternatives remain flagged. They must be excluded or
+adjudicated when building a scoped edit-protection classifier. This repair does not
+claim comprehensive natural-language interpretation or population accuracy.
+
+* Validation
+
+Nine unittest methods pass, including all 25 saved diagnostic fixtures and targeted
+guards for purpose clauses, removals, multiple bold spans, response contamination,
+compound operations and duration alternatives. The original removal-of-unnecessary-
+protection expectation was intentionally corrected from unspecified target to none.
+Other original regression expectations are retained. No example IDs are hard-coded
+in the parser; live IDs appear only in tests and audit queries.
+
+The full population was staged from an immutable predecessor snapshot. A deterministic
+two-per-change-stratum sample was inspected during refinement; the final exported
+sample has 167 rows. This is unblinded diagnostic review, not independent human
+validation. The original 83-row review and blank human sheet remain in the draft
+workspace's sibling rfpp-intent-validation-20261011 directory.
+
+Population review caught and removed candidate regressions involving broad mixed-
+action detection, user links preceding headings, alternatives outside the first bold
+span, and duration phrases such as month or more. Full staging was rerun after
+substantial refinements. Two final branch-only refinements were applied to all rows
+that could enter those branches: open_target_alternative, then evidence containing
+or. Their SQL and row counts are preserved. The final function signature is stored
+in the stage/run record and checked again before migration.
+
+An initial migration guard rejected hashes serialized under different time zones.
+Complete live/backup comparison showed zero changed rows. Hashes were standardized
+to UTC after asserting complete row equality. Stage, application, verification and
+rollback now use UTC consistently; the guard was not bypassed.
+
+The SQL migration defaults to a complete rehearsal ending in ROLLBACK. It rejects
+changed source rows or parser definitions, asserts stage/output agreement, and
+compares all non-whitelisted fields against the preserved snapshot. Only the 565
+changed-action IDs are rematched using the shared event-matching implementation.
+No protection events or raw request/decision/outcome fields are rewritten.
+
+The guarded rollback is rehearsed after application. It checks every post-repair
+row hash, restores only derived fields, asserts exact full-row equality with the
+predecessor, restores the prior entrypoint definition, and ends with ROLLBACK.
+
+* Source and audit objects
+
+Authoritative fresh-build source:
+=20261001/wpp-analysis/sql/04a_rfpp_intent_parser.sql=.
+It defines explicit v21 functions and a compatible rfpp_parse_intent_v2 entrypoint
+which delegates to v21. The original helper functions can coexist in the database;
+the active entrypoint no longer uses them. The preserved prior definition is in
+the v21 run table. The updated existing test script exercises the active entrypoint.
+
+New database objects:
+- analysis.rfpp_request_pre_intent_v21: complete immutable v2.0 predecessor.
+- analysis.rfpp_intent_v21_stage: old/new intent, UTC before/after row hashes.
+- analysis.rfpp_intent_v21_run: version signature, state, prior entrypoint definition.
+- analysis.rfpp_intent_v21_changes: changed derived records, old/new links and hashes.
+- analysis.rfpp_intent_v21_invalidations: downstream products requiring review/rebuild.
+
+The original pre-v2 snapshot, stage, changes and export remain preserved. Its run
+record becomes superseded_by_v21, rather than implying that its stage is still live.
+Historical v2 verification/report scripts describe the old generation; use this
+directory's verify.sql for the current repair.
+
+Reviewable artifacts in this directory:
+- parser-source.sql, parser-before.sql, test-source.py and tests-before.py.
+- apply.sql, rollback.sql, verify.sql and the staging/refinement scripts.
+- rehearsal.log, apply.log, verify.log, tests-applied.log and rollback-rehearsal.log.
+- stage-review-final.jsonl, fixture-results.jsonl, encoding-check.json and changed-records.csv.
+- refresh-cache.py, cache-refresh.json and cache-refresh.log.
+- reviewed-inputs.json records the deployment inputs checked before application.
+
+candidate.sql is the finalized independently callable implementation. The prototype
+builder is historical and must not regenerate the final source. SQL source and tests
+are the authoritative deliverables.
+
+* Export, reversibility and remaining classification work
+
+The direct mainspace granted/denied export is refreshed with 178,110 distinct IDs,
+version checks and full intent agreement against the reviewed stage. Its immediate
+predecessor is preserved as rfpp_request.pre-intent-v21.parquet. Cache provenance
+includes both hashes. Export failure never replaces the active file before checks.
+
+To reverse the database, first rehearse rollback.sql, then execute it with
+=psql -X service=wiki -v commit_rollback=1 -f rollback.sql= if no later changes
+invalidate its guards. Separately restore parser-before.sql, tests-before.py and
+the preserved Parquet to their original paths. Retain all audit objects/artifacts.
+
+The four-category dataset has NOT been constructed by this repair. Introduction,
+tightening and continuation still require verified protection immediately before
+submission; relaxation also requires a valid removal/lowering/shortening intent.
+Unknown baseline, identity/coverage problems, amendments, mixed restriction types
+and alternatives must remain explicit. Administrative refusal does not redefine
+the requested transition. ECR is a separate normative overlay.
+
+The 21 frozen downstream products remain invalidated. No model estimates or other
+cached analytical samples were rebuilt. Human validation remains outstanding.

@@ -1,0 +1,38 @@
+SET
+SET
+SET
+SET
+DO
+ALTER TABLE
+BEGIN
+LOCK TABLE
+DO
+SELECT 36972
+CREATE INDEX
+UPDATE 217554
+SELECT 693999
+CREATE INDEX
+ANALYZE
+SELECT 18641
+UPDATE 36972
+UPDATE 18641
+UPDATE 0
+SELECT 44061
+ALTER TABLE
+DO
+CREATE TABLE
+DO
+UPDATE 1
+COMMENT
+ANALYZE
+ population 
+------------
+     217554
+(1 row)
+
+ changed_records | action_changes | tier_changes | matched_log_changes 
+-----------------+----------------+--------------+---------------------
+           44061 |          36972 |        14334 |                 273
+(1 row)
+
+ROLLBACK

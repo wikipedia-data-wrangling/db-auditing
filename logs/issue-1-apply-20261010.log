@@ -1,0 +1,39 @@
+SET
+SET
+SET
+SET
+DO
+psql:db-auditing/apply_rfpp_intent_v2.sql:19: NOTICE:  column "requested_intent" of relation "rfpp_request" already exists, skipping
+ALTER TABLE
+BEGIN
+LOCK TABLE
+DO
+SELECT 36320
+CREATE INDEX
+UPDATE 217554
+SELECT 693999
+CREATE INDEX
+ANALYZE
+SELECT 18228
+UPDATE 36320
+UPDATE 18228
+UPDATE 0
+SELECT 44075
+ALTER TABLE
+DO
+CREATE TABLE
+DO
+UPDATE 1
+COMMENT
+ANALYZE
+ population 
+------------
+     217554
+(1 row)
+
+ changed_records | action_changes | tier_changes | matched_log_changes 
+-----------------+----------------+--------------+---------------------
+           44075 |          36320 |        13712 |                 269
+(1 row)
+
+COMMIT

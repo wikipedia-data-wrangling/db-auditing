@@ -1,0 +1,122 @@
+[
+  {
+    "audit_id": "A01",
+    "title": "[A01] Production-writing integration test",
+    "url": "https://github.com/wikipedia-data-wrangling/db-auditing/issues/2",
+    "not_before": "2026-10-13",
+    "timezone": "Europe/London",
+    "filed_at": "2026-10-11T08:41:08.239029+00:00"
+  },
+  {
+    "audit_id": "A02",
+    "title": "[A02] Mixed source and analytical generations",
+    "url": "https://github.com/wikipedia-data-wrangling/db-auditing/issues/3",
+    "not_before": "2026-10-13",
+    "timezone": "Europe/London",
+    "filed_at": "2026-10-11T08:41:09.583981+00:00"
+  },
+  {
+    "audit_id": "A03",
+    "title": "[A03] Negative protection episodes and unenforced cutoff",
+    "url": "https://github.com/wikipedia-data-wrangling/db-auditing/issues/4",
+    "not_before": "2026-10-13",
+    "timezone": "Europe/London",
+    "filed_at": "2026-10-11T08:41:11.126827+00:00"
+  },
+  {
+    "audit_id": "A04",
+    "title": "[A04] Residual NOT VALID revision-page foreign key",
+    "url": "https://github.com/wikipedia-data-wrangling/db-auditing/issues/5",
+    "not_before": "2026-10-13",
+    "timezone": "Europe/London",
+    "filed_at": "2026-10-11T08:41:12.481353+00:00"
+  },
+  {
+    "audit_id": "A05",
+    "title": "[A05] Historical identity and rights inconsistent across paths",
+    "url": "https://github.com/wikipedia-data-wrangling/db-auditing/issues/6",
+    "not_before": "2026-10-13",
+    "timezone": "Europe/London",
+    "filed_at": "2026-10-11T08:41:13.667892+00:00"
+  },
+  {
+    "audit_id": "A06",
+    "title": "[A06] Outcome horizons and eligibility differ across arms",
+    "url": "https://github.com/wikipedia-data-wrangling/db-auditing/issues/7",
+    "not_before": "2026-10-13",
+    "timezone": "Europe/London",
+    "filed_at": "2026-10-11T08:41:15.130567+00:00"
+  },
+  {
+    "audit_id": "A07",
+    "title": "[A07] Default volume capacity constrains rewrites",
+    "url": "https://github.com/wikipedia-data-wrangling/db-auditing/issues/8",
+    "not_before": "2026-10-13",
+    "timezone": "Europe/London",
+    "filed_at": "2026-10-11T08:41:16.506448+00:00"
+  },
+  {
+    "audit_id": "A08",
+    "title": "[A08] Destructive non-atomic standard SQL04 rebuild",
+    "url": "https://github.com/wikipedia-data-wrangling/db-auditing/issues/9",
+    "not_before": "2026-10-13",
+    "timezone": "Europe/London",
+    "filed_at": "2026-10-11T08:41:17.801192+00:00"
+  },
+  {
+    "audit_id": "A09",
+    "title": "[A09] Request inclusion and chronology not independently validated",
+    "url": "https://github.com/wikipedia-data-wrangling/db-auditing/issues/10",
+    "not_before": "2026-10-13",
+    "timezone": "Europe/London",
+    "filed_at": "2026-10-11T08:41:18.975011+00:00"
+  },
+  {
+    "audit_id": "A10",
+    "title": "[A10] IV assignment checks missing; decision differs from exposure",
+    "url": "https://github.com/wikipedia-data-wrangling/db-auditing/issues/11",
+    "not_before": "2026-10-13",
+    "timezone": "Europe/London",
+    "filed_at": "2026-10-11T08:41:20.370548+00:00"
+  },
+  {
+    "audit_id": "A11",
+    "title": "[A11] Requested type and tier conflated",
+    "url": "https://github.com/wikipedia-data-wrangling/db-auditing/issues/12",
+    "not_before": "2026-10-13",
+    "timezone": "Europe/London",
+    "filed_at": "2026-10-11T08:41:21.890350+00:00"
+  },
+  {
+    "audit_id": "A12",
+    "title": "[A12] Future-informed controls and shared-neighbour dependence",
+    "url": "https://github.com/wikipedia-data-wrangling/db-auditing/issues/13",
+    "not_before": "2026-10-13",
+    "timezone": "Europe/London",
+    "filed_at": "2026-10-11T08:41:23.207645+00:00"
+  },
+  {
+    "audit_id": "A13",
+    "title": "[A13] Freeze, duplicate-ingestion and executed-source provenance gaps",
+    "url": "https://github.com/wikipedia-data-wrangling/db-auditing/issues/14",
+    "not_before": "2026-10-13",
+    "timezone": "Europe/London",
+    "filed_at": "2026-10-11T08:41:24.418350+00:00"
+  },
+  {
+    "audit_id": "A14",
+    "title": "[A14] Missing page linkage and byte-encoding contract",
+    "url": "https://github.com/wikipedia-data-wrangling/db-auditing/issues/15",
+    "not_before": "2026-10-13",
+    "timezone": "Europe/London",
+    "filed_at": "2026-10-11T08:41:25.665220+00:00"
+  },
+  {
+    "audit_id": "A15",
+    "title": "[A15] Technical enforcement does not exhaust policy exposure",
+    "url": "https://github.com/wikipedia-data-wrangling/db-auditing/issues/16",
+    "not_before": "2026-10-13",
+    "timezone": "Europe/London",
+    "filed_at": "2026-10-11T08:41:27.041515+00:00"
+  }
+]

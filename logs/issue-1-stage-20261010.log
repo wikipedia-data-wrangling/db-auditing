@@ -1,0 +1,27 @@
+SET
+SET
+SET
+BEGIN
+SELECT 217554
+ALTER TABLE
+COMMENT
+SELECT 217554
+ALTER TABLE
+COMMENT
+ANALYZE
+COMMIT
+ population | action_changes | tier_changes 
+------------+----------------+--------------
+     217554 |           1982 |        14109
+(1 row)
+
+        status        | count  
+----------------------+--------
+ explicit             | 180512
+ unspecified          |  36431
+ alternative          |    356
+ ambiguous            |    172
+ chronology_uncertain |     71
+ edit_request         |     12
+(6 rows)
+

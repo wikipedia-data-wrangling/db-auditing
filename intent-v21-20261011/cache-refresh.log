@@ -1,0 +1,12 @@
+{
+  "recorded_at": "2026-10-11T09:12:35.378089+00:00",
+  "query": "SELECT * EXCLUDE(matched_offset) FROM pg.analysis.rfpp_request WHERE page_namespace=0 AND outcome IN ('granted','denied')",
+  "rows": 178110,
+  "unique_ids": 178110,
+  "version": "rfpp-intent-v2.1.0",
+  "classification_mismatches": 0,
+  "backup": "/home/simone/githubRepos/wikipediaData/20261001/wpp-analysis/data/interim/rfpp_request.pre-intent-v21.parquet",
+  "old_sha256": "6ca806a9b24de8bdea86c790206f4e2cc6582a3dfd56b6f39e2cefd792b03aa2",
+  "new_sha256": "c280541b583f0f0917b44f1ce9f8f09c45d1b126346076fdf08822b2bd0e0bca",
+  "downstream_status": "21 frozen products remain invalidated"
+}

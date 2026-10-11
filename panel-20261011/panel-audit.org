@@ -1,0 +1,193 @@
+#+title: Four-specialist audit of wiki20260401
+#+date: 2026-10-11
+
+* Panel conclusion
+The database is a useful, extensively indexed research resource, but the current
+collection of derived tables and caches should not be treated as a coherent,
+validated analytical release. The RFPP intent repair is applied and its tested
+cases remain correct. That repair does not resolve the older build, temporal,
+identity, eligibility and causal-design problems identified below.
+
+This audit used four specialist reviews: software engineering, PostgreSQL,
+computational social science and Wikipedia data semantics. Their reports and
+reproducible evidence are linked below. Database work was read-only; no data,
+constraints, indexes, classifications, samples or estimates were changed.
+
+Highest priorities are to isolate production-writing tests, prevent mixed-version
+analysis, repair invalid protection episodes and event-time eligibility, reconcile
+the residual relationship migration, and rebuild analytical products as a single
+versioned release. Statistical identification and historical policy validity
+still require additional evidence after those implementation repairs.
+
+* Scope and evidence standard
+Target independently verified: =wiki20260401=, port =5434=, PostgreSQL 18.4,
+=SQL_ASCII=, approximately 14 TiB. Inventory covers 13 public relations
+(including a partitioned parent and its children), 62 analysis relations,
+and seven =wiki_relations= views. These are relation counts, not independent
+source datasets.
+
+Evidence consists of source review, catalogs, indexed integrity probes, exact
+aggregates on bounded-size protection/request/sample relations, read-only RFPP
+regression tests, and official Wikipedia/MediaWiki documentation. Query timeouts
+were at most 30 seconds. Individual queries used read-only transactions;
+results are not one database-wide point-in-time snapshot. The source reviewed
+is the current working tree, which may differ from code used to create frozen
+outputs; source hashes and repository identities are recorded in the manifest.
+
+The panel did not scan all 1.25 billion revisions, validate every text byte,
+perform a restore drill, induce migration failures, run production-writing tests,
+or recompute causal estimates. Catalog row estimates are not exact counts.
+“Confirmed” below means the stated code path or measured condition is confirmed;
+it does not establish unmeasured damage, bias magnitude, or historical causality.
+
+* Measured coverage and current state
+| Object | Measured state | Interpretation |
+|--------+----------------+----------------|
+| RFPP requests | 217,554; latest request 2026-09-30 10:46 UTC | 8,463 from April 1 onward; 8,380 after the last observed event |
+| Protection events | 1,342,905 rows from 871,698 log entries | Multiple restriction types can produce several rows per log |
+| Protect event coverage | Latest 2026-04-02 17:22:43 UTC | Cannot support post-April request outcomes as if logs were complete |
+| Stable/pending-changes events | Latest 2026-04-01 23:49:55 UTC | Coverage differs from protect events |
+| API protect supplement | 846,191 rows; latest event 2026-05-06 22:27:10 UTC | Its existence does not extend SQL02's dump-driven event population |
+| Protection episodes | 1,004,247 | 133 have end before start; 203 start at/after stated April 1 cutoff |
+| Repaired request export | 178,110 mainspace granted/denied requests | Filtered export, not the full request population |
+| Frozen dependencies | 21 tables still marked review_or_rebuild | Direct request repair has not refreshed the analytical dependency graph |
+| Public indexes | All 36 valid and ready | Catalog validity is not a physical integrity or workload-utility guarantee |
+| Default tablespace volume | 96% used, about 521 GiB available | Major rewrites require explicit capacity/placement planning |
+
+The dump label =20260401= is a release identifier, not proof of one synchronous
+observation timestamp. Observed source records extend into April 2; API/RFPP
+collections have separate dates. The distinct SQL03 defect is that its declared
+April 1 cutoff is not applied consistently to event selection and boundaries.
+
+* Prioritized findings
+| Priority | Finding and evidence | Specialist references |
+|----------+----------------------+-----------------------|
+| High | Loader integration test connects to production, commits fixture writes, drops a live FK and can delete pre-existing revision/text IDs; past execution or loss not established | SE-1 |
+| High | Caches accept existing filenames without generation checks; SQL20 reuses persisted stages despite a new source frame | SE-2, CSS-01 |
+| High | 1,304/8,000 frozen request windows no longer satisfy repaired increase eligibility; 216 retain different requested tiers | CSS-01 |
+| High | 133 negative-duration protection episodes; SQL03 admits starts/boundaries beyond its declared cutoff | Wikipedia temporal findings |
+| High | =revision_rev_page_fkey= remains NOT VALID after validation and cleanup both failed; missing page 1133504 confirmed by indexed probes | PG-01 |
+| High | SQL42 uses a different article-identity path: 742/10,000 sampled IDs differ from =page_id_match=; historical correctness requires adjudication | CSS-02 |
+| High | Expiry-RD returner eligibility treats ever-admin status as timeless; other paths use dates | CSS-03 |
+| High | Variable during-period edit counts and default semi eligibility make outcome definitions differ across arms | CSS-07 |
+| High | Default tablespace has insufficient headroom for a full rewrite of its approximately 9.5-TiB text partition | PG-03 |
+| High | Standard SQL04 drops/re-adds derived columns without an encompassing transaction | SE-3 |
+| High measurement/design risk | Unknown action rises sharply after 2020; no population-wide independent annotation validates selection after abstention | CSS-04 |
+| High identification gap | Six promised balance covariates are absent; stored IV results are labelled placeholder, and first-stage strength does not establish assignment validity | CSS-05 |
+| High measurement risk | Technical protection types and levels are compressed into one requested-level vocabulary; policy/ECR and technical ECP remain distinct | Wikipedia semantic findings |
+| Medium/high | Current-title links, unresolved event identities, future-informed controls and repeated neighbours require explicit target populations and sensitivity checks | PG-02, CSS-08/09, Wikipedia identity findings |
+| Medium | Freeze validation changes trailing-newline bytes; provenance/duplicate handling cannot fully reconcile executed inputs and inserted rows | SE-4/5/6 |
+| Medium | SQL_ASCII needs an explicit byte/Unicode contract; no blanket claim of remaining corruption is established | PG-04 |
+
+These findings overlap. The rows must not be added as counts of independent
+problems or affected observations. The specialist reports retain further detail,
+including uncertainty and checks that passed.
+
+* Implications for interpreting the data
+** Relationships and observation units
+Measured protection-to-page gaps comprise 2,414 restriction rows referring to
+1,487 absent page IDs. This is a real join gap, not permission to delete rows
+or fabricate parents. =public.logging.log_page= has zero populated values;
+absence of that identifier is not evidence that all logged pages were absent.
+Use source-specific linkage and explicit found/provenance flags.
+
+Do not require creation-protected titles to have existing page rows. Existing
+page restrictions and protected titles encode different technical objects.
+Their documentation supports separate page-ID and namespace/title relationships:
+[[https://www.mediawiki.org/wiki/Manual:Page_restrictions_table][page_restrictions]] and
+[[https://www.mediawiki.org/wiki/Manual:Protected_titles_table][protected_titles]].
+
+There are 144,032 unresolved log identities in the event population and 28,825
+log entries resolved by title. These are log counts, not episode counts. They
+must enter sample-flow reporting and historical identity sensitivity analyses.
+The current quality-cutoff materialization has zero measured article-ID
+mismatches in the social-science check; the SQL42 finding must not be transferred
+to it merely because both concern quality measurement.
+
+** Protection, policy and request chronology
+Requested intent, response, nearby log action, technical restriction type/level,
+and policy exposure are distinct measurements. ECR can be enforced without ECP;
+pending changes governs review/visibility rather than the same edit barrier as
+semi-protection. Current official documentation supports those distinctions,
+but historical policy exposure needs dated versions and applicability evidence:
+[[https://en.wikipedia.org/wiki/Wikipedia:Protection_policy][Protection policy]] and
+[[https://en.wikipedia.org/wiki/Wikipedia:Arbitration_Committee/Procedures#Extended_confirmed_restriction][Arbitration procedures]].
+
+The RFPP fetcher asks the API for revision IDs and timestamps but retains only
+content in its archive extraction result. It parses archived final text and
+signature timestamps, not a stored request-time revision. The repaired parser
+preserves observed amendments, but cannot establish the chronology of all edits.
+Retain source revision IDs, immutable source bytes/hash and collection time;
+validate initial-intent claims against historical revisions where necessary.
+
+** Statistical interpretation
+Old analytical products are historical runs using old definitions. They are not
+automatically estimates for the repaired population. Unknown intent is a
+measurement state, not proof of a different request, and should not be filled
+from the later administrator decision.
+
+Granted/denied is not equivalent to protected/unprotected. In the audited
+2016–2024 mainspace increase population, 4,436/20,624 denied requests have an
+opening event within 30 days; matching remains heuristic. Define whether the
+estimand concerns decisions or time-varying exposure, and avoid selecting away
+crossovers based on later outcomes.
+
+Causal assumptions—administrator assignment, exclusion, continuity at expiry,
+network interference and overlap—are not validated by successful SQL or strong
+first-stage prediction. Existing placeholder labels are a positive safeguard.
+No direction or numerical magnitude of causal bias is asserted by this audit.
+
+* Remediation sequence and acceptance criteria
+1. *Prevent avoidable damage and inconsistent consumption.* Make production
+   inaccessible to loader tests; require disposable-database identity checks.
+   Block reads of incompatible/invalidated analytical generations. Acceptance:
+   refusal tests run in isolation and incompatible-generation fixtures fail.
+2. *Repair foundational temporal and identity logic.* Preserve and quarantine
+   the 133 invalid episode records for raw-log/precision review, enforce one
+   explicit episode as-of rule, unify historical identity and rights lookups,
+   and separate restriction type from tier. Acceptance: provenance-backed
+   fixtures for moves/recreations, past/future rights, revocations, simultaneous
+   restrictions, expired-at-log-time parameters, and cutoff boundaries.
+3. *Reconcile relational and operational state.* Record both migration failures
+   and an explicit decision for the residual NOT VALID FK; retain unmatched
+   source evidence. Establish per-volume storage limits before large writes.
+   Acceptance: live catalog matches intended constraint state, migration can
+   resume, and a capacity plan covers the actual target volume.
+4. *Publish a compatible analytical generation.* Preserve the previous run;
+   rebuild eligibility, requested-tier duration medians, sampled requests and
+   controls, panels/outcomes, caches, then estimates. Make refresh transactional
+   or staged with validated publication. Acceptance: source/code/parser hashes
+   match across all products; no stale sampled classifications; old/new membership
+   and output comparisons are filed; invalidations clear only after validation.
+5. *Validate measurement and research design.* Independently annotate a stratified
+   request sample, report missingness/selection by era and outcome, materialize
+   pre-decision balance covariates, and assess support, horizon comparability,
+   crossover and dependence. Acceptance: diagnostics and failed assumptions are
+   retained; conclusions are tied to a declared estimand and supported population.
+
+* Reports and reproducibility
+- [[file:software-engineering.md][Software engineering]] — production test isolation, atomic rebuilds, caches, ingestion and freeze provenance.
+- [[file:postgresql.md][SQL/PostgreSQL]] — constraints, indexes, linkage, storage, encoding and observability.
+- [[file:computational-social-science.md][Computational social science]] — population consistency, identity, eligibility, measurement and causal design.
+- [[file:wikipedia-domain.md][Wikipedia domain]] — technical versus policy semantics, archive chronology, event coverage and episodes.
+- [[file:inventory-results.json][Shared inventory]] and [[file:wikipedia-results.json][exact protection/request coverage queries]].
+- [[file:findings.csv][Actionable findings register]] and [[file:manifest.json][source/evidence manifest]].
+
+Every specialist report links its query scripts/results. =run_readonly.py= can
+replay a named JSON query set with read-only transactions and bounded timeouts:
+#+begin_src sh
+official-dump/.venv/bin/python db-auditing/panel-20261011/run_readonly.py \
+  db-auditing/panel-20261011/inventory-queries.json /tmp/wiki-inventory-rerun.json
+#+end_src
+
+Use a new output path to preserve this audit's evidence. Additional full-scale
+integrity work and restore testing need a separately planned resource envelope.
+Issue #1 remains closed at the user's request; its closure does not resolve the
+newly documented findings or the previously recorded downstream invalidations.
+No GitHub issues were opened or modified during this panel audit.
+
+* Follow-up issue filing — 2026-10-11
+At the user’s subsequent request, the 15 action-register tasks were filed as
+separate GitHub issues #2–#16. All implementation is deferred until Tuesday,
+13 October 2026 (Europe/London). No fixes were made.
+[[file:github-issues/index.org][Issue index and scheduling constraint]].

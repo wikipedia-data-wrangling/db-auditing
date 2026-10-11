@@ -1,0 +1,3 @@
+{
+  "rfpp_after_observed_events": "WITH coverage AS (SELECT max(ts) AS last_event FROM analysis.protect_event) SELECT last_event,count(*) FILTER(WHERE request_timestamp>last_event) AS requests_strictly_after_last_event,count(*) FILTER(WHERE request_timestamp<=last_event AND request_timestamp+interval '48 hours'>last_event) AS requests_with_request_plus_48h_beyond_coverage,count(*) FILTER(WHERE decision_ts<=last_event AND decision_ts+interval '48 hours'>last_event) AS decisions_with_matching_window_beyond_coverage FROM analysis.rfpp_request CROSS JOIN coverage GROUP BY last_event"
+}
